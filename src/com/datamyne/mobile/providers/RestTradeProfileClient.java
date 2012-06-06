@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 
 import org.json.JSONObject;
 
-public class RestTradeProfileClient {
+public class RestTradeProfileClient  implements IRestTradeProfileClient{
 
 	public String getFullProfileJson(String type, String id){
 
