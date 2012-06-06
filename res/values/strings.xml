@@ -3,5 +3,7 @@
 
     <string name="hello">Hello World, PruebajsonxmlActivity!</string>
     <string name="app_name">Pruebajsonxml</string>
+    <string name="txt_btn_consignee">Consignee</string>
+    <string name="txt_btn_shipper">Shipper</string>
 
 </resources>

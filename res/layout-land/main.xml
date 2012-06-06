@@ -1,18 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="match_parent" 
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
 
-<!--     <fragment class="com.datamyne.mobile.xml.PruebajsonxmlActivity$TitlesFragment" -->
-<!--             android:id="@+id/titles" android:layout_weight="1" -->
-<!--             android:layout_width="0px" android:layout_height="match_parent" /> -->
+    <!-- <fragment class="com.datamyne.mobile.xml.PruebajsonxmlActivity$TitlesFragment" -->
+    <!-- android:id="@+id/titles" android:layout_weight="1" -->
+    <!-- android:layout_width="0px" android:layout_height="match_parent" /> -->
 
-    <FrameLayout 
-            android:id="@+id/titles" 
-            android:layout_weight="1"
-            android:layout_width="0px" 
-            android:layout_height="match_parent"/>
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:iconifiedByDefault="false"
+            android:visibility="visible" >
+        </SearchView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btn_query_consignee"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:text="@string/txt_btn_consignee" />
+
+            <Button
+                android:id="@+id/btn_query_shipper"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:text="@string/txt_btn_shipper" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/titles"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </FrameLayout>
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/details"
@@ -20,5 +55,5 @@
         android:layout_height="match_parent"
         android:layout_weight="2.67"
         android:background="?android:attr/detailsElementBackground" />
-    
+
 </LinearLayout>
