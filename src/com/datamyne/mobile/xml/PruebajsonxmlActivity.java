@@ -133,6 +133,9 @@ public class PruebajsonxmlActivity extends Activity {
 						URL url 	= new URL("http://192.168.122.114:8080/system/rest/autocomplete?" +
 								"Base=usa_mid12&idComponent=402&compositeid=402&targetTerm="+q);
 
+						
+//						http://200.40.197.173:8082/system/rest/autocomplete?Base=usa_mid12&idComponent=402&compositeid=402&targetTerm=dole
+						
 //			URL url 	= new URL("http://192.168.0.16/system/rest/autocomplete?" +
 //					"Base=usa_mid12&idComponent=402&compositeid=402&targetTerm="+q);
 			/*
