@@ -14,8 +14,16 @@ import android.util.Log;
 public class ProfileProvider implements IProfileProvider{
 
 	
-	private RestTradeProfileClient client = new RestTradeProfileClient();
+	//private IRestTradeProfileClient client = new RestTradeProfileClient();
+	private IRestTradeProfileClient client;
 	
+	public ProfileProvider(){
+		 client = new RestTradeProfileClient();
+	}
+	
+	public ProfileProvider(IRestTradeProfileClient client){
+		this.client = client;
+	}
 	
 	private boolean mExternalStorageAvailable = false;
 	private boolean mExternalStorageWriteable = false;
@@ -85,7 +93,7 @@ public class ProfileProvider implements IProfileProvider{
 	 * @param payload
 	 * @return retorna true si todo ok y false si hubo error
 	 */
-	public boolean saveToSD(String localBasePath, String type, String id, String payload) {
+	private boolean saveToSD(String localBasePath, String type, String id, String payload) {
 		boolean ret = false;
 		File root = new File(localBasePath, type);
 		updateExternalStorageState();
