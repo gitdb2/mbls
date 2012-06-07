@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -157,69 +158,6 @@ public class PruebajsonxmlActivity extends Activity {
 		boolean mDualPane;
 		int mCurCheckPosition = 0;
 		ArrayList<Item> itemList;
-	//	private IRestTradeProfileClient client 		= new RestTradeProfileClient();
-	//	private IProfileProvider profileProvider 	= new ProfileProvider(client);
-		
-		
-//		private JSONObject search(String target, String type){
-//			HttpURLConnection con = null;
-//			JSONObject result = null;
-//			try {
-//				if(Thread.interrupted())
-//					throw new InterruptedException();
-//
-//				String q 	= URLEncoder.encode(target, "UTF-8");
-//							URL url 	= new URL("http://192.168.122.114:8080/system/rest/autocomplete?" +
-//									"Base=usa_mid12&idComponent=402&compositeid=402&targetTerm="+q);
-//
-////				URL url 	= new URL("http://192.168.0.16/system/rest/autocomplete?" +
-////						"Base=usa_mid12&idComponent=402&compositeid=402&targetTerm="+q);
-//				/*
-//				{"list": [{
-//				    "second": "6795958",
-//				    "third": "DOLE FOOD COMPANY INC (CA)",
-//				    "first": 402
-//				  }, {
-//				    "second": "6719778",
-//				    "third": "DOLE FOOD COMPANY INC (DE)",
-//				    "first": 402
-//				  }]}
-//				 */
-//
-//				con =(HttpURLConnection) url.openConnection();
-//				con.setReadTimeout(10000);
-//				con.setConnectTimeout(15000);
-//				con.setRequestMethod("GET");
-//				con.setDoInput(true);
-//				con.connect();
-//
-//				BufferedReader reader = new BufferedReader(new InputStreamReader(
-//						con.getInputStream(), "UTF-8"));
-//
-//				String payload = reader.readLine();
-//				reader.close();
-//				con.disconnect();
-//				con = null;
-//
-//				if(!payload.trim().isEmpty()){
-//					result = new JSONObject(payload);
-//				}
-//
-//				if(Thread.interrupted())
-//					throw new InterruptedException();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//
-//			}finally{
-//				if(con != null)
-//					con.disconnect();
-//			}
-//			return result;
-//		}
-		
-		
-		
-		
 		
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState) {
@@ -260,7 +198,6 @@ public class PruebajsonxmlActivity extends Activity {
 			super.onSaveInstanceState(outState);
 			outState.putInt("curChoice", mCurCheckPosition);
 			outState.putParcelableArrayList("itemList", itemList);
-			
 		}
 
 		@Override
@@ -319,7 +256,7 @@ public class PruebajsonxmlActivity extends Activity {
 
 	public static class DetailsFragment extends Fragment {
 		
-		private IProfileProvider profileProvider 	= new ProfileProvider();
+//		private IProfileProvider profileProvider 	= new ProfileProvider();
 			
 		
 		/**
@@ -367,7 +304,7 @@ public class PruebajsonxmlActivity extends Activity {
 			String localBasePath = getActivity().getExternalFilesDir(null).getPath();
 			System.out.println(localBasePath);
 			
-			String tmp = profileProvider.loadFullProfile(localBasePath, getBundledType(), getBundledId());
+			
 			
 			ScrollView scroller = new ScrollView(getActivity());
 			TextView text = new TextView(getActivity());
@@ -376,14 +313,64 @@ public class PruebajsonxmlActivity extends Activity {
 			text.setPadding(padding, padding, padding, padding);
 			scroller.addView(text);
 			
-			//text.setText("levanta de sd el archhivo "+getBundledType()+"/"+getBundledId()+".json");
-			text.setText(tmp);
+			new HttpClientTask2(this.getActivity(), text).execute(localBasePath, getBundledType(), getBundledId());
+			
 			return scroller;
 		}
 	}
 
 	
+	public static class HttpClientTask2 extends AsyncTask<String, Float, String> {
+
+		//private IRestTradeProfileClient client 		= new RestTradeProfileClient();
+		private IProfileProvider profileProvider 	= new ProfileProvider();
+		private ProgressDialog dialog;
+		private View view;
+		
+		public HttpClientTask2(Context context, TextView view) {
+			super();
+			this.view = view;
+			dialog = new ProgressDialog(context);
+	        dialog.setMessage("Descargando...");
+	        dialog.setTitle("Progreso");
+	        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+	        dialog.setCancelable(false);
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			
+			
+			String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2]);
+					
+//			
+			
+			
+			return tmp;
+		}
+
+		protected void onPreExecute() {
+			dialog.setProgress(0);
+			dialog.setMax(100);
+			dialog.show(); // Mostramos el diálogo antes de comenzar
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			dialog.dismiss();
+			((TextView)view).setText(result);	
+			//titlesFragment.displayData();
+		}
+
+	}
 	
+	
+	/**
+	 * Realiza la busqueda de empresas
+	 * @author rodrigo
+	 *
+	 */
 	public static class HttpClientTask extends AsyncTask<String, Float, ArrayList<Item>> {
 
 		private IRestTradeProfileClient client 		= new RestTradeProfileClient();
@@ -421,16 +408,8 @@ public class PruebajsonxmlActivity extends Activity {
 		protected void onPreExecute() {
 			dialog.setProgress(0);
 			dialog.setMax(100);
-
 			dialog.show(); // Mostramos el diálogo antes de comenzar
-
 		}
-//
-//		protected void onProgdressUpdate(Float... valores) {
-//			int p = Math.round(100 * valores[0]);
-//			dialog.setProgress(p);
-//		}
-
 		
 		@Override
 		protected void onPostExecute(ArrayList<Item> result) {
