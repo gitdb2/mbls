@@ -12,6 +12,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
  
+<!-- 
         <activity
             android:name=".PruebajsonxmlActivity"
             android:label="@string/app_name" >
@@ -21,9 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<!--
+        -->
+
          <activity
-            android:name="PruebaAsyncTAsk"
+            android:name="SearchBoxActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,9 +33,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    -->      
+         
         <activity android:name="PruebajsonxmlActivity$DetailsActivity"></activity>
-<!--         <activity android:name="PruebaAsyncTAsk"></activity> -->
+		<activity android:name="PruebajsonxmlActivity"></activity> -->
         
     </application>
 

@@ -47,8 +47,12 @@ public class PruebajsonxmlActivity extends Activity {
 
 		TitlesFragment titles = new TitlesFragment();
 		
+		
+		String target = getIntent().getExtras().getString("target");
+		
+		
 		Bundle args = new Bundle();
-		args.putString("target", "dole");
+		args.putString("target", target);
 		args.putString("baseDir", baseDir);
 		
 		titles.setArguments(args);

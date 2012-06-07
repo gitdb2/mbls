@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, PruebajsonxmlActivity!</string>
     <string name="app_name">Pruebajsonxml</string>
+    <string name="buscar">Buscar</string>
 
 </resources>
