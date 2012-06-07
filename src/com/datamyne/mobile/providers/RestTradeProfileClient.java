@@ -13,8 +13,7 @@ public class RestTradeProfileClient  implements IRestTradeProfileClient{
 
 	public String getFullProfileJson(String type, String id){
 
-		 String urlStr = "http://192.168.122.114:8080/system/rest/fullTradeprofile/"+type+"/"+id;
-//		String urlStr = "http://200.40.197.173:8082/system/rest/fullTradeprofile/"+type+"/"+id;
+		 String urlStr = "http://200.40.197.173:8082/system/rest/fullTradeprofile/"+type+"/"+id;
 
 		HttpURLConnection con = null;
 		StringBuilder payload = new StringBuilder();
@@ -79,11 +78,9 @@ public class RestTradeProfileClient  implements IRestTradeProfileClient{
 				throw new InterruptedException();
 
 			String q 	= URLEncoder.encode(target, "UTF-8");
-						URL url 	= new URL("http://192.168.122.114:8080/system/rest/autocomplete?" +
+						URL url 	= new URL("http://200.40.197.173:8082/system/rest/autocomplete?" +
 								"Base=usa_mid12&idComponent=402&compositeid=402&targetTerm="+q);
 
-//			URL url 	= new URL("http://192.168.0.16/system/rest/autocomplete?" +
-//					"Base=usa_mid12&idComponent=402&compositeid=402&targetTerm="+q);
 			/*
 			{"list": [{
 			    "second": "6795958",

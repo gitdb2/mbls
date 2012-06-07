@@ -10,8 +10,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -50,303 +52,13 @@ public class PruebajsonxmlActivity extends Activity {
 		
 		titles.setArguments(args);
 		
-		
-		
-//		//android.R.id.content es el id del contenedor (root view)
-//		getFragmentManager().beginTransaction().add(android.R.id.content, titles).commit();
-//		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.titles, titles);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		ft.commit();
 
-/*
-		JSONObject jso = abrirAsset("consignee/6795958.json");
-		try {
-			JSONObject jso2= jso.getJSONObject("tradeProfileContainer");
-			System.out.println(jso2.getString("companyId"));
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//searchLocal("dole", "query.json");
-		search("dole", "consignee");
-*/
 	}
-
-//	public JSONObject abrirAsset(String fileName) {
-//		try {
-//			AssetManager am = getAssets();
-//			InputStream is =  am.open(fileName);
-//			Writer writer = new StringWriter();
-//			char[] buffer = new char[1024];
-//
-//			Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-//			int n;
-//			while ((n = reader.read(buffer)) != -1) {
-//				writer.write(buffer, 0, n);
-//			}
-//			is.close();
-//			String jsonString = writer.toString();
-//			JSONObject jso = new JSONObject(jsonString);
-//			return jso;
-//
-//		}catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
-
-//	public JSONObject searchLocal(String target, String fileName){
-//		JSONObject jso = abrirAsset(fileName);
-//
-//		try {
-//			JSONArray arr = jso.getJSONArray("list");
-//			for (int i = 0; i < arr.length(); i++) {
-//				JSONObject item = arr.getJSONObject(i);
-//
-//				System.out.println(item.getString("second") + ", "+item.getString("third"));
-//			}
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return jso;
-//	}
-
-//	private void search(String target, String type){
-//		HttpURLConnection con = null;
-//
-//		try {
-//			if(Thread.interrupted())
-//				throw new InterruptedException();
-//
-//			String q 	= URLEncoder.encode(target, "UTF-8");
-//						URL url 	= new URL("http://192.168.122.114:8080/system/rest/autocomplete?" +
-//								"Base=usa_mid12&idComponent=402&compositeid=402&targetTerm="+q);
-//
-//						
-////						http://200.40.197.173:8082/system/rest/autocomplete?Base=usa_mid12&idComponent=402&compositeid=402&targetTerm=dole
-//						
-////			URL url 	= new URL("http://192.168.0.16/system/rest/autocomplete?" +
-////					"Base=usa_mid12&idComponent=402&compositeid=402&targetTerm="+q);
-//			/*
-//			{"list": [{
-//			    "second": "6795958",
-//			    "third": "DOLE FOOD COMPANY INC (CA)",
-//			    "first": 402
-//			  }, {
-//			    "second": "6719778",
-//			    "third": "DOLE FOOD COMPANY INC (DE)",
-//			    "first": 402
-//			  }]}
-//			 */
-//
-//			con =(HttpURLConnection) url.openConnection();
-//			con.setReadTimeout(10000);
-//			con.setConnectTimeout(15000);
-//			con.setRequestMethod("GET");
-//			con.setDoInput(true);
-//			con.connect();
-//
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(
-//					con.getInputStream(), "UTF-8"));
-//
-//			String payload = reader.readLine();
-//			reader.close();
-//			con.disconnect();
-//			con = null;
-//
-//			if(!payload.trim().isEmpty()){
-//				JSONObject result = new JSONObject(payload);
-//
-//				JSONArray arr = result.getJSONArray("list");
-//				for (int i = 0; i < arr.length(); i++) {
-//					JSONObject item = arr.getJSONObject(i);
-//
-//					System.out.println(item.getString("second") + ", "+item.getString("third"));
-//
-//					if(i==1){
-//
-//						String data = getFullProfileJson(type, item.getString("second"));
-//						if(!data.isEmpty()){
-//							saveToSD(data, type, item.getString("second"));
-//						}else{
-//							System.err.println("DATA es blanck");
-//						}
-//					}
-//
-//
-//				}
-//
-//			}
-//
-//			if(Thread.interrupted())
-//				throw new InterruptedException();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//
-//		}finally{
-//			if(con != null)
-//				con.disconnect();
-//		}
-//	}
-
-
-
-//	private String getFullProfileJson(String type, String id){
-//		String payload = "";
-//		    	String urlStr = "http://192.168.122.114:8080/system/rest/fullTradeprofile/"+type+"/"+id;
-////		String urlStr = "http://200.40.197.173:8082/system/rest/fullTradeprofile/"+type+"/"+id;
-//
-//		HttpURLConnection con = null;
-//
-//		try {
-//			if(Thread.interrupted())
-//				throw new InterruptedException();
-//
-//			URL url 	= new URL(urlStr);
-//
-//			con =(HttpURLConnection) url.openConnection();
-//			con.setReadTimeout(10000);
-//			con.setConnectTimeout(15000);
-//			con.setRequestMethod("GET");
-//			con.setRequestProperty("Accept", "application/json");
-//			con.setDoInput(true);
-//			con.connect();
-//
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
-//
-//			payload = reader.readLine();
-//			reader.close();
-//
-//			if(Thread.interrupted())
-//				throw new InterruptedException();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//
-//		}finally{
-//			if(con != null)
-//				con.disconnect();
-//		}
-//
-//		return payload;
-//
-//	}
-
-
-//	private void saveToSD(String payload, String type, String id) {
-//		// Create a path where we will place our private file on external
-//		// storage.
-//		File root = new File(getExternalFilesDir(null), type);
-//		updateExternalStorageState();
-//		try {
-//
-//			if(mExternalStorageWriteable){
-//				if (!root.exists()) {
-//					root.mkdirs();
-//				}
-//				File gpxfile = new File(root, id+".json");
-//				if(!gpxfile.exists()){
-//					FileWriter writer = new FileWriter(gpxfile);
-//					writer.append(payload);
-//					writer.flush();
-//					writer.close();
-//					Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-//				}else{
-//					Toast.makeText(this, "Already Saved", Toast.LENGTH_SHORT).show();
-//				}
-//			}else{
-//				Toast.makeText(this, "No se puede escribir en la SD", Toast.LENGTH_SHORT).show();
-//			}
-//
-//		} catch (IOException e) {
-//			// Unable to create file, likely because external storage is
-//			// not currently mounted.
-//			Log.w("ExternalStorage", "Error writing " + root, e);
-//			Toast.makeText(this, "No se pudo escribir a la sd no montada posiblemente", Toast.LENGTH_SHORT).show();
-//		}
-//	}
-
-//	public JSONObject loadFromSD(String type, String id) {
-//		// Create a path where we will place our private file on external
-//		// storage.
-//		File root = new File(getExternalFilesDir(null), type + File.separatorChar + id+".json");
-//		JSONObject result = null;
-//		updateExternalStorageState();
-//		try {
-//
-//			if(mExternalStorageAvailable){
-//				String payload = "";
-//				if (!root.exists()) {
-//					payload = getFullProfileJson(type, id);
-//					saveToSD(payload, type, id);
-//				}else{
-//					InputStreamReader isReader = new FileReader(root);
-//					BufferedReader reader = new BufferedReader(isReader);
-//
-//					payload = reader.readLine();
-//					reader.close();
-//				}
-//
-//				if(payload!= null && !payload.trim().isEmpty()){
-//					try {
-//						result = new JSONObject(payload);
-//						Toast.makeText(this, "Archivo leido ok", Toast.LENGTH_SHORT).show();
-//					} catch (JSONException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//						Toast.makeText(this, "No se pudo parsear", Toast.LENGTH_SHORT).show();
-//					}
-//				}else{
-//					Toast.makeText(this, "No se pudo leer el archivo", Toast.LENGTH_SHORT).show();
-//				}
-//			}else{
-//				Toast.makeText(this, "La SD no esta disponible", Toast.LENGTH_SHORT).show();
-//			}
-//		} catch (IOException e) {
-//			// Unable to create file, likely because external storage is
-//			// not currently mounted.
-//			Log.w("ExternalStorage", "Error reading " + root, e);
-//			Toast.makeText(this, "No se pudo leer a la sd, no montada posiblemente", Toast.LENGTH_SHORT).show();
-//		}
-//		return result;
-//	}
-
-//	boolean mExternalStorageAvailable = false;
-//	boolean mExternalStorageWriteable = false;
-//
-//	void updateExternalStorageState() {
-//		String state = Environment.getExternalStorageState();
-//		if (Environment.MEDIA_MOUNTED.equals(state)) {
-//			mExternalStorageAvailable = mExternalStorageWriteable = true;
-//		} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-//			mExternalStorageAvailable = true;
-//			mExternalStorageWriteable = false;
-//		} else {
-//			mExternalStorageAvailable = mExternalStorageWriteable = false;
-//		}
-//	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//http://192.168.122.114:8080/system/bills/autoCompleteController.spf3?ajaxRequest=1&Base=usa_mid12&idComponent=402&compositeid=402&targetTerm=dole
-
-
+	
 	/**
 	 * This is a secondary activity, to show what the user has selected
 	 * when the screen is not large enough to show it all in one activity.
@@ -445,7 +157,7 @@ public class PruebajsonxmlActivity extends Activity {
 		boolean mDualPane;
 		int mCurCheckPosition = 0;
 		ArrayList<Item> itemList;
-		private IRestTradeProfileClient client 		= new RestTradeProfileClient();
+	//	private IRestTradeProfileClient client 		= new RestTradeProfileClient();
 	//	private IProfileProvider profileProvider 	= new ProfileProvider(client);
 		
 		
@@ -518,22 +230,12 @@ public class PruebajsonxmlActivity extends Activity {
 				mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
 				itemList= savedInstanceState.getParcelableArrayList("itemList");
 			}else{
-			
-				JSONObject searched =  client.searchRemote(getArguments().getString("target"), "consignee");
-				itemList = new ArrayList<Item>();
-				try {
-					JSONArray arr = searched.getJSONArray("list");
-					for (int i = 0; i < arr.length(); i++) {
-						JSONObject item = arr.getJSONObject(i);
-						itemList.add(new Item(item.getString("second"), item.getString("third")));
-					}	
-					
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+				new HttpClientTask(this).execute(getArguments().getString("target"), "consignee");
 			}
-	
-			
+		
+		}
+
+		public void displayData(){
 			// Populate list with our static array of titles.
 			setListAdapter(new ArrayAdapter<Item>(getActivity(),
 					android.R.layout.simple_list_item_activated_1, itemList));
@@ -552,7 +254,7 @@ public class PruebajsonxmlActivity extends Activity {
 				showDetails(mCurCheckPosition);
 			}
 		}
-
+		
 		@Override
 		public void onSaveInstanceState(Bundle outState) {
 			super.onSaveInstanceState(outState);
@@ -680,4 +382,66 @@ public class PruebajsonxmlActivity extends Activity {
 		}
 	}
 
+	
+	
+	public static class HttpClientTask extends AsyncTask<String, Float, ArrayList<Item>> {
+
+		private IRestTradeProfileClient client 		= new RestTradeProfileClient();
+		private ProgressDialog dialog;
+		private TitlesFragment titlesFragment;
+		
+		public HttpClientTask(TitlesFragment titlesFragment) {
+			super();
+			this.titlesFragment = titlesFragment;
+			dialog = new ProgressDialog(titlesFragment.getActivity());
+	        dialog.setMessage("Descargando...");
+	        dialog.setTitle("Progreso");
+	        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+	        dialog.setCancelable(false);
+		}
+
+		@Override
+		protected ArrayList<Item> doInBackground(String... params) {
+			
+			JSONObject searched =  client.searchRemote(params[0], params[1]);
+			ArrayList<Item> itemList = new ArrayList<Item>();
+			try {
+				JSONArray arr = searched.getJSONArray("list");
+				for (int i = 0; i < arr.length(); i++) {
+					JSONObject item = arr.getJSONObject(i);
+					itemList.add(new Item(item.getString("second"), item.getString("third")));
+				}	
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return itemList;
+		}
+
+		protected void onPreExecute() {
+			dialog.setProgress(0);
+			dialog.setMax(100);
+
+			dialog.show(); // Mostramos el diálogo antes de comenzar
+
+		}
+//
+//		protected void onProgdressUpdate(Float... valores) {
+//			int p = Math.round(100 * valores[0]);
+//			dialog.setProgress(p);
+//		}
+
+		
+		@Override
+		protected void onPostExecute(ArrayList<Item> result) {
+			super.onPostExecute(result);
+			dialog.dismiss();
+			titlesFragment.itemList = result;	
+			titlesFragment.displayData();
+		}
+
+	}
+	
+	
+	
 }
