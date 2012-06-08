@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -87,15 +88,24 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 		String id;
 		String type;
 		int page;
-		public MyFragmentPagerAdapter(FragmentManager fm, String id, String type, int page) {  
+		int itemlistIndex;
+		
+		StringBuilder payload;
+		
+		public MyFragmentPagerAdapter(FragmentManager fm, String id, String type, int page, int itemlistIndex, String localBasePath, Activity context) {  
 			super(fm);
+			payload = new StringBuilder();
 			this.id = id;
 			this.type = type;
 			this.page = page;
+			this.itemlistIndex = itemlistIndex;
+			
+			new HttpClientTask2(context, payload).execute(localBasePath, type, id);
+			
 		}  
 
-		public Fragment getItem(int index) {  
-			return PageFragment.newInstance(id, type, page, index);
+		public Fragment getItem(int pageIndex) {  
+			return PageFragment.newInstance(id, type, pageIndex, itemlistIndex);
 		}  
 
 		@Override  
@@ -142,7 +152,13 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 				String id = getIntent().getExtras().getString("id");
 				ViewPager details = (ViewPager) findViewById(R.id.viewPager);
  
-				MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), id, "consignee", 0);
+				//MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), id, "consignee", 0);
+				
+				
+				String localBasePath = getExternalFilesDir(null).getPath();
+				
+				MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), id, "consignee", 0, 0, localBasePath, this);
+				
 				details.setAdapter(mMyFragmentPagerAdapter);  
 				
 			}
@@ -294,8 +310,9 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 //							mViewPager.setAdapter(new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), "consignee", 0) );  
 
 
+							String path = getActivity().getExternalFilesDir(null).getPath();
 							MyFragmentPagerAdapter mMyFragmentPagerAdapter = 
-									new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), "consignee", 0);  
+									new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), "consignee", 0, index, path, getActivity());  
 							details.setAdapter(mMyFragmentPagerAdapter);  
 						
 //							
@@ -331,6 +348,7 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 	}
 
 	public static class PageFragment extends Fragment {  
+
 
 		public static PageFragment newInstance(String id, String type, int page, int index) {
 
@@ -389,7 +407,7 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 			text.setPadding(padding, padding, padding, padding);
 			scroller.addView(text);
 			
-			new HttpClientTask2(this.getActivity(), text).execute(localBasePath, getBundledType(), getBundledId());
+			//new HttpClientTask2(this.getActivity(), text).execute(localBasePath, getBundledType(), getBundledId());
 			
 			return scroller;
 		}  
@@ -403,9 +421,9 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 		//private IRestTradeProfileClient client 		= new RestTradeProfileClient();
 		private IProfileProvider profileProvider 	= new ProfileProvider();
 		private ProgressDialog dialog;
-		private View view;
+		private StringBuilder view;
 		
-		public HttpClientTask2(Context context, TextView view) {
+		public HttpClientTask2(Context context, StringBuilder view) {
 			super();
 			this.view = view;
 			dialog = new ProgressDialog(context);
@@ -417,13 +435,7 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 
 		@Override
 		protected String doInBackground(String... params) {
-			
-			
 			String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2]);
-					
-//			
-			
-			
 			return tmp;
 		}
 
@@ -437,7 +449,8 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 			dialog.dismiss();
-			((TextView)view).setText(result);	
+			view.append(result);
+			//((TextView)view).setText(result);	
 			//titlesFragment.displayData();
 		}
 
