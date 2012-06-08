@@ -20,5 +20,23 @@
         android:layout_height="wrap_content"
         android:text="@string/buscar" 
         android:onClick="buscar"/>
-
+    <Button
+        android:id="@+id/buttonViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pager" 
+        android:onClick="goPager"/>
+    
+       <Button
+        android:id="@+id/buttonViewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pager" 
+        android:onClick="goPager2"/>
+ 		<Button
+        android:id="@+id/buttonSearch2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/buscar" 
+        android:onClick="buscar2"/>
 </LinearLayout>

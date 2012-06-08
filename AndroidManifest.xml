@@ -35,7 +35,12 @@
         </activity>
          
         <activity android:name="PruebajsonxmlActivity$DetailsActivity"></activity>
-		<activity android:name="PruebajsonxmlActivity"></activity> -->
+		<activity android:name="PruebajsonxmlActivity"></activity> 
+		<activity android:name="ViewPagerActivity"></activity>
+		<activity android:name="OtroPagerActivity"></activity>
+		<activity android:name="PruebajsonxmlActivityPager"></activity>
+		<activity android:name="PruebajsonxmlActivityPager$DetailsActivity"></activity>
+		
         
     </application>
 
