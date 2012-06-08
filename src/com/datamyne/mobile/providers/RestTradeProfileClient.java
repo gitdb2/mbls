@@ -13,8 +13,8 @@ public class RestTradeProfileClient  implements IRestTradeProfileClient{
 
 	public String getFullProfileJson(String type, String id){
 
-		 String urlStr = "http://192.168.122.114:8080/system/rest/fullTradeprofile/"+type+"/"+id;
-//		String urlStr = "http://200.40.197.173:8082/system/rest/fullTradeprofile/"+type+"/"+id;
+		// String urlStr = "http://192.168.122.114:8080/system/rest/fullTradeprofile/"+type+"/"+id;
+		String urlStr = "http://200.40.197.173:8082/system/rest/fullTradeprofile/"+type+"/"+id;
 
 		HttpURLConnection con = null;
 		StringBuilder payload = new StringBuilder();

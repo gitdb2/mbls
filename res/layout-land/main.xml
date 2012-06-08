@@ -17,27 +17,27 @@
         <SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
             android:visibility="visible" >
         </SearchView>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <Button
                 android:id="@+id/btn_query_consignee"
-                android:layout_width="150dp"
-                android:layout_height="60dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/txt_btn_consignee" />
 
             <Button
                 android:id="@+id/btn_query_shipper"
-                android:layout_width="150dp"
-                android:layout_height="60dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/txt_btn_shipper" />
         </LinearLayout>
@@ -45,7 +45,8 @@
         <FrameLayout
             android:id="@+id/titles"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent" 
+            android:layout_weight="20">
         </FrameLayout>
     </LinearLayout>
 
@@ -56,5 +57,5 @@
         android:layout_weight="2.67"
         android:background="?android:attr/detailsElementBackground" >
     </FrameLayout>
-    
+
 </LinearLayout>

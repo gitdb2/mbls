@@ -1,5 +1,6 @@
 package com.datamyne.mobile.xml;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
