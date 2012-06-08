@@ -1,5 +1,7 @@
 package com.datamyne.mobile.xml;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -193,7 +195,7 @@ public class PruebajsonxmlActivity extends Activity {
 				// In dual-pane mode, the list view highlights the selected item.
 				getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 				// Make sure our UI is in the correct state.
-				showDetails(mCurCheckPosition);
+				//showDetails(mCurCheckPosition);
 			}
 		}
 		
@@ -218,36 +220,44 @@ public class PruebajsonxmlActivity extends Activity {
 		void showDetails( int index) {
 			//List<Item> itemList,
 			mCurCheckPosition = index;
-			Item item = itemList.get(index);
-			if (mDualPane) {
-				// We can display everything in-place with fragments, so update
-				// the list to highlight the selected item and show the data.
-				getListView().setItemChecked(index, true);
+			if(itemList != null && !itemList.isEmpty()){
+				try {
+					Item item = itemList.get(index);
+					if (mDualPane) {
+						// We can display everything in-place with fragments, so update
+						// the list to highlight the selected item and show the data.
+						getListView().setItemChecked(index, true);
 
-				// Check what fragment is currently shown, replace if needed.
-				DetailsFragment details = (DetailsFragment) getFragmentManager().findFragmentById(R.id.details);
-				
-				if (details == null || details.getShownIndex() != index) {
-					// Make new fragment to show this selection.
-					details = DetailsFragment.newInstance(item.getCode(), "consignee", index);
+						// Check what fragment is currently shown, replace if needed.
+						DetailsFragment details = (DetailsFragment) getFragmentManager().findFragmentById(R.id.details);
+						
+						if (details == null || details.getShownIndex() != index) {
+							// Make new fragment to show this selection.
+							details = DetailsFragment.newInstance(item.getCode(), "consignee", index);
 
-					// Execute a transaction, replacing any existing fragment
-					// with this one inside the frame.
-					FragmentTransaction ft = getFragmentManager().beginTransaction();
-					ft.replace(R.id.details, details);
-					ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-					ft.commit();
+							// Execute a transaction, replacing any existing fragment
+							// with this one inside the frame.
+							FragmentTransaction ft = getFragmentManager().beginTransaction();
+							ft.replace(R.id.details, details);
+							ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+							ft.commit();
+						}
+
+					} else {
+						// Otherwise we need to launch a new activity to display
+						// the dialog fragment with selected text.
+						Intent intent = new Intent();
+						intent.setClass(getActivity(), DetailsActivity.class);
+						intent.putExtra("index", index);
+						intent.putExtra("type", "consignee");
+						intent.putExtra("id", item.getCode());
+						startActivity(intent);
+					}
+				} catch (IndexOutOfBoundsException e) {
+
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-
-			} else {
-				// Otherwise we need to launch a new activity to display
-				// the dialog fragment with selected text.
-				Intent intent = new Intent();
-				intent.setClass(getActivity(), DetailsActivity.class);
-				intent.putExtra("index", index);
-				intent.putExtra("type", "consignee");
-				intent.putExtra("id", item.getCode());
-				startActivity(intent);
 			}
 		}
 	}
@@ -375,7 +385,7 @@ public class PruebajsonxmlActivity extends Activity {
 	 * @author rodrigo
 	 *
 	 */
-	public static class HttpClientTask extends AsyncTask<String, Float, ArrayList<Item>> {
+	public static class HttpClientTask extends AsyncTask<String, Integer, ArrayList<Item>> {
 
 		private IRestTradeProfileClient client 		= new RestTradeProfileClient();
 		private ProgressDialog dialog;
@@ -385,7 +395,7 @@ public class PruebajsonxmlActivity extends Activity {
 			super();
 			this.titlesFragment = titlesFragment;
 			dialog = new ProgressDialog(titlesFragment.getActivity());
-	        dialog.setMessage("Descargando...");
+	        dialog.setMessage("Fetching data...");
 	        dialog.setTitle("Progreso");
 	        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 	        dialog.setCancelable(false);
@@ -394,9 +404,10 @@ public class PruebajsonxmlActivity extends Activity {
 		@Override
 		protected ArrayList<Item> doInBackground(String... params) {
 			
-			JSONObject searched =  client.searchRemote(params[0], params[1]);
 			ArrayList<Item> itemList = new ArrayList<Item>();
+			
 			try {
+				JSONObject searched =  client.searchRemote(params[0], params[1]);
 				JSONArray arr = searched.getJSONArray("list");
 				for (int i = 0; i < arr.length(); i++) {
 					JSONObject item = arr.getJSONObject(i);
@@ -405,6 +416,18 @@ public class PruebajsonxmlActivity extends Activity {
 				
 			} catch (JSONException e) {
 				e.printStackTrace();
+				publishProgress(-1);
+				cancel(true);
+			}
+			catch (SocketTimeoutException e) {
+				e.printStackTrace();
+				publishProgress(-2);
+				cancel(true);
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+				publishProgress(-3);
+				cancel(true);
 			}
 			return itemList;
 		}
@@ -418,9 +441,44 @@ public class PruebajsonxmlActivity extends Activity {
 		@Override
 		protected void onPostExecute(ArrayList<Item> result) {
 			super.onPostExecute(result);
-			dialog.dismiss();
+			if(!isCancelled()){//si fue cancelado (tiro excepcion)
+				dialog.dismiss();
+				
+			}
 			titlesFragment.itemList = result;	
 			titlesFragment.displayData();
+		}
+		
+		  @Override
+          protected void onCancelled()
+          {
+                  super.onCancelled();
+          }
+		
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			// TODO Auto-generated method stub
+			super.onProgressUpdate(values);
+			switch (values[0]) {
+			case -1:
+				dialog.setMessage("Unknown data");
+				dialog.setCancelable(true);
+				
+				break;
+			case -2:
+				dialog.setMessage("Server unreachable, try later. Tap to close");
+				dialog.setCancelable(true);
+				
+				break;
+			case -3:
+				dialog.setMessage("Other IO Exception, try later");
+				dialog.setCancelable(true);
+				
+				break;
+			default:
+				break;
+			}
+			
 		}
 
 	}

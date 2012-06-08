@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -11,7 +12,7 @@ import org.json.JSONObject;
 
 public class RestTradeProfileClient  implements IRestTradeProfileClient{
 
-	public String getFullProfileJson(String type, String id){
+	public String getFullProfileJson(String type, String id) throws IOException{
 
 		 String urlStr = "http://200.40.197.173:8082/system/rest/fullTradeprofile/"+type+"/"+id;
 
@@ -25,6 +26,10 @@ public class RestTradeProfileClient  implements IRestTradeProfileClient{
 
 			if(Thread.interrupted())
 				throw new InterruptedException();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw e;
+
 		} catch (Exception e) {
 			e.printStackTrace();
 
@@ -70,7 +75,7 @@ public class RestTradeProfileClient  implements IRestTradeProfileClient{
 	 * @param type
 	 * @return
 	 */
-	public JSONObject searchRemote(String target, String type){
+	public JSONObject searchRemote(String target, String type) throws SocketTimeoutException, IOException{
 		HttpURLConnection con = null;
 		JSONObject result = null;
 		try {
@@ -114,6 +119,13 @@ public class RestTradeProfileClient  implements IRestTradeProfileClient{
 
 			if(Thread.interrupted())
 				throw new InterruptedException();
+		}catch (SocketTimeoutException e) {
+			e.printStackTrace();
+			throw e;
+		//SocketTimeoutException//failed to connect to
+		}catch (IOException e) {
+			e.printStackTrace();
+			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
 
