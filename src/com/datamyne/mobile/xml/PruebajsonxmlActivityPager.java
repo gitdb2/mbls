@@ -86,16 +86,16 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 
 		String id;
 		String type;
-		int page;
-		public MyFragmentPagerAdapter(FragmentManager fm, String id, String type, int page) {  
+		int selectedIndex;
+		public MyFragmentPagerAdapter(FragmentManager fm, String id, String type, int selectedIndex) {  
 			super(fm);
 			this.id = id;
 			this.type = type;
-			this.page = page;
+			this.selectedIndex = selectedIndex;
 		}  
 
-		public Fragment getItem(int index) {  
-			return PageFragment.newInstance(id, type, page, index);
+		public Fragment getItem(int page) {  
+			return PageFragment.newInstance(id, type, page, selectedIndex);
 		}  
 
 		@Override  
@@ -295,7 +295,7 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 
 
 							MyFragmentPagerAdapter mMyFragmentPagerAdapter = 
-									new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), "consignee", 0);  
+									new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), "consignee", index);  
 							details.setAdapter(mMyFragmentPagerAdapter);  
 						
 //							
@@ -344,10 +344,10 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 			return pageFragment;
 		}
 
-		  public int getBundleIndex() {
+		  public int getBundledIndex() {
 	            return getArguments().getInt("index", 0);
 	        }
-		  public int getBundlePage() {
+		  public int getBundledPage() {
 	            return getArguments().getInt("page", 0);
 	        }
 
@@ -388,8 +388,10 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 					4, getActivity().getResources().getDisplayMetrics());
 			text.setPadding(padding, padding, padding, padding);
 			scroller.addView(text);
+			IProfileProvider profileProvider 	= new ProfileProvider();
+			boolean showDialog = !profileProvider.checkFileExists(localBasePath, getBundledType(), getBundledId());
 			
-			new HttpClientTask2(this.getActivity(), text).execute(localBasePath, getBundledType(), getBundledId());
+			new HttpClientTask2(this.getActivity(), text, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
 			
 			return scroller;
 		}  
@@ -404,42 +406,105 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 		private IProfileProvider profileProvider 	= new ProfileProvider();
 		private ProgressDialog dialog;
 		private View view;
-		
-		public HttpClientTask2(Context context, TextView view) {
+		boolean showDialog= true;
+		int page = 0;
+		public HttpClientTask2(Context context, TextView view, boolean showDialog, int page) {
 			super();
 			this.view = view;
-			dialog = new ProgressDialog(context);
-	        dialog.setMessage("Descargando...");
-	        dialog.setTitle("Progreso");
-	        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-	        dialog.setCancelable(false);
+			this.showDialog = showDialog;  
+			this.page = page;
+			
+			if(showDialog){
+				dialog = new ProgressDialog(context);
+		        dialog.setMessage("Descargando...");
+		        dialog.setTitle("Progreso");
+		        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		        dialog.setCancelable(false);
+			}
 		}
 
 		@Override
 		protected String doInBackground(String... params) {
-			
-			
 			String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2]);
-					
-//			
-			
-			
 			return tmp;
 		}
 
 		protected void onPreExecute() {
-			dialog.setProgress(0);
-			dialog.setMax(100);
-			dialog.show(); // Mostramos el diálogo antes de comenzar
+			if(showDialog){
+				dialog.setProgress(0);
+				dialog.setMax(100);
+				dialog.show(); // Mostramos el diálogo antes de comenzar
+			}
 		}
 		
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			dialog.dismiss();
-			((TextView)view).setText(result);	
+			if(showDialog){
+				dialog.dismiss();
+			}
+			((TextView)view).setText(getPageData(result));	
 			//titlesFragment.displayData();
 		}
+		
+		
+		private String getPageData(String payload){
+			String ret  = "";
+			if(payload!=null && !payload.trim().isEmpty()){
+				try {
+					JSONObject obj = new JSONObject(payload);
+					JSONObject tmp = obj.getJSONObject("tradeProfileContainer");
+					
+					switch (page) {
+					case 0:
+						ret = tmp.getJSONObject("profileTab").toString();
+						break;
+					case 1:
+						ret = tmp.getJSONObject("totalMonthsTab").toString();
+						break;
+					case 2:
+					{
+						JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
+						ret = arr.getString(0);
+					}
+					break;
+					case 3:
+					{
+						JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
+						ret = arr.getString(1);
+					
+					}
+					break;
+					case 4:
+					{
+						JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
+						ret = arr.getString(2);
+					
+					}
+					break;					
+					case 5:
+					{
+						JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
+						ret = arr.getString(3);
+					
+					}
+					break;
+					default:
+						ret = tmp.getJSONObject("profileTab").toString();	
+						break;
+					}
+					
+					
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			return ret;
+		}
+		
+		
 
 	}
 	

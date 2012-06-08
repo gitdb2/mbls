@@ -24,6 +24,20 @@ public class ProfileProvider implements IProfileProvider{
 	public ProfileProvider(IRestTradeProfileClient client){
 		this.client = client;
 	}
+
+	public boolean checkFileExists(String localBasePath, String type, String id){
+			boolean ret = false;
+			try {
+				File root = new File(localBasePath, type + File.separatorChar + id+".json");
+				ret = root.exists();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				ret = false;
+			}
+			return ret;
+	}
+	
 	
 	private boolean mExternalStorageAvailable = false;
 	private boolean mExternalStorageWriteable = false;
