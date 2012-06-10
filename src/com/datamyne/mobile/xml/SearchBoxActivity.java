@@ -39,10 +39,9 @@ public class SearchBoxActivity extends Activity {
 	}
 	
 	public void buscar2(View v){
-		
 		TextView detailsFrame = (TextView) findViewById(R.id.targetText);
 		Intent intent = new Intent();
-		intent.setClass(this, PruebajsonxmlActivityPager.class);
+		intent.setClass(this, PruebajsonxmlActivityPagerSearchable.class);
 		intent.putExtra("target", detailsFrame.getText().toString());
 		intent.putExtra("type", "consignee");
 		startActivity(intent);
