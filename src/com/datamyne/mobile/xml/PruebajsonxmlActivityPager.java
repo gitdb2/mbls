@@ -49,7 +49,7 @@ public class PruebajsonxmlActivityPager extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.view_pager2);
+		setContentView(R.layout.view_pager3);
 
 		String baseDir = getExternalFilesDir(null).getPath();
 		
