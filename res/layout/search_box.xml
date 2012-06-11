@@ -18,25 +18,25 @@
         android:id="@+id/buttonSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/buscar" 
+        android:text="PruebajsonxmlActivity" 
         android:onClick="buscar"/>
     <Button
         android:id="@+id/buttonViewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/pager" 
+        android:text="ViewPagerActivity" 
         android:onClick="goPager"/>
     
        <Button
         android:id="@+id/buttonViewPager2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/pager" 
+        android:text="OtroPagerActivity" 
         android:onClick="goPager2"/>
  		<Button
         android:id="@+id/buttonSearch2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/buscar" 
+        android:text="PruebajsonxmlActivityPagerSearchable" 
         android:onClick="buscar2"/>
 </LinearLayout>

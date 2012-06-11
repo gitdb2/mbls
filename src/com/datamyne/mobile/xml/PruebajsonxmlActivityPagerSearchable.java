@@ -1,6 +1,9 @@
 package com.datamyne.mobile.xml;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
@@ -12,11 +15,10 @@ import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -25,17 +27,17 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebSettings.PluginState;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.IRestTradeProfileClient;
@@ -339,8 +341,85 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 //			System.out.println(localBasePath);
 			
 		
-	
+			WebView mWebView1 = (WebView) layout.findViewById(R.id.webview1);
+		    mWebView1.getSettings().setJavaScriptEnabled(true);
+		    
+		    mWebView1.getSettings().setPluginState(PluginState.ON);
+		   // mWebView1.loadUrl("file:///android_asset/graph_01.swf");
+		    
+		    
+//		    AssetManager assetManager = getActivity().getAssets();
+		    
+		    
+		  
+		      
+		    
+		        
+		    
+		    
+		    StringBuilder sb = new StringBuilder();
 
+		    sb.append("<html>");
+		    sb.append("<head>");
+		    sb.append("<script type='text/javascript' src=\"file:///android_asset/charts/jquery.js\"></script>");
+		    sb.append("<script type='text/javascript' src=\"file:///android_asset/charts/FusionCharts.js\"></script>");
+		    sb.append("<script type='text/javascript' src=\"file:///android_asset/charts/highchartsx.js\"></script>");
+		    
+//		    try {
+//	            InputStream is = assetManager.open("jquery.js");
+//	            int size = is.available();
+//	            byte[] buffer = new byte[size];
+//	            is.read(buffer);
+//	            is.close();
+//	            sb.append("<script>").append(new String(buffer));
+//	            
+//	            
+//	            is = assetManager.open("FusionCharts.js");
+//	            size = is.available();
+//	            buffer = new byte[size];
+//	            is.read(buffer);
+//	            is.close();
+//	            sb.append(new String(buffer));
+//
+//	            is = assetManager.open("highchartsx.js");
+//	            size = is.available();
+//	            buffer = new byte[size];
+//	            is.read(buffer);
+//	            is.close();
+//	            sb.append(new String(buffer));
+//	            
+//	            
+//	            sb.append("</script>");
+//	            
+//	            // Finally stick the string into the text view.
+//	            
+//	        } catch (IOException e) {
+//	            // Should never happen!
+//	            throw new RuntimeException(e);
+//	        }
+//		    
+		    
+		    
+		    sb.append("</head>");
+		    sb.append("<body>");
+		    sb.append("<input type='hidden' id='data' value='<chart caption=\"Total Annual Imports\" subCaption=\"in TEUs\" yAxisMaxValue=\"7313\" bgColor=\"E6E6E6\" bgAlpha=\"100\" baseFontColor=\"000000\" canvasBgAlpha=\"0\" canvasBorderColor=\"FFFFFF\" divLineColor=\"FFFFFF\" divLineAlpha=\"100\" numVDivlines=\"10\" vDivLineisDashed=\"1\" showAlternateVGridColor=\"1\" lineColor=\"4A4A4A\" anchorRadius=\"8\" anchorBgColor=\"00A4D9\" anchorBorderColor=\"FFFFFF\" anchorBorderThickness=\"2\" showValues=\"1\" numberSuffix=\"\" toolTipBgColor=\"406181\" toolTipBorderColor=\"406181\" alternateHGridAlpha=\"5\"><set label=\"Apr11\" value=\"6174\"></set><set label=\"May11\" value=\"7313\"></set><set label=\"Jun11\" value=\"6402\"></set><set label=\"Jul11\" value=\"7099\"></set><set label=\"Aug11\" value=\"5783\"></set><set label=\"Sep11\" value=\"5058\"></set><set label=\"Oct11\" value=\"6631\"></set><set label=\"Nov11\" value=\"6424\"></set><set label=\"Dec11\" value=\"5238\"></set><set label=\"Jan12\" value=\"5491\"></set><set label=\"Feb12\" value=\"5562\"></set><set label=\"Mar12\" value=\"5880\"></set><styles><definition><style name=\"LineShadow\" type=\"shadow\" color=\"333333\" distance=\"6\"></style></definition><application><apply toObject=\"DATAPLOT\" styles=\"LineShadow\"></apply></application>	</styles></chart>'>");	
+		    sb.append("<div id=\"chartdiv_annual_imports\"> FusionCharts. </div>");
+		    sb.append("<script type=\"text/javascript\">");
+		    sb.append("	FusionCharts.setCurrentRenderer('javascript');");	
+		    sb.append("	var charts = new FusionCharts(\"Line.swf\", \"chart-annual-imports\", \"460\", \"370\", \"0\", \"0\");");		   
+		    sb.append("	charts.setDataXML($('#data').val());");
+		    sb.append("	charts.render(\"chartdiv_annual_imports\");");
+		    sb.append("</script>");
+		    sb.append("</body></html>");
+		    
+		//    mWebView1.loadData(sb.toString(), "text/html", "UTF-8");
+//		    
+//		    
+		    mWebView1.loadDataWithBaseURL("file:///android_asset/", sb.toString(), "text/html", "UTF-8", null);
+		    //mWebView1.loadUrl("file:///android_asset/charts/tab1.html");
+		//    mWebView1.loadUrl("file:///android_asset/tab1.html");
+		    
+		    
 //			ScrollView scroller = new ScrollView(getActivity());
 //			layout.addView(scroller);
 //			TextView text = new TextView(getActivity());
@@ -355,34 +434,53 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 			
 			new HttpClientTask2(this.getActivity(), text, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
 			
+			
+//			replaceView(layout);
 			return layout;
 		}  
 		
-//		TChart chart = new TChart(getActivity());
-//	
+		
+//		public void replaceView(View layout){
+//			View C = layout.findViewById(R.id.progressBar1Borrar);
+//			ViewGroup parent = (ViewGroup) C.getParent();
+//			int index = parent.indexOfChild(C);
+//			parent.removeView(C);
+//			C = crearGrafica(layout);
+//			parent.addView(C, index);
+//		}
 //
-//		chart.getPanel().setBorderRound(7);
-//		chart.getAspect().setView3D(false);
+//		private View crearGrafica(View layout){
 //
-//		//tema 1
-//		ThemesList.applyTheme(chart.getChart(), 1);
+//		//	LinearLayout group = (LinearLayout) layout.findViewById(R.id.linearLayoutTchart);
+//			TChart chart = new TChart(layout.getContext());
+//		//	group.addView(chart);
 //
-//		//piechart
-//		chart.removeAllSeries();
-//		try {
+//			chart.getPanel().setBorderRound(7);
+//			chart.getAspect().setView3D(false);
 //
-//			Series bar = new Bar(chart.getChart());
-//			chart.getAxes().getBottom().setIncrement(1);
-//			bar.add(123, "Apples", Color.red);
-//			bar.add(456, "Oranges", Color.ORANGE);
-//			bar.add(321, "Kiwis", Color.green);
-//			bar.add(78, "Bananas", Color.yellow);
-//			layout.addView(chart);
-//		} catch (IllegalArgumentException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} 
+//			//tema 1
+//			ThemesList.applyTheme(chart.getChart(), 1);
+//
+//			//piechart
+//			chart.removeAllSeries();
+//			try {
+//
+//				Series bar = new Bar(chart.getChart());
+//				chart.getAxes().getBottom().setIncrement(1);
+//				bar.add(123, "Apples", Color.red);
+//				bar.add(456, "Oranges", Color.ORANGE);
+//				bar.add(321, "Kiwis", Color.green);
+//				bar.add(78, "Bananas", Color.yellow);
+//			} catch (IllegalArgumentException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			return chart;
+//		}
+		
 	} 
+	
+	
 	
 	public static class HttpClientTask2 extends AsyncTask<String, Float, String> {
 

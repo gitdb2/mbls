@@ -6,12 +6,16 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
-import android.widget.TextView;
+
+import com.steema.teechart.TChart;
+import com.steema.teechart.drawing.Color;
+import com.steema.teechart.styles.Bar;
+import com.steema.teechart.styles.Series;
+import com.steema.teechart.themes.ThemesList;
 
 public class OtroPagerActivity extends FragmentActivity{
 
@@ -72,17 +76,42 @@ public class OtroPagerActivity extends FragmentActivity{
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 
 			ScrollView scroller = new ScrollView(getActivity());
-			TextView text = new TextView(getActivity());
-			int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-					4, getActivity().getResources().getDisplayMetrics());
-			text.setPadding(padding, padding, padding, padding);
-			scroller.addView(text);
+//			TextView text = new TextView(getActivity());
+//			int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+//					4, getActivity().getResources().getDisplayMetrics());
+//			text.setPadding(padding, padding, padding, padding);
+//			scroller.addView(text);
+//
+//			text.setText(getTitle());
 
-			text.setText(getTitle());
+		
+			   TChart chart = new TChart(this.getActivity());
+			   scroller.addView(chart);
+				
+				chart.getPanel().setBorderRound(7);
+				chart.getAspect().setView3D(false);
 
-			//	          View view = inflater.inflate(R.layout.results, container, false);  
-			//	          TextView textView = (TextView) view.findViewById(R.id.textView1);  
-			//	          textView.setText(getArguments().getString("title"));
+		//tema 1
+				ThemesList.applyTheme(chart.getChart(), 1);
+
+		//piechart
+				chart.removeAllSeries();
+				
+				try {
+					
+					Series bar = new Bar(chart.getChart());
+					chart.getAxes().getBottom().setIncrement(1);
+					bar.add(123, "Apples", Color.red);
+					bar.add(456, "Oranges", Color.ORANGE);
+					bar.add(321, "Kiwis", Color.green);
+					bar.add(78, "Bananas", Color.yellow);
+					
+				
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+			
 			return scroller;  
 		}  
 	}  

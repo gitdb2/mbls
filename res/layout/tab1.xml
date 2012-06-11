@@ -4,36 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ScrollView
-        android:id="@+id/scrollView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <LinearLayout
-	        android:id="@+id/linearLayoutChart"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
-	        android:orientation="vertical" >
-	
-	        <LinearLayout
-	            android:id="@+id/linearLayoutTchart"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content" >
-
-	            <ProgressBar
-	                android:id="@+id/progressBar1"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content" />
-
-	        </LinearLayout>
-	    </LinearLayout>
-    </ScrollView>
+   
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="200dp" >
+ 	 >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,6 +24,37 @@
                 android:text="TextView" />
 
         </LinearLayout>
+    </ScrollView>
+    
+     <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+	        android:id="@+id/linearLayoutChart"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:orientation="vertical" >
+
+				<WebView
+				    android:id="@+id/webview1"
+				    android:layout_width="wrap_content"
+				    android:layout_height="fill_parent" >
+				   
+				</WebView>
+<!-- 	        <LinearLayout -->
+<!-- 	            android:id="@+id/linearLayoutTchart" -->
+<!-- 	            android:layout_width="fill_parent" -->
+<!-- 	            android:layout_height="wrap_content" > -->
+
+<!-- 	            <ProgressBar -->
+<!-- 	                android:id="@+id/progressBar1Borrar" -->
+<!-- 	                android:layout_width="wrap_content" -->
+<!-- 	                android:layout_height="wrap_content" /> -->
+
+<!-- 	        </LinearLayout> -->
+	    </LinearLayout>
     </ScrollView>
 
 </LinearLayout>
