@@ -40,6 +40,9 @@
 		<activity android:name="OtroPagerActivity"></activity>
 		<activity android:name="PruebajsonxmlActivityPager"></activity>
 		<activity android:name="PruebajsonxmlActivityPager$DetailsActivity"></activity>
+		<activity android:name="GraficaViewActivity"></activity>
+		
+		
 		
 		<activity android:name="PruebajsonxmlActivityPagerSearchable">
 		    <intent-filter>

@@ -39,4 +39,12 @@
         android:layout_height="wrap_content"
         android:text="PruebajsonxmlActivityPagerSearchable" 
         android:onClick="buscar2"/>
+ 		
+ 		<Button
+        android:id="@+id/buttonSearch44"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GraficaViewActivity" 
+        android:onClick="charts"/>
+ 		
 </LinearLayout>

@@ -47,6 +47,10 @@ public class SearchBoxActivity extends Activity {
 		startActivity(intent);
 	}
 	
-	
+	public void charts(View v){
+		Intent intent = new Intent();
+		intent.setClass(this, GraficaViewActivity.class);
+		startActivity(intent);
+	}
 	
 }
