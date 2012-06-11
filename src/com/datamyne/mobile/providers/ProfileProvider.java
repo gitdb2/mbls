@@ -18,7 +18,7 @@ public class ProfileProvider implements IProfileProvider{
 	private IRestTradeProfileClient client;
 	
 	public ProfileProvider(){
-		 client = new RestTradeProfileClient();
+		 client = new RestTradeProfileClient2();
 	}
 	
 	public ProfileProvider(IRestTradeProfileClient client){

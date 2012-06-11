@@ -37,7 +37,7 @@ import android.widget.SearchView;
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.IRestTradeProfileClient;
 import com.datamyne.mobile.providers.ProfileProvider;
-import com.datamyne.mobile.providers.RestTradeProfileClient;
+import com.datamyne.mobile.providers.RestTradeProfileClient2;
 
 
 
@@ -483,7 +483,7 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 	 */
 	public static class HttpClientTask extends AsyncTask<String, Integer, ArrayList<Item>> {
 
-		private IRestTradeProfileClient client 		= new RestTradeProfileClient();
+		private IRestTradeProfileClient client 		= new RestTradeProfileClient2();
 		private ProgressDialog dialog;
 		private TitlesFragment titlesFragment;
 		
@@ -586,21 +586,27 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 	}
 
 
+	private String lastQuery = null;
 	public boolean onQueryTextSubmit(String query) {
-		String baseDir = getExternalFilesDir(null).getPath();
-
-		TitlesFragment titles = new TitlesFragment();
 		
-		Bundle args = new Bundle();
-		args.putString("target", query);
-		args.putString("baseDir", baseDir);
-		
-		titles.setArguments(args);
-		
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(R.id.titles, titles);
-		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-		ft.commit();
+		boolean trigger= lastQuery == null || !query.equals(lastQuery); 
+		if(trigger){
+			lastQuery = query;
+			String baseDir = getExternalFilesDir(null).getPath();
+	
+			TitlesFragment titles = new TitlesFragment();
+			
+			Bundle args = new Bundle();
+			args.putString("target", query);
+			args.putString("baseDir", baseDir);
+			
+			titles.setArguments(args);
+			
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			ft.replace(R.id.titles, titles);
+			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			ft.commit();
+		}
 		return false;
 	}
 	
