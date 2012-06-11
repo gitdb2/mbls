@@ -401,12 +401,12 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		    
 		    
 		    sb.append("</head>");
-		    sb.append("<body>");
+		    sb.append("<body style='background-color:#ccc;'>");
 		    sb.append("<input type='hidden' id='data' value='<chart caption=\"Total Annual Imports\" subCaption=\"in TEUs\" yAxisMaxValue=\"7313\" bgColor=\"E6E6E6\" bgAlpha=\"100\" baseFontColor=\"000000\" canvasBgAlpha=\"0\" canvasBorderColor=\"FFFFFF\" divLineColor=\"FFFFFF\" divLineAlpha=\"100\" numVDivlines=\"10\" vDivLineisDashed=\"1\" showAlternateVGridColor=\"1\" lineColor=\"4A4A4A\" anchorRadius=\"8\" anchorBgColor=\"00A4D9\" anchorBorderColor=\"FFFFFF\" anchorBorderThickness=\"2\" showValues=\"1\" numberSuffix=\"\" toolTipBgColor=\"406181\" toolTipBorderColor=\"406181\" alternateHGridAlpha=\"5\"><set label=\"Apr11\" value=\"6174\"></set><set label=\"May11\" value=\"7313\"></set><set label=\"Jun11\" value=\"6402\"></set><set label=\"Jul11\" value=\"7099\"></set><set label=\"Aug11\" value=\"5783\"></set><set label=\"Sep11\" value=\"5058\"></set><set label=\"Oct11\" value=\"6631\"></set><set label=\"Nov11\" value=\"6424\"></set><set label=\"Dec11\" value=\"5238\"></set><set label=\"Jan12\" value=\"5491\"></set><set label=\"Feb12\" value=\"5562\"></set><set label=\"Mar12\" value=\"5880\"></set><styles><definition><style name=\"LineShadow\" type=\"shadow\" color=\"333333\" distance=\"6\"></style></definition><application><apply toObject=\"DATAPLOT\" styles=\"LineShadow\"></apply></application>	</styles></chart>'>");	
 		    sb.append("<div id=\"chartdiv_annual_imports\"> FusionCharts. </div>");
 		    sb.append("<script type=\"text/javascript\">");
 		    sb.append("	FusionCharts.setCurrentRenderer('javascript');");	
-		    sb.append("	var charts = new FusionCharts(\"Line.swf\", \"chart-annual-imports\", \"460\", \"370\", \"0\", \"0\");");		   
+		    sb.append("	var charts = new FusionCharts(\"file:///android_asset/charts/Line.swf\", \"chart-annual-imports\", \"460\", \"370\", \"0\", \"0\");");		   
 		    sb.append("	charts.setDataXML($('#data').val());");
 		    sb.append("	charts.render(\"chartdiv_annual_imports\");");
 		    sb.append("</script>");
