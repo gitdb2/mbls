@@ -163,21 +163,18 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         mTabLayout.addView(tabView, new LinearLayout.LayoutParams(0, MATCH_PARENT, 1));
     }
 
-    @Override
     public void onPageScrollStateChanged(int arg0) {
         if (mListener != null) {
             mListener.onPageScrollStateChanged(arg0);
         }
     }
 
-    @Override
     public void onPageScrolled(int arg0, float arg1, int arg2) {
         if (mListener != null) {
             mListener.onPageScrolled(arg0, arg1, arg2);
         }
     }
 
-    @Override
     public void onPageSelected(int arg0) {
         setCurrentItem(arg0);
         if (mListener != null) {
@@ -185,7 +182,6 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         }
     }
 
-    @Override
     public void setViewPager(ViewPager view) {
         if (mViewPager == view) {
             return;
@@ -220,13 +216,11 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         requestLayout();
     }
 
-    @Override
     public void setViewPager(ViewPager view, int initialPosition) {
         setViewPager(view);
         setCurrentItem(initialPosition);
     }
 
-    @Override
     public void setCurrentItem(int item) {
         if (mViewPager == null) {
             throw new IllegalStateException("ViewPager has not been bound.");
@@ -245,7 +239,6 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         }
     }
 
-    @Override
     public void setOnPageChangeListener(OnPageChangeListener listener) {
         mListener = listener;
     }
