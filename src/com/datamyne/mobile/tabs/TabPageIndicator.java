@@ -16,18 +16,22 @@
  */
 package com.datamyne.mobile.tabs;
 
-import static android.view.ViewGroup.LayoutParams.FILL_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.View.MeasureSpec;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import com.datamyne.mobile.xml.R;
 
@@ -83,7 +87,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         setHorizontalScrollBarEnabled(false);
 
         mTabLayout = new LinearLayout(getContext());
-        addView(mTabLayout, new ViewGroup.LayoutParams(WRAP_CONTENT, FILL_PARENT));
+        addView(mTabLayout, new ViewGroup.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
     }
 
     public void setOnTabReselectedListener(OnTabReselectedListener listener) {
@@ -156,7 +160,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         tabView.setOnClickListener(mTabClickListener);
         tabView.setText(text);
 
-        mTabLayout.addView(tabView, new LinearLayout.LayoutParams(0, FILL_PARENT, 1));
+        mTabLayout.addView(tabView, new LinearLayout.LayoutParams(0, MATCH_PARENT, 1));
     }
 
     @Override
