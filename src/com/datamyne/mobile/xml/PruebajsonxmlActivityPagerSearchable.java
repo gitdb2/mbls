@@ -205,20 +205,28 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		
 		}
 
+		@Override
+		public void onStart() {
+			// TODO Auto-generated method stub
+			super.onStart();
+			displayData();
+		}
+		
 		public void displayData(){
-			// Populate list with our static array of titles.
-			setListAdapter(new ArrayAdapter<Item>(getActivity(), android.R.layout.simple_list_item_activated_1, itemList));
-			
-			// Check to see if we have a frame in which to embed the details
-			// fragment directly in the containing UI.
-			View detailsFrame = getActivity().findViewById(R.id.details);
-			mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
-
-			if (mDualPane) {
-				// In dual-pane mode, the list view highlights the selected item.
-				getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-				// Make sure our UI is in the correct state.
-				//showDetails(mCurCheckPosition);
+			if(itemList!= null){
+				setListAdapter(new ArrayAdapter<Item>(getActivity(), android.R.layout.simple_list_item_activated_1, itemList));
+				
+				// Check to see if we have a frame in which to embed the details
+				// fragment directly in the containing UI.
+				View detailsFrame = getActivity().findViewById(R.id.details);
+				mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
+	
+				if (mDualPane) {
+					// In dual-pane mode, the list view highlights the selected item.
+					getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+					// Make sure our UI is in the correct state.
+					//showDetails(mCurCheckPosition);
+				}
 			}
 		}
 		
