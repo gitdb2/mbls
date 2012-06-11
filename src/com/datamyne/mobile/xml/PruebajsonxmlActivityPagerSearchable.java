@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -40,6 +41,11 @@ import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.IRestTradeProfileClient;
 import com.datamyne.mobile.providers.ProfileProvider;
 import com.datamyne.mobile.providers.RestTradeProfileClient2;
+import com.steema.teechart.TChart;
+import com.steema.teechart.drawing.Color;
+import com.steema.teechart.styles.Bar;
+import com.steema.teechart.styles.Series;
+import com.steema.teechart.themes.ThemesList;
 
 
 
@@ -147,61 +153,7 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		
 	}
 
-	public static class Item implements Parcelable{
-		String code;
-		String name;
-		public String getCode() {
-			return code;
-		}
-		public void setCode(String code) {
-			this.code = code;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public Item() {
-			super();
-			// TODO Auto-generated constructor stub
-		}
-		public Item(String code, String name) {
-			super();
-			this.code = code;
-			this.name = name;
-		}
-		@Override
-		public String toString() {
-			return name;
-		}
-		public int describeContents() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-		public void writeToParcel(Parcel dest, int flags) {
-			dest.writeString(code);
-			dest.writeString(name);
-		}
 	
-
-	     public static final Parcelable.Creator<Item> CREATOR
-	             = new Parcelable.Creator<Item>() {
-	         public Item createFromParcel(Parcel in) {
-	             return new Item(in);
-	         }
-
-	         public Item[] newArray(int size) {
-	             return new Item[size];
-	         }
-	     };
-	     
-	     private Item(Parcel in) {
-	        this.code = in.readString();
-			this.name = in.readString();
-	     }
-		
-	}
 	
 	
 	/**
@@ -378,25 +330,58 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 				return null;
 			}
 			
+			//container.removeAllViews();
+			
+			View layout = inflater.inflate(R.layout.tab1, null);
+			
+			
 			String localBasePath = getActivity().getExternalFilesDir(null).getPath();
-			System.out.println(localBasePath);
+//			System.out.println(localBasePath);
 			
-			
-			
-			ScrollView scroller = new ScrollView(getActivity());
-			TextView text = new TextView(getActivity());
-			int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-					4, getActivity().getResources().getDisplayMetrics());
-			text.setPadding(padding, padding, padding, padding);
-			scroller.addView(text);
+		
+	
+
+//			ScrollView scroller = new ScrollView(getActivity());
+//			layout.addView(scroller);
+//			TextView text = new TextView(getActivity());
+//			int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+//					4, getActivity().getResources().getDisplayMetrics());
+//			text.setPadding(padding, padding, padding, padding);
+//			scroller.addView(text);
 			IProfileProvider profileProvider 	= new ProfileProvider();
 			boolean showDialog = !profileProvider.checkFileExists(localBasePath, getBundledType(), getBundledId());
 			
+			TextView text = (TextView) layout.findViewById(R.id.textViewData);
+			
 			new HttpClientTask2(this.getActivity(), text, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
 			
-			return scroller;
+			return layout;
 		}  
 		
+//		TChart chart = new TChart(getActivity());
+//	
+//
+//		chart.getPanel().setBorderRound(7);
+//		chart.getAspect().setView3D(false);
+//
+//		//tema 1
+//		ThemesList.applyTheme(chart.getChart(), 1);
+//
+//		//piechart
+//		chart.removeAllSeries();
+//		try {
+//
+//			Series bar = new Bar(chart.getChart());
+//			chart.getAxes().getBottom().setIncrement(1);
+//			bar.add(123, "Apples", Color.red);
+//			bar.add(456, "Oranges", Color.ORANGE);
+//			bar.add(321, "Kiwis", Color.green);
+//			bar.add(78, "Bananas", Color.yellow);
+//			layout.addView(chart);
+//		} catch (IllegalArgumentException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
 	} 
 	
 	public static class HttpClientTask2 extends AsyncTask<String, Float, String> {
