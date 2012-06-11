@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -101,7 +103,11 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 				finish();
 				return;
 			}
-
+			
+			ActionBar actionBar = getActionBar();
+			actionBar.show();
+			actionBar.setDisplayHomeAsUpEnabled(true);
+			
 			setContentView(R.layout.view_pager2_details);
 			if (savedInstanceState == null) {
 				// During initial setup, plug in the details fragment.
@@ -121,6 +127,23 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 				
 			}
 		}
+		
+		
+		@Override
+		public boolean onOptionsItemSelected(MenuItem item) {
+		    switch (item.getItemId()) {
+		        case android.R.id.home:
+		            // app icon in action bar clicked; go home
+		            Intent intent = new Intent(this, PruebajsonxmlActivityPagerSearchable.class);
+		            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		            startActivity(intent);
+		            return true;
+		        default:
+		            return super.onOptionsItemSelected(item);
+		    }
+		}
+		
+		
 	}
 
 	public static class Item implements Parcelable{
