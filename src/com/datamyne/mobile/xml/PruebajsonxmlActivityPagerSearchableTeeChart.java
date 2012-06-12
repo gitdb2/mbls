@@ -1,9 +1,6 @@
 package com.datamyne.mobile.xml;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
@@ -15,7 +12,6 @@ import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,8 +27,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebSettings.PluginState;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -55,7 +49,7 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 
 	private static final int NUMBER_OF_PAGES = 6;
 	private SearchView searchView;
-	private Context context;
+
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,12 +58,33 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 		
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
-		context = this; 
+
+		ActionBar actionBar = getActionBar();
+		actionBar.show();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		
+		
 		searchView = (SearchView) findViewById(R.id.searchViewCompany);
 		searchView.setIconifiedByDefault(false);
 		searchView.setOnQueryTextListener(this);
 		
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case android.R.id.home:
+//	             app icon in action bar clicked; go home
+	            Intent intent = new Intent(this, SearchBoxActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	        	//finish();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	
 	
 	private static class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {  
 		String id;
@@ -121,15 +136,7 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 			
 			setContentView(R.layout.view_pager2_details);
 			if (savedInstanceState == null) {
-				// During initial setup, plug in the details fragment.
-//				PageFragment details = new PageFragment();
-//				
-//				Bundle args = getIntent().getExtras();
-//				args.putInt("page", 0);
-//				
-//				details.setArguments(args);
-//				getSupportFragmentManager().beginTransaction().add(android.R.id.content, details).commit();
-				
+
 				String id = getIntent().getExtras().getString("id");
 				ViewPager details = (ViewPager) findViewById(R.id.viewPager);
  
