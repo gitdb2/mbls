@@ -17,6 +17,7 @@ public class AboutActivity extends Activity {
 		ActionBar actionBar = getActionBar();
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setLogo(R.drawable.title_home_default);
 	}
 	
 	@Override

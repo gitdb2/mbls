@@ -58,6 +58,7 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		ActionBar actionBar = getActionBar();
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setLogo(R.drawable.title_home_default);
 		
 		searchView = (SearchView) findViewById(R.id.searchViewCompany);
 		searchView.setIconifiedByDefault(false);
@@ -120,6 +121,11 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 			setContentView(R.layout.view_pager2_details);
 			
+			ActionBar actionBar = getActionBar();
+	        actionBar.show();
+	        actionBar.setDisplayHomeAsUpEnabled(true);
+	        actionBar.setLogo(R.drawable.title_home_default);
+			
 			if (savedInstanceState == null) {
 				String id = getIntent().getExtras().getString("id");
 				ViewPager details = (ViewPager) findViewById(R.id.viewPager);
@@ -128,6 +134,19 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 				details.setAdapter(mMyFragmentPagerAdapter);  
 			}
 		}
+		
+		@Override
+	    public boolean onOptionsItemSelected(MenuItem item) {
+	        switch (item.getItemId()) {
+	            case android.R.id.home:
+	                 Intent intent = new Intent(this, HomeActivity.class);
+	                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	                 startActivity(intent);
+	                return true;
+	            default:
+	                return super.onOptionsItemSelected(item);
+	        }
+	    }
 		
 	}
 
