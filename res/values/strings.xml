@@ -2,9 +2,38 @@
 <resources>
 
     <string name="hello">Hello World, PruebajsonxmlActivity!</string>
-    <string name="app_name">Pruebajsonxml</string>
     <string name="buscar">Buscar</string>
     <string name="pager">Pager</string>
     <string name="query_hint">Search Consignees</string>
+    
+    
+    <string name="app_name">Datamyne Mobile</string>
+    <string name="description_logo">asdadasdadasd</string>
+
+    <string name="description_about">About</string>
+    <string name="description_home">Home</string>
+    <string name="description_search">Search</string>
+    <string name="description_my_account">My Account</string>
+
+    <string name="title_about">About</string>
+    <string name="title_home">Home</string>
+    <string name="title_search">Search</string>
+    <string name="title_my_account">My Account</string>
+    <string name="title_trade_profiles">Trade Profiles</string>
+    <string name="title_feature">Feature</string>
+
+    <string name="default_intro">Intro default</string>
+
+    <string name="about_intro">Intro del about</string>
+    <string name="search_intro">Intro del search</string>
+    <string name="feature_intro">Intro de un feature</string>
+    <string name="my_account_intro">Intro de My Account</string>
+    <string name="trade_profiles_intro">Intro de Trade Profiles</string>
+    <string name="txt_radio_consignee">Consignees</string>
+    <string name="txt_radio_shipper">Shippers</string>
+    <string name="btn_query_shipper">Shipper</string>
+    <string name="btn_query_consignee">Consignee</string>
+    <string name="txt_btn_query_consignee">Consignees</string>
+    <string name="txt_btn_query_shipper">Shippers</string>
 
 </resources>
