@@ -22,7 +22,10 @@
 		<activity android:name="PruebajsonxmlActivityPager$DetailsActivity"></activity>
 		<activity android:name="PruebajsonxmlActivityPagerSearchable$DetailsActivity"></activity>
 		
-		<activity android:name="PruebajsonxmlActivityPagerSearchable">
+		<activity 
+		    android:name="PruebajsonxmlActivityPagerSearchable"
+		    android:label="@string/title_trade_profiles">
+		    
 		    <intent-filter>
             	<action android:name="android.intent.action.SEARCH" />
         	</intent-filter>
@@ -43,18 +46,15 @@
         
         <activity
             android:name="com.datamyne.mobile.dashboard.AboutActivity"
-            android:label="@string/title_about"
-            android:theme="@style/Theme.D1" />
+            android:label="@string/title_about" />
         
         <activity
             android:name="com.datamyne.mobile.dashboard.MyAccountActivity"
-            android:label="@string/title_my_account"
-            android:theme="@style/Theme.D1" />
+            android:label="@string/title_my_account" />
         
         <activity
             android:name="com.datamyne.mobile.dashboard.FeatureActivity"
-            android:label="@string/title_feature"
-            android:theme="@style/Theme.D1" />
+            android:label="@string/title_feature" />
 		
     </application>
 

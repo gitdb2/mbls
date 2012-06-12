@@ -16,8 +16,12 @@
 
 package com.datamyne.mobile.dashboard;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
+import com.datamyne.mobile.xml.PruebajsonxmlActivityPagerSearchable;
 import com.datamyne.mobile.xml.R;
 
 /**
@@ -25,11 +29,27 @@ import com.datamyne.mobile.xml.R;
  *
  */
 
-public class HomeActivity extends DashboardActivity {
+public class HomeActivity extends Activity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+	}
+	
+	public void onClickAbout(View v) {
+		startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+	}
+	
+	public void onClickMyAccount(View v) {
+		startActivity(new Intent(getApplicationContext(), MyAccountActivity.class));
+	}
+	
+	public void onClickTradeProfiles(View v) {
+		startActivity(new Intent(getApplicationContext(), PruebajsonxmlActivityPagerSearchable.class));
+	}
+	
+	public void onClickFeature(View v) {
+		startActivity(new Intent(getApplicationContext(), FeatureActivity.class));
 	}
 
 	protected void onDestroy() {

@@ -22,15 +22,11 @@
     <string name="title_trade_profiles">Trade Profiles</string>
     <string name="title_feature">Feature</string>
 
-    <string name="default_intro">Intro default</string>
-
-    <string name="about_intro">Intro del about</string>
-    <string name="search_intro">Intro del search</string>
-    <string name="feature_intro">Intro de un feature</string>
-    <string name="my_account_intro">Intro de My Account</string>
-    <string name="trade_profiles_intro">Intro de Trade Profiles</string>
-    <string name="txt_radio_consignee">Consignees</string>
-    <string name="txt_radio_shipper">Shippers</string>
+    <string name="about_intro">This is the About content</string>
+    <string name="search_intro">This is the Search content</string>
+    <string name="feature_intro">This is a feature</string>
+    <string name="my_account_intro">This is My Account</string>
+    <string name="trade_profiles_intro">This is the Trade Profiles</string>
     <string name="btn_query_shipper">Shipper</string>
     <string name="btn_query_consignee">Consignee</string>
     <string name="txt_btn_query_consignee">Consignees</string>

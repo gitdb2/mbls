@@ -36,7 +36,6 @@ import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.datamyne.mobile.dashboard.DashboardActivity;
 import com.datamyne.mobile.dashboard.HomeActivity;
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.IRestTradeProfileClient;
