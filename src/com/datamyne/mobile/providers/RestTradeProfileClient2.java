@@ -74,7 +74,7 @@ public class RestTradeProfileClient2  implements IRestTradeProfileClient{
 	
 			String q 	= URLEncoder.encode(target, "UTF-8");
 						URL url 	= new URL("http://200.40.197.173:8082/system/rest/autocomplete?" +
-								"Base=usa_mid12&idComponent=402&compositeid=402&targetTerm="+q);
+								"Base=usa_hid12&idComponent=402&compositeid=402&targetTerm="+q);
 
 			/*
 			{"list": [{

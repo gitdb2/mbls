@@ -183,10 +183,9 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 				mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
 				itemList= savedInstanceState.getParcelableArrayList("itemList");
 				viewing =  savedInstanceState.getBoolean("viewing", false);
-				if(viewing){
+				if(viewing){ //si ese estaba mirando un detalle lo muestro
 					showDetails(mCurCheckPosition);
 				}
-//				displayData();
 			}else{
 				new HttpClientTask(this).execute(getArguments().getString("target"), "consignee");
 			}
@@ -213,7 +212,7 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 					// In dual-pane mode, the list view highlights the selected item.
 					getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 					// Make sure our UI is in the correct state.
-					if(viewing){
+					if(viewing){ //si ese estaba mirando un detalle lo muestro
 						showDetails(mCurCheckPosition);
 					}
 				}
