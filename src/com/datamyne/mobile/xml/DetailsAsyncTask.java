@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.ProfileProvider;
+import com.datamyne.mobile.xml.ChartCreator.ChartCreatorException;
 
 
 public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
@@ -86,7 +87,12 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 					break;
 				case 1:
 					ret = tmp.getJSONObject("totalMonthsTab").toString();
-					graficaLayout.addView(chartCreator.crearGraficaMonthly(obj));
+					try {
+						graficaLayout.addView(chartCreator.crearGraficaMonthly(tmp.getJSONObject("totalMonthsTab")));
+					} catch (ChartCreatorException e) {
+						e.printStackTrace();
+						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
+					}
 					break;
 				case 2:
 				{
