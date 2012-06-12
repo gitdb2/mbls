@@ -72,22 +72,20 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 	}
 	
 	private static class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {  
-		Context context;
 		String id;
 		String type;
 	
 		int selectedIndex;
-		public MyFragmentPagerAdapter(Context context, FragmentManager fm, String id, String type, int selectedIndex) {  
+		public MyFragmentPagerAdapter( FragmentManager fm, String id, String type, int selectedIndex) {  
 			super(fm);
 			this.id = id;
-			this.context = context;
 			this.type = type;
 			this.selectedIndex = selectedIndex;
 
 		}  
 
 		public Fragment getItem(int page) {  
-			return PageFragment.newInstance(context,id, type, page, selectedIndex);
+			return PageFragment.newInstance(id, type, page, selectedIndex);
 
 		}  
 
@@ -135,7 +133,7 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 				String id = getIntent().getExtras().getString("id");
 				ViewPager details = (ViewPager) findViewById(R.id.viewPager);
  
-				MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter( this, getSupportFragmentManager(), id, "consignee", 0);
+				MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), id, "consignee", 0);
 				details.setAdapter(mMyFragmentPagerAdapter);  
 				
 			}
@@ -173,28 +171,22 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 		boolean mDualPane;
 		int mCurCheckPosition = 0;
 		ArrayList<Item> itemList;
-		Context context;
+		boolean viewing = false;
 		
-		public TitlesFragment(){
-			super();
-		}
-		public TitlesFragment(Context context) {
-			super();
-			this.context = context;
-		}
-
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
-			if(context == null){
-				context = getActivity();
-				System.out.println("hace get activity");
-			}
+			
 			
 			if (savedInstanceState != null) {
 				// Restore last state for checked position.
 				mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
 				itemList= savedInstanceState.getParcelableArrayList("itemList");
+				viewing =  savedInstanceState.getBoolean("viewing", false);
+				if(viewing){
+					showDetails(mCurCheckPosition);
+				}
+//				displayData();
 			}else{
 				new HttpClientTask(this).execute(getArguments().getString("target"), "consignee");
 			}
@@ -221,7 +213,9 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 					// In dual-pane mode, the list view highlights the selected item.
 					getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 					// Make sure our UI is in the correct state.
-					//showDetails(mCurCheckPosition);
+					if(viewing){
+						showDetails(mCurCheckPosition);
+					}
 				}
 			}
 		}
@@ -230,12 +224,15 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 		public void onSaveInstanceState(Bundle outState) {
 			super.onSaveInstanceState(outState);
 			outState.putInt("curChoice", mCurCheckPosition);
+			outState.putBoolean("viewing", viewing);
+			
 			outState.putParcelableArrayList("itemList", itemList);
 		}
 
 		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
 			//Item item = (Item)l.getAdapter().getItem(position);
+			viewing = true;
 			showDetails(position);
 		}
 
@@ -262,7 +259,7 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 						if (details != null){// || details.getBundleIndex() != index) {
 
 							MyFragmentPagerAdapter mMyFragmentPagerAdapter = 
-									new MyFragmentPagerAdapter(this.context, getFragmentManager(), item.getCode(), "consignee", index);  
+									new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), "consignee", index);  
 							details.setAdapter(mMyFragmentPagerAdapter);  
 						
 
@@ -289,11 +286,11 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 	}
 
 	public static class PageFragment extends Fragment {  
-		Context context;
-		public static PageFragment newInstance(Context context, String id, String type, int page, int index) {
+	
+		public static PageFragment newInstance(String id, String type, int page, int index) {
 			
 			PageFragment pageFragment = new PageFragment();
-			pageFragment.context = context;
+
 			
 			Bundle args = new Bundle();
 			args.putString("type", type);
@@ -362,7 +359,7 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 			grafica.addView(crearGrafica());
 			TextView text = (TextView) layout.findViewById(R.id.textViewData);
 			
-			new HttpClientTask2(context, text, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
+			new HttpClientTask2(getActivity(), text, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
 			
 			
 //			replaceView(layout);
@@ -382,7 +379,7 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 		private View crearGrafica(){
 
 		//	LinearLayout group = (LinearLayout) layout.findViewById(R.id.linearLayoutTchart);
-			TChart chart = new TChart(context);
+			TChart chart = new TChart(getActivity());
 		//	group.addView(chart);
 
 			chart.getPanel().setBorderRound(7);
@@ -420,12 +417,13 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 		private View view;
 		boolean showDialog= true;
 		int page = 0;
+		Context context;
 		public HttpClientTask2(Context context, TextView view, boolean showDialog, int page) {
 			super();
 			this.view = view;
 			this.showDialog = showDialog;  
 			this.page = page;
-			
+			this.context = context;
 			if(showDialog){
 				dialog = new ProgressDialog(context);
 		        dialog.setMessage("Descargando...");
@@ -639,7 +637,7 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 			lastQuery = query;
 			String baseDir = getExternalFilesDir(null).getPath();
 	
-			TitlesFragment titles = new TitlesFragment(this.context);
+			TitlesFragment titles = new TitlesFragment();
 			
 			Bundle args = new Bundle();
 			args.putString("target", query);
