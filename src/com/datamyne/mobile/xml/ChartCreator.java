@@ -137,6 +137,34 @@ public class ChartCreator {
 	
 	public View crearGraficaMulti(JSONObject data){
 
+//		"tabDimension":[
+//		            	{	
+//		            		"dimensionName":"partner",
+//		            		"dimensionItemList":
+//		            			{	"dimensionData":
+//		            						[
+//		            							{
+//		            							"name":"UNION DE BANANEROS ECUATORIANOS S A (EC)","code":"1583080","total":"24854",
+//		            							"monthlyValueList":
+//		            									{"simpleMonthData":
+//		            												[
+//		            													{"year":"2011","month":"4","value":"2407"},
+//		            													{"year":"2011","month":"5","value":"2937.67"},
+//		            													{"year":"2011","month":"6","value":"2006"},
+//		            													{"year":"2011","month":"7","value":"2487"},
+//		            													{"year":"2011","month":"8","value":"1594"},
+//		            													{"year":"2011","month":"9","value":"1207.67"},
+//		            													{"year":"2011","month":"10","value":"1849"},
+//		            													{"year":"2011","month":"11","value":"2359"},
+//		            													{"year":"2011","month":"12","value":"1433"},
+//		            													{"year":"2012","month":"1","value":"2115"},
+//		            													{"year":"2012","month":"2","value":"1998"},
+//		            													{"year":"2012","month":"3","value":"2460.67"}
+//		            												]
+//		            									}
+//		            								},
+		
+		
 		//	LinearLayout group = (LinearLayout) layout.findViewById(R.id.linearLayoutTchart);
 			TChart chart = new TChart(context);
 		//	group.addView(chart);
