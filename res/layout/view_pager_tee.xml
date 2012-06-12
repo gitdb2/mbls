@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+<!--     <fragment class="com.datamyne.mobile.xml.PruebajsonxmlActivity$TitlesFragment" -->
+<!--             android:id="@+id/titles" -->
+<!--             android:layout_width="match_parent" -->
+<!-- 			 android:layout_height="match_parent" /> -->
+
+
+<!--  <FrameLayout  -->
+<!--             android:id="@+id/titles"  -->
+<!--             android:layout_weight="1" -->
+<!--             android:layout_width="match_parent"  -->
+<!--             android:layout_height="match_parent"> -->
+
+<!--  </FrameLayout> -->
+ 
+      <SearchView
+            android:id="@+id/searchViewCompany"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:iconifiedByDefault="false"
+            android:queryHint="@+string/query_hint" >
+        </SearchView>
+
+        <FrameLayout
+            android:id="@+id/titles"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="100dp" >
+
+        </FrameLayout>
+
+</FrameLayout>

@@ -53,4 +53,11 @@ public class SearchBoxActivity extends Activity {
 		startActivity(intent);
 	}
 	
+	public void chartsTee(View v){
+		Intent intent = new Intent();
+		intent.setClass(this, PruebajsonxmlActivityPagerSearchableTeeChart.class);
+		startActivity(intent);
+	}
+	
+	
 }

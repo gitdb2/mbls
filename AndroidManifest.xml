@@ -42,7 +42,8 @@
 		<activity android:name="PruebajsonxmlActivityPager$DetailsActivity"></activity>
 		<activity android:name="GraficaViewActivity"></activity>
 		
-		
+		<activity android:name="PruebajsonxmlActivityPagerSearchableTeeChart"></activity>
+		<activity android:name="PruebajsonxmlActivityPagerSearchableTeeChart$DetailsActivity"></activity>
 		
 		<activity android:name="PruebajsonxmlActivityPagerSearchable">
 		    <intent-filter>

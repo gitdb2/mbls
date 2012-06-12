@@ -1,6 +1,13 @@
 package com.datamyne.mobile.xml;
 
+import com.steema.teechart.TChart;
+import com.steema.teechart.drawing.Color;
+import com.steema.teechart.styles.Bar;
+import com.steema.teechart.styles.Series;
+import com.steema.teechart.themes.ThemesList;
+
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -43,18 +50,53 @@ public class CustomPageAdapter extends PagerAdapter{
 		LinearLayout linearLayout = new LinearLayout(context);
 		linearLayout.setOrientation(1);
 		
-		final TextView textView = new TextView(context);
-		textView.setText("Position: " + position);
 		
 		
+		chart = new TChart(context);
+		linearLayout.addView(chart);
 		
-		linearLayout.addView(textView);
+		chart.getPanel().setBorderRound(7);
+		chart.getAspect().setView3D(false);
+
+		ThemesList.applyTheme(chart.getChart(), 1);
+
+		chart.removeAllSeries();
+		
+		try {
+			
+			Series bar = new Bar(chart.getChart());
+			chart.getAxes().getBottom().setIncrement(1);
+			bar.add(123, "Apples", Color.red);
+			bar.add(456, "Oranges", Color.ORANGE);
+			bar.add(321, "Kiwis", Color.green);
+			bar.add(78, "Bananas", Color.yellow);
+
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		
+//		final TextView textView = new TextView(context);
+//		textView.setText("Position: " + position);
+//		
+//		
+//		
+//		linearLayout.addView(textView);
 		
 		
 		((ViewPager) collection).addView(linearLayout,0);
 		return linearLayout;
 	}
 
+	
+	private TChart chart;
+	private Series series;
+	
+	
+	
+	
+	
 	@Override
 	public boolean isViewFromObject(View view, Object object) {
 		 return view==((LinearLayout)object);
