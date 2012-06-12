@@ -1,8 +1,5 @@
 package com.datamyne.mobile.dashboard;
 
-import com.datamyne.mobile.xml.PruebajsonxmlActivityPagerSearchable;
-import com.datamyne.mobile.xml.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.datamyne.mobile.xml.PruebajsonxmlActivityPagerSearchable;
 
 /**
  * This is the base class for activities in the dashboard application. It

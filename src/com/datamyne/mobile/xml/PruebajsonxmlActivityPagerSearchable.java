@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -26,20 +27,21 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
+import com.datamyne.mobile.dashboard.DashboardActivity;
+import com.datamyne.mobile.dashboard.HomeActivity;
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.IRestTradeProfileClient;
 import com.datamyne.mobile.providers.ProfileProvider;
 import com.datamyne.mobile.providers.RestTradeProfileClient2;
-
-
 
 public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity implements SearchView.OnQueryTextListener {
 
@@ -54,11 +56,27 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 		 
+		ActionBar actionBar = getActionBar();
+        actionBar.show();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+		
 		searchView = (SearchView) findViewById(R.id.searchViewCompany);
 		searchView.setIconifiedByDefault(false);
 		searchView.setOnQueryTextListener(this);
-		
 	}
+	
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                 Intent intent = new Intent(this, HomeActivity.class);
+                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                 startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 	
 	private static class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {  
 
@@ -88,12 +106,11 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 	 */
 
 	public static class DetailsActivity extends FragmentActivity{
-
 		
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-
+			
 			if (getResources().getConfiguration().orientation
 					== Configuration.ORIENTATION_LANDSCAPE) {
 				// If the screen is now in landscape mode, we can show the
@@ -103,24 +120,16 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 			}
 
 			setContentView(R.layout.view_pager2_details);
+			
 			if (savedInstanceState == null) {
-				// During initial setup, plug in the details fragment.
-//				PageFragment details = new PageFragment();
-//				
-//				Bundle args = getIntent().getExtras();
-//				args.putInt("page", 0);
-//				
-//				details.setArguments(args);
-//				getSupportFragmentManager().beginTransaction().add(android.R.id.content, details).commit();
-				
 				String id = getIntent().getExtras().getString("id");
 				ViewPager details = (ViewPager) findViewById(R.id.viewPager);
  
 				MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), id, "consignee", 0);
 				details.setAdapter(mMyFragmentPagerAdapter);  
-				
 			}
 		}
+		
 	}
 
 	public static class Item implements Parcelable{
@@ -178,7 +187,6 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 	     }
 		
 	}
-	
 	
 	/**
 	 * This is the "top-level" fragment, showing a list of items that the
@@ -483,7 +491,6 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 	}
 	
-	
 	/**
 	 * Realiza la busqueda de empresas
 	 * @author rodrigo
@@ -587,12 +594,10 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 	}
 
-
 	public boolean onQueryTextChange(String newText) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	private String lastQuery = null;
 	public boolean onQueryTextSubmit(String query) {

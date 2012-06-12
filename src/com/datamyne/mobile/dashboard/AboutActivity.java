@@ -1,8 +1,8 @@
 package com.datamyne.mobile.dashboard;
 
-import com.datamyne.mobile.xml.R;
-
 import android.os.Bundle;
+
+import com.datamyne.mobile.xml.R;
 
 /**
  * This is the About activity in the dashboard application. It displays some
