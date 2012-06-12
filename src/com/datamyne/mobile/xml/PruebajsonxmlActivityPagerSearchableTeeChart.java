@@ -52,8 +52,16 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 
 	
 	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		System.out.println("RESUME fragmentacrtivity");
+	}
+	
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		System.out.println("CREATE");
 		setContentView(R.layout.view_pager_tee);
 		
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -139,7 +147,7 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 
 				String id = getIntent().getExtras().getString("id");
 				ViewPager details = (ViewPager) findViewById(R.id.viewPager);
- 
+			
 				MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), id, "consignee", 0);
 				details.setAdapter(mMyFragmentPagerAdapter);  
 				
@@ -184,7 +192,7 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
 			
-			
+			System.out.println("onActivityCreated");
 			if (savedInstanceState != null) {
 				// Restore last state for checked position.
 				mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
@@ -199,11 +207,24 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 		
 		}
 
+		
+		@Override
+		public void onResume() {
+			// TODO Auto-generated method stub
+			super.onResume();
+			try {
+				displayData();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		@Override
 		public void onStart() {
 			// TODO Auto-generated method stub
 			super.onStart();
-			displayData();
+			
 		}
 		
 		public void displayData(){
@@ -341,7 +362,7 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 			}
 
 			
-			View layout = inflater.inflate(R.layout.tab2, null);
+			ViewGroup layout = (ViewGroup)inflater.inflate(R.layout.tab2, null);
 			
 			
 			String localBasePath = getActivity().getExternalFilesDir(null).getPath();
@@ -360,13 +381,14 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 			IProfileProvider profileProvider 	= new ProfileProvider();
 			boolean showDialog = !profileProvider.checkFileExists(localBasePath, getBundledType(), getBundledId());
 			
+//			
+//			LinearLayout grafica = (LinearLayout) layout.findViewById(R.id.linearLayoutTChart);
+//			grafica.addView(crearGrafica());
+//			TextView text = (TextView) layout.findViewById(R.id.textViewData);
+//			
+		//	new HttpClientTask2(getActivity(), text, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
 			
-			LinearLayout grafica = (LinearLayout) layout.findViewById(R.id.linearLayoutTChart);
-			grafica.addView(crearGrafica());
-			TextView text = (TextView) layout.findViewById(R.id.textViewData);
-			
-			new HttpClientTask2(getActivity(), text, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
-			
+			new DetailsAsyncTask(getActivity(), layout, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
 			
 //			replaceView(layout);
 			return layout;

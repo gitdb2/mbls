@@ -8,6 +8,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.datamyne.mobile.providers.IProfileProvider;
@@ -16,23 +18,27 @@ import com.datamyne.mobile.providers.ProfileProvider;
 
 public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 
-	//private IRestTradeProfileClient client 		= new RestTradeProfileClient();
 	private IProfileProvider profileProvider 	= new ProfileProvider();
 	private ProgressDialog dialog;
-	private View view;
+	private ViewGroup view;
 	boolean showDialog= true;
 	int page = 0;
 	Context context;
-	public DetailsAsyncTask(Context context, TextView view, boolean showDialog, int page) {
+	ChartCreator chartCreator; 
+	
+	public DetailsAsyncTask(Context context, ViewGroup container, boolean showDialog, int page) {
 		super();
-		this.view = view;
+		this.view = container;
 		this.showDialog = showDialog;  
 		this.page = page;
 		this.context = context;
+		this.chartCreator = new ChartCreator(context);
+		
+		
 		if(showDialog){
 			dialog = new ProgressDialog(context);
-	        dialog.setMessage("Descargando...");
-	        dialog.setTitle("Progreso");
+	        dialog.setMessage("Please wait...");
+	        dialog.setTitle("Connecting with server");
 	        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 	        dialog.setCancelable(false);
 		}
@@ -58,11 +64,74 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 		if(showDialog){
 			dialog.dismiss();
 		}
-		((TextView)view).setText(getPageData(result));	
-		//titlesFragment.displayData();
+		writeData(result);
+
 	}
 	
 	
+	private void writeData(String payload) {
+		
+		LinearLayout graficaLayout = (LinearLayout) view.findViewById(R.id.linearLayoutTChart);
+		TextView text = (TextView) view.findViewById(R.id.textViewData);
+		
+		String ret  = "";
+		if(payload!=null && !payload.trim().isEmpty()){
+			try {
+				JSONObject obj = new JSONObject(payload);
+				JSONObject tmp = obj.getJSONObject("tradeProfileContainer");
+				
+				switch (page) {
+				case 0:
+					ret = tmp.getJSONObject("profileTab").toString();
+					break;
+				case 1:
+					ret = tmp.getJSONObject("totalMonthsTab").toString();
+					graficaLayout.addView(chartCreator.crearGraficaMonthly(obj));
+					break;
+				case 2:
+				{
+					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
+					ret = arr.getString(0);
+					graficaLayout.addView(chartCreator.crearGraficaMulti(obj));
+				}
+				break;
+				case 3:
+				{
+					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
+					ret = arr.getString(1);
+					graficaLayout.addView(chartCreator.crearGraficaMulti(obj));
+				
+				}
+				break;
+				case 4:
+				{
+					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
+					ret = arr.getString(2);
+					graficaLayout.addView(chartCreator.crearGraficaMulti(obj));
+				}
+				break;					
+				case 5:
+				{
+					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
+					ret = arr.getString(3);
+					graficaLayout.addView(chartCreator.crearGraficaMulti(obj));
+				}
+				break;
+				default:
+					ret = tmp.getJSONObject("profileTab").toString();	
+					break;
+				}
+				
+				text.setText(ret);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				text.setText("Errorr");
+			}
+		}
+	
+	}
+
 	private String getPageData(String payload){
 		String ret  = "";
 		if(payload!=null && !payload.trim().isEmpty()){
