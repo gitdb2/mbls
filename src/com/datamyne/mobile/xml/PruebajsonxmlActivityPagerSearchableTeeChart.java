@@ -175,7 +175,9 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 		ArrayList<Item> itemList;
 		Context context;
 		
-		
+		public TitlesFragment(){
+			super();
+		}
 		public TitlesFragment(Context context) {
 			super();
 			this.context = context;
@@ -184,7 +186,11 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
-
+			if(context == null){
+				context = getActivity();
+				System.out.println("hace get activity");
+			}
+			
 			if (savedInstanceState != null) {
 				// Restore last state for checked position.
 				mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
