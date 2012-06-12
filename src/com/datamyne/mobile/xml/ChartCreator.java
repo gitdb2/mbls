@@ -103,7 +103,6 @@ public class ChartCreator {
 				String axisX = convertDates("MMM yy", "yyyyMM", entry.getString("year")+entry.getString("month"));// obtenerYYYYMM(entry));
 				double value = entry.getDouble("value");
 				line.add(value, axisX);
-				
 			}
 		} catch (JSONException e) {
 			throw new ChartCreatorException("No Mostrar generar la grafica, error json", e);
