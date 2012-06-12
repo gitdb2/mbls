@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="exit_application">Exit Datamyne Mobile</string>
+    
     <string name="hello">Hello World, PruebajsonxmlActivity!</string>
     <string name="buscar">Buscar</string>
     <string name="pager">Pager</string>

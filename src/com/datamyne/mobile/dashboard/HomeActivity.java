@@ -19,6 +19,8 @@ package com.datamyne.mobile.dashboard;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.datamyne.mobile.xml.PruebajsonxmlActivityPagerSearchable;
@@ -34,6 +36,25 @@ public class HomeActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.add(0, Menu.FIRST, Menu.NONE, R.string.exit_application);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+
+		switch(item.getItemId()) {
+		case (Menu.FIRST):
+			this.finish();
+			return true;
+		}
+		return false;
 	}
 	
 	public void onClickAbout(View v) {
