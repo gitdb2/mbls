@@ -11,7 +11,8 @@ import android.os.Environment;
 import android.util.Log;
 
 
-public class ProfileProvider implements IProfileProvider{
+
+public class ProfileProvider implements IProfileProvider {
 
 	
 	//private IRestTradeProfileClient client = new RestTradeProfileClient();
@@ -99,6 +100,56 @@ public class ProfileProvider implements IProfileProvider{
 		return result;
 	}
 	
+	/**
+	 * Busca un profile completo a partir del tipo y del id y retorna la representacion json del profile
+	 * @param localBasePath
+	 * @param type
+	 * @param id
+	 * @return
+	 */
+	public String loadFullProfile(String localBasePath, String type, String id, String name, ProfilesSQLiteHelper dbHelper){
+		String result ="";
+		
+		File root = new File(localBasePath, type + File.separatorChar + id+ ".json");
+		
+		updateExternalStorageState();
+		try {
+
+			if(mExternalStorageAvailable){
+				String payload = "";
+				if (!root.exists()) {
+					payload = client.getFullProfileJson(type, id);
+					saveToSD(localBasePath, type, id, payload);
+					saveToBD(root.getAbsolutePath(), type, id, name, dbHelper);
+				}else{
+					InputStreamReader isReader = new FileReader(root);
+					BufferedReader reader = new BufferedReader(isReader);
+
+					payload = reader.readLine();
+					reader.close();
+				}
+
+				if(payload!= null && !payload.trim().isEmpty()){
+					result = payload;
+				}else{
+					Log.w("ExternalStorage", "Error reading " + root + " Payload is empty");
+				}
+			}else{
+				Log.w("ExternalStorage", "Error reading " + root + " Payload is empty");
+			}
+		} catch (IOException e) {
+			// Unable to create file, likely because external storage is
+			// not currently mounted.
+			Log.w("ExternalStorage", "Error reading " + root, e);
+		}
+		return result;
+	}
+	
+	private void saveToBD(String localBasePath, String type, String id, String name, ProfilesSQLiteHelper dbHelper) {
+		IDatabaseProfileProvider dbProvider = new DataBaseProfileProvider();
+		dbProvider.saveDownloadedProfile(localBasePath, type, id, name, dbHelper);
+	}
+
 	/**
 	 * Guarda en la SD el payload	
 	 * @param localBasePath

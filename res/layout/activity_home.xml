@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/db1_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="6dip" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/home_btn_my_account"
+                style="@style/HomeButton"
+                android:drawableTop="@drawable/home_button1"
+                android:onClick="onClickMyAccount"
+                android:text="@string/title_my_account" />
+
+            <Button
+                android:id="@+id/home_btn_trade_profiles"
+                style="@style/HomeButton"
+                android:drawableTop="@drawable/home_button2"
+                android:onClick="onClickTradeProfiles"
+                android:text="@string/title_trade_profiles" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/home_btn_feature3"
+                style="@style/HomeButton"
+                android:drawableTop="@drawable/home_button3"
+                android:onClick="onClickFeature"
+                android:text="@string/title_feature" />
+
+            <Button
+                android:id="@+id/home_btn_feature4"
+                style="@style/HomeButton"
+                android:drawableTop="@drawable/home_button4"
+                android:onClick="onClickFeature"
+                android:text="@string/title_feature" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

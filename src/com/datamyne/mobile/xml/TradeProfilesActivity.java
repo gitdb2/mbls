@@ -1,9 +1,6 @@
 package com.datamyne.mobile.xml;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
@@ -15,10 +12,11 @@ import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -27,34 +25,29 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebSettings.PluginState;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.datamyne.mobile.dashboard.HomeActivity;
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.IRestTradeProfileClient;
 import com.datamyne.mobile.providers.ProfileProvider;
+import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
 import com.datamyne.mobile.providers.RestTradeProfileClient2;
-import com.steema.teechart.TChart;
-import com.steema.teechart.drawing.Color;
-import com.steema.teechart.styles.Bar;
-import com.steema.teechart.styles.Series;
-import com.steema.teechart.themes.ThemesList;
 
-
-
-public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity implements SearchView.OnQueryTextListener {
+public class TradeProfilesActivity extends FragmentActivity implements SearchView.OnQueryTextListener {
 
 	private static final int NUMBER_OF_PAGES = 6;
 	private SearchView searchView;
+	private ProfilesSQLiteHelper dbHelper;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -63,27 +56,60 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
+		
+		dbHelper = new ProfilesSQLiteHelper(this);
 		 
+		ActionBar actionBar = getActionBar();
+        actionBar.show();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setLogo(R.drawable.title_home_default);
+		
 		searchView = (SearchView) findViewById(R.id.searchViewCompany);
 		searchView.setIconifiedByDefault(false);
 		searchView.setOnQueryTextListener(this);
-		
 	}
+	
+	public ProfilesSQLiteHelper getDBHelper() {
+		return dbHelper;
+	}
+	
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                 Intent intent = new Intent(this, HomeActivity.class);
+                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                 startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 	
 	private static class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {  
 
 		String id;
 		String type;
+		String name;
 		int selectedIndex;
+		
 		public MyFragmentPagerAdapter(FragmentManager fm, String id, String type, int selectedIndex) {  
 			super(fm);
 			this.id = id;
 			this.type = type;
 			this.selectedIndex = selectedIndex;
-		}  
+		}
+		
+		public MyFragmentPagerAdapter(FragmentManager fm, String id, String name, String type, int selectedIndex) {  
+			super(fm);
+			this.id = id;
+			this.name = name;
+			this.type = type;
+			this.selectedIndex = selectedIndex;
+		} 
 
 		public Fragment getItem(int page) {  
-			return PageFragment.newInstance(id, type, page, selectedIndex);
+			return PageFragment.newInstance(id, name, type, page, selectedIndex);
 		}  
 
 		@Override  
@@ -98,12 +124,11 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 	 */
 
 	public static class DetailsActivity extends FragmentActivity{
-
 		
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-
+			
 			if (getResources().getConfiguration().orientation
 					== Configuration.ORIENTATION_LANDSCAPE) {
 				// If the screen is now in landscape mode, we can show the
@@ -111,52 +136,93 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 				finish();
 				return;
 			}
+
+			setContentView(R.layout.view_pager2_details);
 			
 			ActionBar actionBar = getActionBar();
-			actionBar.show();
-			actionBar.setDisplayHomeAsUpEnabled(true);
+	        actionBar.show();
+	        actionBar.setDisplayHomeAsUpEnabled(true);
+	        actionBar.setLogo(R.drawable.title_home_default);
 			
-			setContentView(R.layout.view_pager2_details);
 			if (savedInstanceState == null) {
-				// During initial setup, plug in the details fragment.
-//				PageFragment details = new PageFragment();
-//				
-//				Bundle args = getIntent().getExtras();
-//				args.putInt("page", 0);
-//				
-//				details.setArguments(args);
-//				getSupportFragmentManager().beginTransaction().add(android.R.id.content, details).commit();
-				
 				String id = getIntent().getExtras().getString("id");
 				ViewPager details = (ViewPager) findViewById(R.id.viewPager);
  
 				MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), id, "consignee", 0);
 				details.setAdapter(mMyFragmentPagerAdapter);  
-				
 			}
 		}
 		
-		
 		@Override
-		public boolean onOptionsItemSelected(MenuItem item) {
-		    switch (item.getItemId()) {
-		        case android.R.id.home:
-		            // app icon in action bar clicked; go home
-//		            Intent intent = new Intent(this, PruebajsonxmlActivityPagerSearchable.class);
-//		            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//		            startActivity(intent);
-		        	finish();
-		            return true;
-		        default:
-		            return super.onOptionsItemSelected(item);
-		    }
-		}
-		
+	    public boolean onOptionsItemSelected(MenuItem item) {
+	        switch (item.getItemId()) {
+	            case android.R.id.home:
+	                 Intent intent = new Intent(this, HomeActivity.class);
+	                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	                 startActivity(intent);
+	                return true;
+	            default:
+	                return super.onOptionsItemSelected(item);
+	        }
+	    }
 		
 	}
 
+	public static class Item implements Parcelable{
+		String code;
+		String name;
+		public String getCode() {
+			return code;
+		}
+		public void setCode(String code) {
+			this.code = code;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public Item() {
+			super();
+			// TODO Auto-generated constructor stub
+		}
+		public Item(String code, String name) {
+			super();
+			this.code = code;
+			this.name = name;
+		}
+		@Override
+		public String toString() {
+			return name;
+		}
+		public int describeContents() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		public void writeToParcel(Parcel dest, int flags) {
+			dest.writeString(code);
+			dest.writeString(name);
+		}
 	
-	
+
+	     public static final Parcelable.Creator<Item> CREATOR
+	             = new Parcelable.Creator<Item>() {
+	         public Item createFromParcel(Parcel in) {
+	             return new Item(in);
+	         }
+
+	         public Item[] newArray(int size) {
+	             return new Item[size];
+	         }
+	     };
+	     
+	     private Item(Parcel in) {
+	        this.code = in.readString();
+			this.name = in.readString();
+	     }
+		
+	}
 	
 	/**
 	 * This is the "top-level" fragment, showing a list of items that the
@@ -241,28 +307,11 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 						ViewPager details = (ViewPager) getActivity().findViewById(R.id.viewPager);
 				
 						
-						if (details != null){// || details.getBundleIndex() != index) {
-							// Make new fragment to show this selection.
-							//new MyFragmentPagerAdapter(getSupportFragmentManager())
-							
-//							ViewPager mViewPager = (ViewPager) getFragmentManager().findFragmentById(R.id.viewPager);  
-//							mViewPager.setAdapter(new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), "consignee", 0) );  
-
+						if (details != null){
 
 							MyFragmentPagerAdapter mMyFragmentPagerAdapter = 
-									new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), "consignee", index);  
+									new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), item.getName(), "consignee", index);  
 							details.setAdapter(mMyFragmentPagerAdapter);  
-						
-//							
-//							details = PageFragment.newInstance(item.getCode(), "consignee", 0, index);
-//
-//
-//							// Execute a transaction, replacing any existing fragment
-//							// with this one inside the frame.
-//							FragmentTransaction ft = getFragmentManager().beginTransaction();
-//							ft.replace(R.id.viewPager, details);
-//							ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//							ft.commit();
 						}
 
 					} else {
@@ -285,9 +334,10 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		}
 	}
 
-	public static class PageFragment extends Fragment {  
+	public static class PageFragment extends Fragment {
 
-		public static PageFragment newInstance(String id, String type, int page, int index) {
+		public static PageFragment newInstance(String id, String type,
+				int page, int index) {
 
 			PageFragment pageFragment = new PageFragment();
 			Bundle args = new Bundle();
@@ -298,203 +348,103 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 			pageFragment.setArguments(args);
 			return pageFragment;
 		}
+		
+		public static PageFragment newInstance(String id, String name, String type,
+				int page, int index) {
 
-		  public int getBundledIndex() {
-	            return getArguments().getInt("index", 0);
-	        }
-		  public int getBundledPage() {
-	            return getArguments().getInt("page", 0);
-	        }
+			PageFragment pageFragment = new PageFragment();
+			
+			Bundle args = new Bundle();
+			args.putString("type", type);
+			args.putString("id", id);
+			args.putString("name", name);
+			args.putInt("index", index);
+			args.putInt("page", page);
+			
+			pageFragment.setArguments(args);
+			return pageFragment;
+		}
 
-			public String getBundledId(){
-				return getArguments().getString("id");
-			}
-			public String getBundledType(){
-				return getArguments().getString("type");
-			}
+		public int getBundledIndex() {
+			return getArguments().getInt("index", 0);
+		}
 
-		@Override  
-		public void onCreate(Bundle savedInstanceState) {  
-			super.onCreate(savedInstanceState);  
-		}  
+		public int getBundledPage() {
+			return getArguments().getInt("page", 0);
+		}
 
-		@Override  
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
+		public String getBundledId() {
+			return getArguments().getString("id");
+		}
+
+		public String getBundledName() {
+			return getArguments().getString("name");
+		}
+
+		public String getBundledType() {
+			return getArguments().getString("type");
+		}
+
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
 
 			if (container == null) {
 				// We have different layouts, and in one of them this
-				// fragment's containing frame doesn't exist.  The fragment
+				// fragment's containing frame doesn't exist. The fragment
 				// may still be created from its saved state, but there is
 				// no reason to try to create its view hierarchy because it
-				// won't be displayed.  Note this is not needed -- we could
+				// won't be displayed. Note this is not needed -- we could
 				// just run the code below, where we would create and return
 				// the view hierarchy; it would just never be used.
 				return null;
 			}
-			
-			//container.removeAllViews();
-			
-			View layout = inflater.inflate(R.layout.tab1, null);
-			
-			
-			String localBasePath = getActivity().getExternalFilesDir(null).getPath();
-//			System.out.println(localBasePath);
-			
-		
-			WebView mWebView1 = (WebView) layout.findViewById(R.id.webview1);
-		    mWebView1.getSettings().setJavaScriptEnabled(true);
-		    
-		    mWebView1.getSettings().setPluginState(PluginState.ON);
-		   // mWebView1.loadUrl("file:///android_asset/graph_01.swf");
-		    
-		    
-//		    AssetManager assetManager = getActivity().getAssets();
-		    
-		    
-		  
-		      
-		    
-		        
-		    
-		    
-		    StringBuilder sb = new StringBuilder();
 
-		    sb.append("<html>");
-		    sb.append("<head>");
-		    sb.append("<script type='text/javascript' src=\"file:///android_asset/charts/jquery.js\"></script>");
-		    sb.append("<script type='text/javascript' src=\"file:///android_asset/charts/FusionCharts.js\"></script>");
-		    sb.append("<script type='text/javascript' src=\"file:///android_asset/charts/highchartsx.js\"></script>");
-		    
-//		    try {
-//	            InputStream is = assetManager.open("jquery.js");
-//	            int size = is.available();
-//	            byte[] buffer = new byte[size];
-//	            is.read(buffer);
-//	            is.close();
-//	            sb.append("<script>").append(new String(buffer));
-//	            
-//	            
-//	            is = assetManager.open("FusionCharts.js");
-//	            size = is.available();
-//	            buffer = new byte[size];
-//	            is.read(buffer);
-//	            is.close();
-//	            sb.append(new String(buffer));
-//
-//	            is = assetManager.open("highchartsx.js");
-//	            size = is.available();
-//	            buffer = new byte[size];
-//	            is.read(buffer);
-//	            is.close();
-//	            sb.append(new String(buffer));
-//	            
-//	            
-//	            sb.append("</script>");
-//	            
-//	            // Finally stick the string into the text view.
-//	            
-//	        } catch (IOException e) {
-//	            // Should never happen!
-//	            throw new RuntimeException(e);
-//	        }
-//		    
-		    
-		    
-		    sb.append("</head>");
-		    sb.append("<body style='background-color:#ccc;'>");
-		    sb.append("<input type='hidden' id='data' value='<chart caption=\"Total Annual Imports\" subCaption=\"in TEUs\" yAxisMaxValue=\"7313\" bgColor=\"E6E6E6\" bgAlpha=\"100\" baseFontColor=\"000000\" canvasBgAlpha=\"0\" canvasBorderColor=\"FFFFFF\" divLineColor=\"FFFFFF\" divLineAlpha=\"100\" numVDivlines=\"10\" vDivLineisDashed=\"1\" showAlternateVGridColor=\"1\" lineColor=\"4A4A4A\" anchorRadius=\"8\" anchorBgColor=\"00A4D9\" anchorBorderColor=\"FFFFFF\" anchorBorderThickness=\"2\" showValues=\"1\" numberSuffix=\"\" toolTipBgColor=\"406181\" toolTipBorderColor=\"406181\" alternateHGridAlpha=\"5\"><set label=\"Apr11\" value=\"6174\"></set><set label=\"May11\" value=\"7313\"></set><set label=\"Jun11\" value=\"6402\"></set><set label=\"Jul11\" value=\"7099\"></set><set label=\"Aug11\" value=\"5783\"></set><set label=\"Sep11\" value=\"5058\"></set><set label=\"Oct11\" value=\"6631\"></set><set label=\"Nov11\" value=\"6424\"></set><set label=\"Dec11\" value=\"5238\"></set><set label=\"Jan12\" value=\"5491\"></set><set label=\"Feb12\" value=\"5562\"></set><set label=\"Mar12\" value=\"5880\"></set><styles><definition><style name=\"LineShadow\" type=\"shadow\" color=\"333333\" distance=\"6\"></style></definition><application><apply toObject=\"DATAPLOT\" styles=\"LineShadow\"></apply></application>	</styles></chart>'>");	
-		    sb.append("<div id=\"chartdiv_annual_imports\"> FusionCharts. </div>");
-		    sb.append("<script type=\"text/javascript\">");
-		    sb.append("	FusionCharts.setCurrentRenderer('javascript');");	
-		    sb.append("	var charts = new FusionCharts(\"file:///android_asset/charts/Line.swf\", \"chart-annual-imports\", \"460\", \"370\", \"0\", \"0\");");		   
-		    sb.append("	charts.setDataXML($('#data').val());");
-		    sb.append("	charts.render(\"chartdiv_annual_imports\");");
-		    sb.append("</script>");
-		    sb.append("</body></html>");
-		    
-		//    mWebView1.loadData(sb.toString(), "text/html", "UTF-8");
-//		    
-//		    
-		    mWebView1.loadDataWithBaseURL("file:///android_asset/", sb.toString(), "text/html", "UTF-8", null);
-		    //mWebView1.loadUrl("file:///android_asset/charts/tab1.html");
-		//    mWebView1.loadUrl("file:///android_asset/tab1.html");
-		    
-		    
-//			ScrollView scroller = new ScrollView(getActivity());
-//			layout.addView(scroller);
-//			TextView text = new TextView(getActivity());
-//			int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-//					4, getActivity().getResources().getDisplayMetrics());
-//			text.setPadding(padding, padding, padding, padding);
-//			scroller.addView(text);
-			IProfileProvider profileProvider 	= new ProfileProvider();
-			boolean showDialog = !profileProvider.checkFileExists(localBasePath, getBundledType(), getBundledId());
-			
-			TextView text = (TextView) layout.findViewById(R.id.textViewData);
-			
-			new HttpClientTask2(this.getActivity(), text, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
-			
-			
-//			replaceView(layout);
-			return layout;
-		}  
-		
-		
-//		public void replaceView(View layout){
-//			View C = layout.findViewById(R.id.progressBar1Borrar);
-//			ViewGroup parent = (ViewGroup) C.getParent();
-//			int index = parent.indexOfChild(C);
-//			parent.removeView(C);
-//			C = crearGrafica(layout);
-//			parent.addView(C, index);
-//		}
-//
-//		private View crearGrafica(View layout){
-//
-//		//	LinearLayout group = (LinearLayout) layout.findViewById(R.id.linearLayoutTchart);
-//			TChart chart = new TChart(layout.getContext());
-//		//	group.addView(chart);
-//
-//			chart.getPanel().setBorderRound(7);
-//			chart.getAspect().setView3D(false);
-//
-//			//tema 1
-//			ThemesList.applyTheme(chart.getChart(), 1);
-//
-//			//piechart
-//			chart.removeAllSeries();
-//			try {
-//
-//				Series bar = new Bar(chart.getChart());
-//				chart.getAxes().getBottom().setIncrement(1);
-//				bar.add(123, "Apples", Color.red);
-//				bar.add(456, "Oranges", Color.ORANGE);
-//				bar.add(321, "Kiwis", Color.green);
-//				bar.add(78, "Bananas", Color.yellow);
-//			} catch (IllegalArgumentException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			return chart;
-//		}
-		
-	} 
-	
-	
+			String localBasePath = getActivity().getExternalFilesDir(null)
+					.getPath();
+			System.out.println(localBasePath);
+
+			ScrollView scroller = new ScrollView(getActivity());
+			TextView text = new TextView(getActivity());
+			int padding = (int) TypedValue.applyDimension(
+					TypedValue.COMPLEX_UNIT_DIP, 4, getActivity()
+							.getResources().getDisplayMetrics());
+			text.setPadding(padding, padding, padding, padding);
+			scroller.addView(text);
+			IProfileProvider profileProvider = new ProfileProvider();
+			boolean showDialog = !profileProvider.checkFileExists(
+					localBasePath, getBundledType(), getBundledId());
+
+			new HttpClientTask2(this.getActivity(), text, showDialog,
+					getBundledPage()).execute(localBasePath, getBundledType(),
+					getBundledId(), getBundledName());
+
+			return scroller;
+		}
+
+	}
 	
 	public static class HttpClientTask2 extends AsyncTask<String, Float, String> {
 
-		//private IRestTradeProfileClient client 		= new RestTradeProfileClient();
-		private IProfileProvider profileProvider 	= new ProfileProvider();
+		private IProfileProvider profileProvider = new ProfileProvider();
+		private ProfilesSQLiteHelper dbHelper;
+		
 		private ProgressDialog dialog;
 		private View view;
 		boolean showDialog= true;
 		int page = 0;
+		
 		public HttpClientTask2(Context context, TextView view, boolean showDialog, int page) {
 			super();
 			this.view = view;
 			this.showDialog = showDialog;  
 			this.page = page;
+			this.dbHelper = new ProfilesSQLiteHelper(context);
 			
 			if(showDialog){
 				dialog = new ProgressDialog(context);
@@ -507,7 +457,9 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 		@Override
 		protected String doInBackground(String... params) {
-			String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2]);
+			//String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3]);
+			String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3], dbHelper);
+			dbHelper.close();
 			return tmp;
 		}
 
@@ -590,7 +542,6 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 	}
 	
-	
 	/**
 	 * Realiza la busqueda de empresas
 	 * @author rodrigo
@@ -616,6 +567,13 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		protected ArrayList<Item> doInBackground(String... params) {
 			
 			ArrayList<Item> itemList = new ArrayList<Item>();
+			
+			/*
+			ProfilesSQLiteHelper dbHelper = new ProfilesSQLiteHelper(titlesFragment.getActivity());
+			IDatabaseProfileProvider provider = new DataBaseProfileProvider();
+			ArrayList<Item> itemList = provider.loadSavedProfiles(dbHelper);
+			dbHelper.close();
+			*/
 			
 			try {
 				JSONObject searched =  client.searchRemote(params[0], params[1]);
@@ -694,12 +652,10 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 	}
 
-
 	public boolean onQueryTextChange(String newText) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	private String lastQuery = null;
 	public boolean onQueryTextSubmit(String query) {
