@@ -23,7 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.datamyne.mobile.xml.PruebajsonxmlActivityPagerSearchable;
+import com.datamyne.mobile.offline.OfflineProfileList;
 import com.datamyne.mobile.xml.R;
 
 /**
@@ -66,7 +66,8 @@ public class HomeActivity extends Activity {
 	}
 	
 	public void onClickTradeProfiles(View v) {
-		startActivity(new Intent(getApplicationContext(), PruebajsonxmlActivityPagerSearchable.class));
+		//startActivity(new Intent(getApplicationContext(), PruebajsonxmlActivityPagerSearchable.class));
+		startActivity(new Intent(getApplicationContext(), OfflineProfileList.class));
 	}
 	
 	public void onClickFeature(View v) {

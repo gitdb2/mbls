@@ -55,6 +55,10 @@
         <activity
             android:name="com.datamyne.mobile.dashboard.FeatureActivity"
             android:label="@string/title_feature" />
+        
+        <activity
+            android:name="com.datamyne.mobile.offline.OfflineProfileList"
+            android:label="@string/title_trade_profiles" />
 		
     </application>
 
