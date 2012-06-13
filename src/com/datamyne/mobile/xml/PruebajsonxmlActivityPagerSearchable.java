@@ -38,6 +38,8 @@ import android.widget.TextView;
 
 import com.datamyne.mobile.dashboard.HomeActivity;
 import com.datamyne.mobile.offline.ProfilesSQLiteHelper;
+import com.datamyne.mobile.providers.DataBaseProfileProvider;
+import com.datamyne.mobile.providers.IDatabaseProfileProvider;
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.IRestTradeProfileClient;
 import com.datamyne.mobile.providers.ProfileProvider;
@@ -567,6 +569,13 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		protected ArrayList<Item> doInBackground(String... params) {
 			
 			ArrayList<Item> itemList = new ArrayList<Item>();
+			
+			/*
+			ProfilesSQLiteHelper dbHelper = new ProfilesSQLiteHelper(titlesFragment.getActivity());
+			IDatabaseProfileProvider provider = new DataBaseProfileProvider();
+			ArrayList<Item> itemList = provider.loadSavedProfiles(dbHelper);
+			dbHelper.close();
+			*/
 			
 			try {
 				JSONObject searched =  client.searchRemote(params[0], params[1]);
