@@ -89,6 +89,7 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 //					ret = tmp.getJSONObject("profileTab").toString();
 					try {
 						tableLayout.addView(tabCreator.crearTablaTabProfile(tmp.getJSONObject("profileTab")));
+						view.removeView(graficaLayout);
 					}catch (TabTableCreatorException e) {
 						e.printStackTrace();
 						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos

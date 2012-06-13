@@ -20,6 +20,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebSettings.PluginState;
 import android.widget.TableLayout;
@@ -316,6 +317,8 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	public View crearTablaTabProfile (JSONObject data) throws TabTableCreatorException {
 			
 		WebView mWebView1 = new WebView(context);
+		mWebView1.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+		
 	    mWebView1.getSettings().setJavaScriptEnabled(true);
 	    
 	    mWebView1.getSettings().setPluginState(PluginState.ON);
@@ -327,7 +330,7 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	    sb.append("<script type='text/javascript' src=\"file:///android_asset/charts/jquery.js\"></script>");
 	    sb.append(generateHTML(data));
 	    sb.append("</head>");
-	    sb.append("<body style='background-color:#ccc;'>");
+	    sb.append("<body style='background-color: #F7F8E5;''>");
 	    
 	    
 	 	sb.append("</body></html>");
@@ -527,23 +530,7 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	private class ColumnPair{
 		String label;
 		String value;
-		
-		public String getValue() {
-			return value;
-		}
-		public void setValue(String value) {
-			this.value = value;
-		}
-	
-		public String getLabel() {
-			return label;
-		}
-		public void setLabel(String label) {
-			this.label = label;
-		}
-		public ColumnPair() {
-			super();
-		}
+
 		public ColumnPair(String label, String value) {
 			super();
 			this.label = label;
@@ -551,7 +538,7 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		}
 		@Override
 		public String toString() {
-			return "<td class='label'>" + label + "</td><td class='value'>" + value + "</td>";
+			return "<td class='label'>" + label + ":</td><td class='value'><b>" + value + "</b></td>";
 		}
 	}
 	
@@ -571,7 +558,7 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		}
 
 		if(tmp.length() > 0){
-			ret.append("<table>").append(tmp).append("</table>");
+			ret.append("<table style='background-color: #F7F8E5; width:100%'>").append(tmp).append("</table>");
 		}else{
 			ret.append("<p>No D&B data available for the profile</p>");
 		}
@@ -652,79 +639,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 			tmp.add(new ColumnPair(fieldNames.get(field), tmpStr));
 			ret.add(tmp);
 		}
-		 
-//		 <div class="body">
-//			<div class="title">Company Profile: Dole Food Company, Inc.</div>
-//		
-//			<table>
-//				<tr>
-//				
-//				</tr>
-//			</table>
-//			<div class="row clearfix" style="height: 32px;">
-//				<span class="c01 label left" style="">Trade Style:</span> 
-//				<span class="c02 data left" style="">Dole Food</span> 
-//				<span class="c03 label left" style="">Ownership:</span>
-//				<span class="c04 data left" style="">Corporation</span> 
-//				<span class="c05 label left" style="">Location Type:</span>
-//				<span class="c06 data left" style="">Headquarter</span>
-//			</div>
-//			
-//			<div class="row clearfix" style="height: 53px;">
-//				<span class="c01 label left" style="">Address:</span>
-//				<span class="c02 data left" style="">1 Dole Dr<br>Westlake Village, CA<br>91362-7300,  USA&nbsp;</span>
-//					<span class="c03 label left" style="">Executive Contacts:</span>
-//				<span class="c04 data left twoCols" style="">
-//					David A Delorenzo&nbsp;(President)
-//				</span>
-//			</div>
-//			
-//			<div class="row clearfix" style="height: 48px;">
-//				<span class="c01 label left" style="">DUNS Number:</span>
-//				<span class="c02 data left" style="">
-//				<a onclick="goDUNSSite('008965428')" href="javascript:void(0)">008965428</a>
-//				</span>
-//				<span class="c03 label left" style="">Stock Ticker Symbol:</span>
-//				<span class="c04 data left" style="">DOLE <span style="font-size: smaller;">(NYSE)</span></span>
-//				  
-//				<span class="c05 label left" style="">Parent Company:</span>
-//				<span class="c06 data left" style="">Dole Food Company, Inc. (008965428)</span>
-//			</div>
-//			
-//			<div class="row clearfix" style="height: 26px;">
-//				<span class="c01 label left" style="">Phone:</span>
-//				<span class="c02 data left" style="">(818) 879-6600</span> 
-//				<span class="c03 label left" style="">Fax:</span>
-//				<span class="c04 data left" style="">
-//				(818) 879-6600
-//				</span> 
-//			</div>
-//			<div style="height: 32px;" class="row clearfix">
-//				<span class="c01 label left" style="">URL:</span>
-//				<span class="c02 data left twoCols" style="">www.dole.com</span>
-//			</div>
-//			<div class="row clearfix" style="height: 32px;">
-//				<span class="c01 label left" style="">Total number of employees:</span>
-//				<span class="c02 data left" style="">37,653</span>
-//				<span class="c03 label left" style="">Sales Volume (US$):</span>
-//				<span class="c04 data left twoCols" style="">$&nbsp;6,892,614,000.00</span> 
-//				
-//			</div>
-//			<div class="row clearfix" style="height: 32px;">
-//				<span class="c01 label left" style="">In Business since:</span>
-//				<span class="c02 data left" style="">1851&nbsp;(161 years)</span> 
-//				<span class="c03 label left" style="">Trading Status:</span>
-//				<span class="c04 data left twoCols" style="">Imports &amp; Exports</span>
-//			</div>
-//			<div class="row clearfix" style="height: 32px;">
-//				<span class="c01 label left" style="">SIC:</span>
-//				<span class="c02 data left" style="">0179</span> 
-//				<span class="c03 label left" style="">Line of Business:</span>
-//				<span class="c04 data left twoCols" style="">Fruits and Tree Nuts, NEC, NSK</span>
-//			</div>
-//		</div>
-		 
-	
 
 		return ret;
 	}
