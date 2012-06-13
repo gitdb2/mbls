@@ -26,7 +26,7 @@
             <LinearLayout
                 android:id="@+id/linearLayoutTChart"
                 android:layout_width="wrap_content"
-                android:layout_height="300dp" >
+                android:layout_height="450dp" >
             </LinearLayout>
         </LinearLayout>
 <!--     </LinearLayout> -->

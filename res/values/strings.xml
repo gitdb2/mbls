@@ -6,5 +6,9 @@
     <string name="buscar">Buscar</string>
     <string name="pager">Pager</string>
     <string name="query_hint">Search Consignees</string>
+    <string name="consignee_partner">Suppliers</string>
+    <string name="consignee_country">Countries</string>
+    <string name="consignee_product">Products</string>
+    <string name="consignee_port">Ports</string>
 
 </resources>

@@ -95,34 +95,22 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 					}
 					break;
 				case 2:
-				{
-					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-					ret = arr.getString(0);
-					graficaLayout.addView(chartCreator.crearGraficaMulti(obj));
-				}
-				break;
 				case 3:
-				{
-					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-					ret = arr.getString(1);
-					graficaLayout.addView(chartCreator.crearGraficaMulti(obj));
-				
-				}
-				break;
 				case 4:
-				{
-					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-					ret = arr.getString(2);
-					graficaLayout.addView(chartCreator.crearGraficaMulti(obj));
-				}
-				break;					
 				case 5:
 				{
 					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-					ret = arr.getString(3);
-					graficaLayout.addView(chartCreator.crearGraficaMulti(obj));
+					ret = arr.getString(page-2);
+					try {
+						graficaLayout.addView(chartCreator.crearGraficaMulti(arr.getJSONObject(page-2)));
+					} catch (ChartCreatorException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
+					}
 				}
 				break;
+				
 				default:
 					ret = tmp.getJSONObject("profileTab").toString();	
 					break;
