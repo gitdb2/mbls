@@ -250,7 +250,7 @@ public class ChartCreator {
 	private String convertName(String dimensionName) {
 		String found = this.namesDimension.get(dimensionName);
 		
-		if(found != null){
+		if(found == null){
 			found = dimensionName;
 		}
 		
