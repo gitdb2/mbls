@@ -125,21 +125,22 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 
 	public static class DetailsActivity extends FragmentActivity{
 
-		
+		String id;
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 
-//			if (getResources().getConfiguration().orientation
-//					== Configuration.ORIENTATION_LANDSCAPE) {
-//				// If the screen is now in landscape mode, we can show the
-//				// dialog in-line with the list so we don't need this activity.
-//				
+			if (getResources().getConfiguration().orientation
+					== Configuration.ORIENTATION_LANDSCAPE 
+					&& getResources().getConfiguration().isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE)) {
+				// If the screen is now in landscape mode, we can show the
+				// dialog in-line with the list so we don't need this activity.
+				
 //				getResources().getConfiguration().s
-//				
-//				finish();
-//				return;
-//			}
+				
+				finish();
+				return;
+			}
 			
 			ActionBar actionBar = getActionBar();
 			actionBar.show();
@@ -148,15 +149,21 @@ public class PruebajsonxmlActivityPagerSearchableTeeChart extends FragmentActivi
 			setContentView(R.layout.view_pager2_details);
 			if (savedInstanceState == null) {
 
-				String id = getIntent().getExtras().getString("id");
-				ViewPager details = (ViewPager) findViewById(R.id.viewPager);
-			
-				MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), id, "consignee", 0);
-				details.setAdapter(mMyFragmentPagerAdapter);  
-				
+				id = getIntent().getExtras().getString("id");
+			}else{
+				id= savedInstanceState.getString("id");
 			}
+			
+			ViewPager details = (ViewPager) findViewById(R.id.viewPager);
+			MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), id, "consignee", 0);
+			details.setAdapter(mMyFragmentPagerAdapter);  
 		}
 		
+		@Override
+		public void onSaveInstanceState(Bundle outState) {
+			super.onSaveInstanceState(outState);
+			outState.putString("id", id);
+		}
 		
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {

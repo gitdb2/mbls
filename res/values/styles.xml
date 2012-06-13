@@ -4,19 +4,27 @@
      <style name="WhiteBoldText">
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:layout_weight">1</item>
     </style>
       <style name="WhiteNormalText">
         <item name="android:textColor">#FFFFFF</item>
          <item name="android:textStyle">normal</item>
+         <item name="android:layout_weight">1</item>
+         <item name="android:scrollHorizontally">false</item>
+		<item name="android:inputType">textMultiLine</item>
+		<item name="android:singleLine">false</item>
+<!--          <item name="android:width">100dip</item> -->
     </style>
      <style name="TwoColsWhiteBoldText">
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_span">2</item>
+        <item name="android:layout_weight">1</item>
     </style>
       <style name="TwoColsWhiteNormalText">
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:layout_weight">1</item>
     </style>
       
       

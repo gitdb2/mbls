@@ -393,7 +393,7 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		t.setText(text);
 		t.setGravity(gravity);
 		int padding = getPadding();
-		t.setPadding(padding, padding, padding, padding);
+		t.setPadding(padding, 0, padding, 0);
 		return t;
 	}
 
@@ -425,6 +425,7 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 			boolean showCode = isShowCode(dimensionName);
 			// Row de titulos
 			TableRow row = new TableRow(context);
+			row.setMinimumHeight(30);
 			row.addView(createLabelTitles(convertNameTab(dimensionName), Gravity.CENTER_HORIZONTAL, R.style.TwoColsWhiteBoldText));
 			row.addView(createLabelTitles("Teus", Gravity.LEFT));
 			table.addView(row, new TableLayout.LayoutParams());
@@ -472,6 +473,7 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		int color		= colorArr[index].getRGB();
 		
 		TableRow row = new TableRow(context);
+		row.setMinimumHeight(30);
 		row.addView(createSquare(color));
 		row.addView(createLabel(name, Gravity.LEFT, R.style.WhiteNormalText));
 		row.addView(createLabelTitles(formatter.format(value), Gravity.RIGHT));
