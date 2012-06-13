@@ -184,10 +184,10 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 	    public boolean onOptionsItemSelected(MenuItem item) {
 	        switch (item.getItemId()) {
 	            case android.R.id.home:
-//	                 Intent intent = new Intent(this, HomeActivity.class);
-//	                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//	                 startActivity(intent);
-	            	finish(); //VER QUE ES MEJOR SI BACK O HOME
+	                 Intent intent = new Intent(this, HomeActivity.class);
+	                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	                 startActivity(intent);
+//	            	finish(); //VER QUE ES MEJOR SI BACK O HOME
 	                return true;
 	            default:
 	                return super.onOptionsItemSelected(item);

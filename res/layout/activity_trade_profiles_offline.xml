@@ -8,14 +8,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-      <SearchView
-            android:id="@+id/searchViewCompany"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:iconifiedByDefault="false"
-            android:queryHint="@+string/query_hint" >
-        </SearchView>
-
         <FrameLayout
             android:id="@+id/titles"
             android:layout_width="match_parent"
