@@ -6,7 +6,7 @@ import java.util.Collection;
 
 import android.database.Cursor;
 
-import com.datamyne.mobile.xml.TradeProfilesOfflineActivity.Item;
+import com.datamyne.mobile.profile.utils.Item;
 
 public class DataBaseProfileProvider implements IDatabaseProfileProvider {
 

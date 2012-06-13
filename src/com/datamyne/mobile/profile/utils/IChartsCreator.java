@@ -1,10 +1,10 @@
-package com.datamyne.mobile.xml;
+package com.datamyne.mobile.profile.utils;
 
 import org.json.JSONObject;
 
 import android.view.View;
 
-import com.datamyne.mobile.xml.ChartCreator.ChartCreatorException;
+import com.datamyne.mobile.profile.utils.ChartCreator.ChartCreatorException;
 
 public interface IChartsCreator {
 

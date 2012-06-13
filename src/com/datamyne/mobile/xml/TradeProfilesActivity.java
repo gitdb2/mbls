@@ -10,13 +10,10 @@ import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -25,18 +22,17 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.datamyne.mobile.dashboard.HomeActivity;
+import com.datamyne.mobile.profile.utils.DetailsAsyncTask;
+import com.datamyne.mobile.profile.utils.Item;
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.IRestTradeProfileClient;
 import com.datamyne.mobile.providers.ProfileProvider;
@@ -52,7 +48,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.view_pager3);
+		setContentView(R.layout.activity_trade_profiles);
 		
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
@@ -93,12 +89,12 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		String name;
 		int selectedIndex;
 		
-		public MyFragmentPagerAdapter(FragmentManager fm, String id, String type, int selectedIndex) {  
-			super(fm);
-			this.id = id;
-			this.type = type;
-			this.selectedIndex = selectedIndex;
-		}
+//		public MyFragmentPagerAdapter(FragmentManager fm, String id, String type, int selectedIndex) {  
+//			super(fm);
+//			this.id = id;
+//			this.type = type;
+//			this.selectedIndex = selectedIndex;
+//		}
 		
 		public MyFragmentPagerAdapter(FragmentManager fm, String id, String name, String type, int selectedIndex) {  
 			super(fm);
@@ -125,19 +121,22 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 
 	public static class DetailsActivity extends FragmentActivity{
 		
+		String id;
+		String name;
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			
 			if (getResources().getConfiguration().orientation
-					== Configuration.ORIENTATION_LANDSCAPE) {
+					== Configuration.ORIENTATION_LANDSCAPE 
+					&& getResources().getConfiguration().isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE)) {
 				// If the screen is now in landscape mode, we can show the
 				// dialog in-line with the list so we don't need this activity.
 				finish();
 				return;
 			}
 
-			setContentView(R.layout.view_pager2_details);
+			setContentView(R.layout.activity_trade_profiles_details);
 			
 			ActionBar actionBar = getActionBar();
 	        actionBar.show();
@@ -145,21 +144,35 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 	        actionBar.setLogo(R.drawable.title_home_default);
 			
 			if (savedInstanceState == null) {
-				String id = getIntent().getExtras().getString("id");
-				ViewPager details = (ViewPager) findViewById(R.id.viewPager);
  
-				MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), id, "consignee", 0);
+				id = getIntent().getExtras().getString("id");
+				name = getIntent().getExtras().getString("name");
+				
+			}else{
+				id= savedInstanceState.getString("id");
+				name= savedInstanceState.getString("name");
+			}
+			
+			ViewPager details = (ViewPager) findViewById(R.id.viewPager);
+				MyFragmentPagerAdapter mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), id, name, "consignee", 0);
 				details.setAdapter(mMyFragmentPagerAdapter);  
 			}
+		
+		@Override
+		public void onSaveInstanceState(Bundle outState) {
+			super.onSaveInstanceState(outState);
+			outState.putString("id", id);
+			outState.putString("name", name);
 		}
 		
 		@Override
 	    public boolean onOptionsItemSelected(MenuItem item) {
 	        switch (item.getItemId()) {
 	            case android.R.id.home:
-	                 Intent intent = new Intent(this, HomeActivity.class);
-	                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	                 startActivity(intent);
+//	                 Intent intent = new Intent(this, HomeActivity.class);
+//	                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//	                 startActivity(intent);
+	            	finish(); //VER QUE ES MEJOR SI BACK O HOME
 	                return true;
 	            default:
 	                return super.onOptionsItemSelected(item);
@@ -168,61 +181,6 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		
 	}
 
-	public static class Item implements Parcelable{
-		String code;
-		String name;
-		public String getCode() {
-			return code;
-		}
-		public void setCode(String code) {
-			this.code = code;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public Item() {
-			super();
-			// TODO Auto-generated constructor stub
-		}
-		public Item(String code, String name) {
-			super();
-			this.code = code;
-			this.name = name;
-		}
-		@Override
-		public String toString() {
-			return name;
-		}
-		public int describeContents() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-		public void writeToParcel(Parcel dest, int flags) {
-			dest.writeString(code);
-			dest.writeString(name);
-		}
-	
-
-	     public static final Parcelable.Creator<Item> CREATOR
-	             = new Parcelable.Creator<Item>() {
-	         public Item createFromParcel(Parcel in) {
-	             return new Item(in);
-	         }
-
-	         public Item[] newArray(int size) {
-	             return new Item[size];
-	         }
-	     };
-	     
-	     private Item(Parcel in) {
-	        this.code = in.readString();
-			this.name = in.readString();
-	     }
-		
-	}
 	
 	/**
 	 * This is the "top-level" fragment, showing a list of items that the
@@ -234,6 +192,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		boolean mDualPane;
 		int mCurCheckPosition = 0;
 		ArrayList<Item> itemList;
+		boolean viewing = false;
 		
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState) {
@@ -243,18 +202,30 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 				// Restore last state for checked position.
 				mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
 				itemList= savedInstanceState.getParcelableArrayList("itemList");
+				viewing =  savedInstanceState.getBoolean("viewing", false);
+				if(viewing){ //si ese estaba mirando un detalle lo muestro
+					showDetails(mCurCheckPosition);
+				}
 			}else{
 				new HttpClientTask(this).execute(getArguments().getString("target"), "consignee");
 			}
 		
 		}
 
+		
 		@Override
-		public void onStart() {
+		public void onResume() {
 			// TODO Auto-generated method stub
-			super.onStart();
-			displayData();
+			super.onResume();
+			try {
+				displayData();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		
+	
 		
 		public void displayData(){
 			if(itemList!= null){
@@ -269,7 +240,9 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 					// In dual-pane mode, the list view highlights the selected item.
 					getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 					// Make sure our UI is in the correct state.
-					//showDetails(mCurCheckPosition);
+					if(viewing){ //si ese estaba mirando un detalle lo muestro
+						showDetails(mCurCheckPosition);
+					}
 				}
 			}
 		}
@@ -278,12 +251,15 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		public void onSaveInstanceState(Bundle outState) {
 			super.onSaveInstanceState(outState);
 			outState.putInt("curChoice", mCurCheckPosition);
+			outState.putBoolean("viewing", viewing);
+			
 			outState.putParcelableArrayList("itemList", itemList);
 		}
 
 		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
 			//Item item = (Item)l.getAdapter().getItem(position);
+			viewing = true;
 			showDetails(position);
 		}
 
@@ -322,6 +298,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 						intent.putExtra("index", index);
 						intent.putExtra("type", "consignee");
 						intent.putExtra("id", item.getCode());
+						intent.putExtra("name", item.getName());
 						intent.putExtra("page", 0);
 						startActivity(intent);
 					}
@@ -336,21 +313,8 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 
 	public static class PageFragment extends Fragment {
 
-		public static PageFragment newInstance(String id, String type,
-				int page, int index) {
-
-			PageFragment pageFragment = new PageFragment();
-			Bundle args = new Bundle();
-			args.putString("type", type);
-			args.putString("id", id);
-			args.putInt("index", index);
-			args.putInt("page", page);
-			pageFragment.setArguments(args);
-			return pageFragment;
-		}
 		
-		public static PageFragment newInstance(String id, String name, String type,
-				int page, int index) {
+		public static PageFragment newInstance(String id, String name, String type,	int page, int index) {
 
 			PageFragment pageFragment = new PageFragment();
 			
@@ -391,8 +355,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 			if (container == null) {
 				// We have different layouts, and in one of them this
@@ -405,143 +368,20 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 				return null;
 			}
 
-			String localBasePath = getActivity().getExternalFilesDir(null)
-					.getPath();
-			System.out.println(localBasePath);
 
-			ScrollView scroller = new ScrollView(getActivity());
-			TextView text = new TextView(getActivity());
-			int padding = (int) TypedValue.applyDimension(
-					TypedValue.COMPLEX_UNIT_DIP, 4, getActivity()
-							.getResources().getDisplayMetrics());
-			text.setPadding(padding, padding, padding, padding);
-			scroller.addView(text);
+			ViewGroup layout = (ViewGroup)inflater.inflate(R.layout.fragment_trade_profile_detail_pager, null);
+			String localBasePath = getActivity().getExternalFilesDir(null).getPath();
+	
 			IProfileProvider profileProvider = new ProfileProvider();
-			boolean showDialog = !profileProvider.checkFileExists(
-					localBasePath, getBundledType(), getBundledId());
+			boolean showDialog = !profileProvider.checkFileExists(localBasePath, getBundledType(), getBundledId());
 
-			new HttpClientTask2(this.getActivity(), text, showDialog,
-					getBundledPage()).execute(localBasePath, getBundledType(),
-					getBundledId(), getBundledName());
-
-			return scroller;
-		}
-
+			new DetailsAsyncTask(getActivity(), layout, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
+			
+			return layout;
+		}  
 	}
 	
-	public static class HttpClientTask2 extends AsyncTask<String, Float, String> {
-
-		private IProfileProvider profileProvider = new ProfileProvider();
-		private ProfilesSQLiteHelper dbHelper;
 		
-		private ProgressDialog dialog;
-		private View view;
-		boolean showDialog= true;
-		int page = 0;
-		
-		public HttpClientTask2(Context context, TextView view, boolean showDialog, int page) {
-			super();
-			this.view = view;
-			this.showDialog = showDialog;  
-			this.page = page;
-			this.dbHelper = new ProfilesSQLiteHelper(context);
-			
-			if(showDialog){
-				dialog = new ProgressDialog(context);
-		        dialog.setMessage("Descargando...");
-		        dialog.setTitle("Progreso");
-		        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		        dialog.setCancelable(false);
-			}
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-			//String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3]);
-			String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3], dbHelper);
-			dbHelper.close();
-			return tmp;
-		}
-
-		protected void onPreExecute() {
-			if(showDialog){
-				dialog.setProgress(0);
-				dialog.setMax(100);
-				dialog.show(); // Mostramos el diálogo antes de comenzar
-			}
-		}
-		
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			if(showDialog){
-				dialog.dismiss();
-			}
-			((TextView)view).setText(getPageData(result));	
-			//titlesFragment.displayData();
-		}
-		
-		
-		private String getPageData(String payload){
-			String ret  = "";
-			if(payload!=null && !payload.trim().isEmpty()){
-				try {
-					JSONObject obj = new JSONObject(payload);
-					JSONObject tmp = obj.getJSONObject("tradeProfileContainer");
-					
-					switch (page) {
-					case 0:
-						ret = tmp.getJSONObject("profileTab").toString();
-						break;
-					case 1:
-						ret = tmp.getJSONObject("totalMonthsTab").toString();
-						break;
-					case 2:
-					{
-						JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-						ret = arr.getString(0);
-					}
-					break;
-					case 3:
-					{
-						JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-						ret = arr.getString(1);
-					
-					}
-					break;
-					case 4:
-					{
-						JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-						ret = arr.getString(2);
-					
-					}
-					break;					
-					case 5:
-					{
-						JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-						ret = arr.getString(3);
-					
-					}
-					break;
-					default:
-						ret = tmp.getJSONObject("profileTab").toString();	
-						break;
-					}
-					
-					
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-			return ret;
-		}
-		
-		
-
-	}
-	
 	/**
 	 * Realiza la busqueda de empresas
 	 * @author rodrigo
@@ -557,8 +397,9 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 			super();
 			this.titlesFragment = titlesFragment;
 			dialog = new ProgressDialog(titlesFragment.getActivity());
-	        dialog.setMessage("Fetching data...");
-	        dialog.setTitle("Progreso");
+			dialog.setTitle("Connecting to server");
+		    dialog.setMessage("Fetching data...");
+	        
 	        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 	        dialog.setCancelable(false);
 		}
@@ -567,14 +408,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		protected ArrayList<Item> doInBackground(String... params) {
 			
 			ArrayList<Item> itemList = new ArrayList<Item>();
-			
-			/*
-			ProfilesSQLiteHelper dbHelper = new ProfilesSQLiteHelper(titlesFragment.getActivity());
-			IDatabaseProfileProvider provider = new DataBaseProfileProvider();
-			ArrayList<Item> itemList = provider.loadSavedProfiles(dbHelper);
-			dbHelper.close();
-			*/
-			
+					
 			try {
 				JSONObject searched =  client.searchRemote(params[0], params[1]);
 				JSONArray arr = searched.getJSONArray("list");

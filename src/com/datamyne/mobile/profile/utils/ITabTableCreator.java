@@ -1,8 +1,8 @@
-package com.datamyne.mobile.xml;
+package com.datamyne.mobile.profile.utils;
 
 import org.json.JSONObject;
 
-import com.datamyne.mobile.xml.ChartCreator.TabTableCreatorException;
+import com.datamyne.mobile.profile.utils.ChartCreator.TabTableCreatorException;
 
 import android.view.View;
 

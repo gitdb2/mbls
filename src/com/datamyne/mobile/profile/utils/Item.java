@@ -1,4 +1,4 @@
-package com.datamyne.mobile.xml;
+package com.datamyne.mobile.profile.utils;
 
 import android.os.Parcel;
 import android.os.Parcelable;

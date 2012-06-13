@@ -62,6 +62,7 @@ public class ProfileProvider implements IProfileProvider {
 	 * @param id
 	 * @return
 	 */
+	@Deprecated
 	public String loadFullProfile(String localBasePath, String type, String id){
 		String result ="";
 		

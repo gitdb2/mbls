@@ -1,4 +1,4 @@
-package com.datamyne.mobile.xml;
+package com.datamyne.mobile.profile.utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,10 +12,13 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.datamyne.mobile.profile.utils.ChartCreator.ChartCreatorException;
+import com.datamyne.mobile.profile.utils.ChartCreator.TabTableCreatorException;
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.ProfileProvider;
-import com.datamyne.mobile.xml.ChartCreator.ChartCreatorException;
-import com.datamyne.mobile.xml.ChartCreator.TabTableCreatorException;
+import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
+import com.datamyne.mobile.xml.R;
+import com.datamyne.mobile.xml.R.id;
 
 
 public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
@@ -28,6 +31,7 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 	Context context;
 	IChartsCreator chartCreator;
 	ITabTableCreator tabCreator; 
+	private ProfilesSQLiteHelper dbHelper;
 	
 	public DetailsAsyncTask(Context context, ViewGroup container, boolean showDialog, int page) {
 		super();
@@ -37,11 +41,12 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 		this.context = context;
 		this.chartCreator = new ChartCreator(context);
 		this.tabCreator		= (ITabTableCreator) chartCreator;
+		this.dbHelper = new ProfilesSQLiteHelper(context);
 		
 		if(showDialog){
 			dialog = new ProgressDialog(context);
+		    dialog.setTitle("Connecting to server");
 	        dialog.setMessage("Please wait...");
-	        dialog.setTitle("Connecting with server");
 	        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 	        dialog.setCancelable(false);
 		}
@@ -49,7 +54,8 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 
 	@Override
 	protected String doInBackground(String... params) {
-		String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2]);
+		String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3], dbHelper);
+		dbHelper.close();
 		return tmp;
 	}
 

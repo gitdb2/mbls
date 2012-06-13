@@ -2,7 +2,7 @@ package com.datamyne.mobile.providers;
 
 import java.util.ArrayList;
 
-import com.datamyne.mobile.xml.TradeProfilesOfflineActivity.Item;
+import com.datamyne.mobile.profile.utils.Item;
 
 public interface IDatabaseProfileProvider {
 
