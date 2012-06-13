@@ -86,7 +86,16 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 				
 				switch (page) {
 				case 0:
-					ret = tmp.getJSONObject("profileTab").toString();
+//					ret = tmp.getJSONObject("profileTab").toString();
+					try {
+						tableLayout.addView(tabCreator.crearTablaTabProfile(tmp.getJSONObject("profileTab")));
+					}catch (TabTableCreatorException e) {
+						e.printStackTrace();
+						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
+						ret = "No data available";
+					}
+					
+					
 					break;
 				case 1:
 //					ret = tmp.getJSONObject("totalMonthsTab").toString();
@@ -122,7 +131,13 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 				break;
 				
 				default:
-					ret = tmp.getJSONObject("profileTab").toString();	
+					try {
+						tableLayout.addView(tabCreator.crearTablaTabProfile(tmp.getJSONObject("profileTab")));
+					}catch (TabTableCreatorException e) {
+						e.printStackTrace();
+						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
+						ret = "No data available";
+					}
 					break;
 				}
 				

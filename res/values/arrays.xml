@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="fields">
+        <item>businessName</item>
+        <item>dunsNumber</item>
+        <item>tradestyleName</item>
+        <item>streetAddress</item>
+        <item>streetAddress2</item>
+        <item>cityName</item>
+        <item>stateProvinceName</item>
+        <item>countryName</item>
+        <item>postalCode</item>
+        <item>chiefExecutiveOfficerName</item>
+        <item>chiefExecutiveOfficerTitle</item>
+        <item>lineOfBusiness</item>
+        <item>us1987Sic1</item>
+        <item>yearStarted</item>
+        <item>salesVolumeUsDollars</item>
+        <item>employeesTotal</item>
+        <item>legalStatusName</item>
+        <item>statusName</item>
+        <item>telephoneNumber</item>
+        <item>facsimileNumber</item>
+        <item>domesticUltimateBusinessName</item>
+        <item>urlDomainName1</item>
+        <item>nyseTicker</item>
+    </string-array>
+    
+</resources>
