@@ -3,7 +3,7 @@ package com.datamyne.mobile.providers;
 import java.util.ArrayList;
 
 import com.datamyne.mobile.offline.ProfilesSQLiteHelper;
-import com.datamyne.mobile.xml.PruebajsonxmlActivityPagerSearchable.Item;
+import com.datamyne.mobile.xml.TradeProfilesOfflineActivity.Item;
 
 public interface IDatabaseProfileProvider {
 

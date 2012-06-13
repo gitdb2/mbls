@@ -25,13 +25,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.datamyne.mobile.xml.PruebajsonxmlActivityPagerSearchable;
 import com.datamyne.mobile.xml.R;
+import com.datamyne.mobile.xml.TradeProfilesActivity;
+import com.datamyne.mobile.xml.TradeProfilesOfflineActivity;
 
-/**
- * This is a simple activity that demonstrates the dashboard user interface pattern.
- *
- */
 public class HomeActivity extends Activity {
 	
 	public static final String PREFS_NAME = "MyPrefsFile";
@@ -109,8 +106,11 @@ public class HomeActivity extends Activity {
 	}
 	
 	public void onClickTradeProfiles(View v) {
-		startActivity(new Intent(getApplicationContext(), PruebajsonxmlActivityPagerSearchable.class));
-		//startActivity(new Intent(getApplicationContext(), OfflineProfileList.class));
+		if (workOffline) {
+			startActivity(new Intent(getApplicationContext(), TradeProfilesOfflineActivity.class));
+		} else {
+			startActivity(new Intent(getApplicationContext(), TradeProfilesActivity.class));
+		}
 	}
 	
 	public void onClickFeature(View v) {

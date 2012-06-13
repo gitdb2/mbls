@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import android.database.Cursor;
 
 import com.datamyne.mobile.offline.ProfilesSQLiteHelper;
-import com.datamyne.mobile.xml.PruebajsonxmlActivityPagerSearchable.Item;
+import com.datamyne.mobile.xml.TradeProfilesOfflineActivity.Item;
 
 public class DataBaseProfileProvider implements IDatabaseProfileProvider {
 

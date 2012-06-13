@@ -1,7 +1,5 @@
 package com.datamyne.mobile.xml;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -33,7 +31,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.datamyne.mobile.dashboard.HomeActivity;
@@ -41,20 +38,17 @@ import com.datamyne.mobile.offline.ProfilesSQLiteHelper;
 import com.datamyne.mobile.providers.DataBaseProfileProvider;
 import com.datamyne.mobile.providers.IDatabaseProfileProvider;
 import com.datamyne.mobile.providers.IProfileProvider;
-import com.datamyne.mobile.providers.IRestTradeProfileClient;
 import com.datamyne.mobile.providers.ProfileProvider;
-import com.datamyne.mobile.providers.RestTradeProfileClient2;
 
-public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity implements SearchView.OnQueryTextListener {
+public class TradeProfilesOfflineActivity extends FragmentActivity {
 
 	private static final int NUMBER_OF_PAGES = 6;
-	private SearchView searchView;
 	private ProfilesSQLiteHelper dbHelper;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.view_pager3);
+		setContentView(R.layout.view_pager_offline);
 		
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
@@ -65,10 +59,23 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setLogo(R.drawable.title_home_default);
+        
+        populateTitles();
+	}
+	
+	private void populateTitles() {
+		TitlesFragment titles = new TitlesFragment();
 		
-		searchView = (SearchView) findViewById(R.id.searchViewCompany);
-		searchView.setIconifiedByDefault(false);
-		searchView.setOnQueryTextListener(this);
+		Bundle args = new Bundle();
+		args.putString("target", "");
+		args.putString("baseDir", getExternalFilesDir(null).getPath());
+		
+		titles.setArguments(args);
+		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.titles, titles);
+		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+		ft.commit();
 	}
 	
 	public ProfilesSQLiteHelper getDBHelper() {
@@ -125,7 +132,7 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 	 * when the screen is not large enough to show it all in one activity.
 	 */
 
-	public static class DetailsActivity extends FragmentActivity{
+	public static class DetailsActivity extends FragmentActivity {
 		
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
@@ -285,7 +292,6 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
-			//Item item = (Item)l.getAdapter().getItem(position);
 			showDetails(position);
 		}
 
@@ -295,7 +301,6 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		 * whole new activity in which it is displayed.
 		 */
 		void showDetails( int index) {
-			//List<Item> itemList,
 			mCurCheckPosition = index;
 			if(itemList != null && !itemList.isEmpty()){
 				try {
@@ -459,7 +464,6 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 		@Override
 		protected String doInBackground(String... params) {
-			//String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3]);
 			String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3], dbHelper);
 			dbHelper.close();
 			return tmp;
@@ -480,9 +484,7 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 				dialog.dismiss();
 			}
 			((TextView)view).setText(getPageData(result));	
-			//titlesFragment.displayData();
 		}
-		
 		
 		private String getPageData(String payload){
 			String ret  = "";
@@ -536,12 +538,8 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 					e.printStackTrace();
 				}
 			}
-			
 			return ret;
 		}
-		
-		
-
 	}
 	
 	/**
@@ -551,7 +549,6 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 	 */
 	public static class HttpClientTask extends AsyncTask<String, Integer, ArrayList<Item>> {
 
-		private IRestTradeProfileClient client 		= new RestTradeProfileClient2();
 		private ProgressDialog dialog;
 		private TitlesFragment titlesFragment;
 		
@@ -567,39 +564,10 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 		@Override
 		protected ArrayList<Item> doInBackground(String... params) {
-			
-			ArrayList<Item> itemList = new ArrayList<Item>();
-			
-			/*
 			ProfilesSQLiteHelper dbHelper = new ProfilesSQLiteHelper(titlesFragment.getActivity());
 			IDatabaseProfileProvider provider = new DataBaseProfileProvider();
 			ArrayList<Item> itemList = provider.loadSavedProfiles(dbHelper);
 			dbHelper.close();
-			*/
-			
-			try {
-				JSONObject searched =  client.searchRemote(params[0], params[1]);
-				JSONArray arr = searched.getJSONArray("list");
-				for (int i = 0; i < arr.length(); i++) {
-					JSONObject item = arr.getJSONObject(i);
-					itemList.add(new Item(item.getString("second"), item.getString("third")));
-				}	
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
-				publishProgress(-1);
-				cancel(true);
-			}
-			catch (SocketTimeoutException e) {
-				e.printStackTrace();
-				publishProgress(-2);
-				cancel(true);
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-				publishProgress(-3);
-				cancel(true);
-			}
 			return itemList;
 		}
 
@@ -652,35 +620,6 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 			
 		}
 
-	}
-
-	public boolean onQueryTextChange(String newText) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	private String lastQuery = null;
-	public boolean onQueryTextSubmit(String query) {
-		
-		boolean trigger= lastQuery == null || !query.equals(lastQuery); 
-		if(trigger){
-			lastQuery = query;
-			String baseDir = getExternalFilesDir(null).getPath();
-	
-			TitlesFragment titles = new TitlesFragment();
-			
-			Bundle args = new Bundle();
-			args.putString("target", query);
-			args.putString("baseDir", baseDir);
-			
-			titles.setArguments(args);
-			
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			ft.replace(R.id.titles, titles);
-			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-			ft.commit();
-		}
-		return false;
 	}
 	
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.datamyne.mobile.xml"
     android:versionCode="1"
@@ -18,12 +19,19 @@
 		<activity android:name="PruebajsonxmlActivity"></activity> 
 		<activity android:name="ViewPagerActivity"></activity>
 		<activity android:name="OtroPagerActivity"></activity>
+		
 		<activity android:name="PruebajsonxmlActivityPager"></activity>
+		
 		<activity android:name="PruebajsonxmlActivityPager$DetailsActivity"></activity>
-		<activity android:name="PruebajsonxmlActivityPagerSearchable$DetailsActivity"></activity>
+		
+		<activity android:name="TradeProfilesOfflineActivity"></activity>
+		
+		<activity android:name="TradeProfilesOfflineActivity$DetailsActivity"></activity>
+		
+		<activity android:name="TradeProfilesActivity$DetailsActivity"></activity>
 		
 		<activity 
-		    android:name="PruebajsonxmlActivityPagerSearchable"
+		    android:name=".TradeProfilesActivity"
 		    android:label="@string/title_trade_profiles">
 		    
 		    <intent-filter>
