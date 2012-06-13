@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import android.os.Environment;
 import android.util.Log;
 
-import com.datamyne.mobile.offline.ProfilesSQLiteHelper;
 
 
 public class ProfileProvider implements IProfileProvider {

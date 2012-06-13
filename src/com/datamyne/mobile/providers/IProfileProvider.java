@@ -1,6 +1,5 @@
 package com.datamyne.mobile.providers;
 
-import com.datamyne.mobile.offline.ProfilesSQLiteHelper;
 
 public interface IProfileProvider {
 

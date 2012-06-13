@@ -1,5 +1,7 @@
-package com.datamyne.mobile.offline;
+package com.datamyne.mobile.providers;
 
+
+import java.util.Collection;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -45,6 +47,12 @@ public class ProfilesSQLiteHelper extends SQLiteOpenHelper {
     	return(getReadableDatabase().rawQuery(
     			"SELECT _id, type, code, name, file_path FROM " + TABLE_PROFILES + " ORDER BY name", null));
     }
+    
+	public void delete(Collection<Integer> toDelete) {
+		for (Integer id : toDelete) {
+			getWritableDatabase().delete(TABLE_PROFILES, "_id = ?", new String [] { id.toString() });
+		}
+	}
     
     public String getType(Cursor c){
 		return c.getString(1);

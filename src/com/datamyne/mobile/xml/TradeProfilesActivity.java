@@ -37,10 +37,10 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.datamyne.mobile.dashboard.HomeActivity;
-import com.datamyne.mobile.offline.ProfilesSQLiteHelper;
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.IRestTradeProfileClient;
 import com.datamyne.mobile.providers.ProfileProvider;
+import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
 import com.datamyne.mobile.providers.RestTradeProfileClient2;
 
 public class TradeProfilesActivity extends FragmentActivity implements SearchView.OnQueryTextListener {

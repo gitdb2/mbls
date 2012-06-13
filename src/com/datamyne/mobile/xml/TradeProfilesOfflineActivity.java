@@ -34,11 +34,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.datamyne.mobile.dashboard.HomeActivity;
-import com.datamyne.mobile.offline.ProfilesSQLiteHelper;
 import com.datamyne.mobile.providers.DataBaseProfileProvider;
 import com.datamyne.mobile.providers.IDatabaseProfileProvider;
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.ProfileProvider;
+import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
 
 public class TradeProfilesOfflineActivity extends FragmentActivity {
 
