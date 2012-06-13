@@ -7,14 +7,15 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.ProfileProvider;
 import com.datamyne.mobile.xml.ChartCreator.ChartCreatorException;
+import com.datamyne.mobile.xml.ChartCreator.TabTableCreatorException;
 
 
 public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
@@ -25,7 +26,8 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 	boolean showDialog= true;
 	int page = 0;
 	Context context;
-	ChartCreator chartCreator; 
+	IChartsCreator chartCreator;
+	ITabTableCreator tabCreator; 
 	
 	public DetailsAsyncTask(Context context, ViewGroup container, boolean showDialog, int page) {
 		super();
@@ -34,7 +36,7 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 		this.page = page;
 		this.context = context;
 		this.chartCreator = new ChartCreator(context);
-		
+		this.tabCreator		= (ITabTableCreator) chartCreator;
 		
 		if(showDialog){
 			dialog = new ProgressDialog(context);
@@ -72,7 +74,8 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 	
 	private void writeData(String payload) {
 		
-		LinearLayout graficaLayout = (LinearLayout) view.findViewById(R.id.linearLayoutTChart);
+		LinearLayout graficaLayout	= (LinearLayout) view.findViewById(R.id.linearLayoutTChart);
+		LinearLayout tableLayout	= (LinearLayout) view.findViewById(R.id.pageDataTable); //layout de tabla para mostrar los datos
 		TextView text = (TextView) view.findViewById(R.id.textViewData);
 		
 		String ret  = "";
@@ -86,12 +89,17 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 					ret = tmp.getJSONObject("profileTab").toString();
 					break;
 				case 1:
-					ret = tmp.getJSONObject("totalMonthsTab").toString();
+//					ret = tmp.getJSONObject("totalMonthsTab").toString();
 					try {
+						tableLayout.addView(tabCreator.crearTablaTabMonthly(tmp.getJSONObject("totalMonthsTab")));
 						graficaLayout.addView(chartCreator.crearGraficaMonthly(tmp.getJSONObject("totalMonthsTab")));
-					} catch (ChartCreatorException e) {
+//					} catch (TabTableCreatorException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+					}catch (ChartCreatorException e) {
 						e.printStackTrace();
 						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
+						ret = "No data available";
 					}
 					break;
 				case 2:
@@ -106,6 +114,7 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 					} catch (ChartCreatorException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						ret = "No data available";
 						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
 					}
 				}

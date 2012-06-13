@@ -1,10 +1,9 @@
 package com.datamyne.mobile.xml;
 
-import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -14,23 +13,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
-import com.steema.teechart.DateTime;
-import com.steema.teechart.DateTimeStep;
 import com.steema.teechart.TChart;
-import com.steema.teechart.axis.Axis;
-import com.steema.teechart.axis.AxisLabelsItems;
 import com.steema.teechart.drawing.Color;
 import com.steema.teechart.legend.LegendAlignment;
 import com.steema.teechart.styles.Area;
-import com.steema.teechart.styles.Bar;
 import com.steema.teechart.styles.Line;
 import com.steema.teechart.styles.Series;
 import com.steema.teechart.themes.ThemesList;
 
-public class ChartCreator {
+public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	private static final String TAG = "ChartCreator";
 	public static class ChartCreatorException extends Exception{
 		private static final long serialVersionUID = 7145759565927589212L;
@@ -50,6 +52,32 @@ public class ChartCreator {
 			// TODO Auto-generated constructor stub
 		}
 	}
+	public static class TabTableCreatorException extends ChartCreatorException{
+		private static final long serialVersionUID = 4071333937169191949L;
+
+		public TabTableCreatorException() {
+			super();
+			// TODO Auto-generated constructor stub
+		}
+
+		public TabTableCreatorException(String detailMessage,
+				Throwable throwable) {
+			super(detailMessage, throwable);
+			// TODO Auto-generated constructor stub
+		}
+
+		public TabTableCreatorException(String detailMessage) {
+			super(detailMessage);
+			// TODO Auto-generated constructor stub
+		}
+
+		public TabTableCreatorException(Throwable throwable) {
+			super(throwable);
+			// TODO Auto-generated constructor stub
+		}
+		
+	}
+	
 	private Context context;
 
 
@@ -77,6 +105,9 @@ public class ChartCreator {
 			new Color( Color.parseColor("#008ED6")),
 	};
 	//	Color.parseColor(4)
+	/* (non-Javadoc)
+	 * @see com.datamyne.mobile.xml.IChartsCreator#crearGraficaMonthly(org.json.JSONObject)
+	 */
 	public View crearGraficaMonthly(JSONObject data) throws ChartCreatorException{
 
 		/*
@@ -128,15 +159,6 @@ public class ChartCreator {
 		return chart;
 	}
 
-	//	private final NumberFormat numberFormatter = new DecimalFormat("00");
-	//	
-	//	private String obtenerYYYYMM(JSONObject entry) throws JSONException {
-	//		
-	//		
-	//		int num = entry.getInt("month");
-	//		return entry.getString("year")+numberFormatter.format(num);
-	//	}
-
 	private String convertDates(String outPattern, String inPattern, String inDate){
 		String out = inDate;
 		SimpleDateFormat inSDF = new SimpleDateFormat(inPattern, Locale.US);
@@ -152,6 +174,9 @@ public class ChartCreator {
 		return out;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.datamyne.mobile.xml.IChartsCreator#crearGraficaMulti(org.json.JSONObject)
+	 */
 	public View crearGraficaMulti(JSONObject data)throws ChartCreatorException{
 
 		//		"tabDimension":[ //no viene
@@ -257,4 +282,99 @@ public class ChartCreator {
 		return "Top "+ found + " in Teus";
 	}
 
+	
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	
+	/* (non-Javadoc)
+	 * @see com.datamyne.mobile.xml.ITabTableCreator#crearTablaTabProfile(org.json.JSONObject)
+	 */
+	public View crearTablaTabProfile (JSONObject data) throws TabTableCreatorException {
+		return null;
+	}
+	/* (non-Javadoc)
+	 * @see com.datamyne.mobile.xml.ITabTableCreator#crearTablaTabMonthly(org.json.JSONObject)
+	 */
+	public View crearTablaTabMonthly (JSONObject data) throws TabTableCreatorException{
+		DecimalFormat formatter = new DecimalFormat("#,##0.0");
+		TableLayout table = new TableLayout(context);
+
+		// Row de titulos
+		TableRow row = new TableRow(context);
+		row.addView(createLabelTitles("Month", Gravity.CENTER_HORIZONTAL));
+		row.addView(createLabelTitles("Teus", Gravity.LEFT));
+
+		// add the TableRow to the TableLayout
+		table.addView(row, new TableLayout.LayoutParams());
+
+		/*
+		
+		{"monthlyValueList":
+		{"fullMonthData":[
+			{	"year":"2011",
+				"month":"4",
+				"value":"6174",
+				"name":"APRIL",
+				"code":"3"},
+
+		fullMonthData
+		 */
+		JSONObject tmp =  data.optJSONObject("monthlyValueList");
+		if(tmp== null|| !tmp.has("fullMonthData")){//si no tiene datos o sea no tiene movimientos
+			throw new TabTableCreatorException("No Mostrar la Tabla porqu no hay datos");
+		}
+
+		JSONArray arr = tmp.optJSONArray("fullMonthData");
+
+		BigDecimal suma = BigDecimal.ZERO;
+		try {
+			for (int i = 0; i < arr.length(); i++) {
+				row = new TableRow(context);
+				JSONObject entry =  arr.getJSONObject(i);
+				String text = convertDates("MMMM yyyy", "yyyyMM", entry.getString("year")+entry.getString("month")) +"'";// obtenerYYYYMM(entry));
+				double value = entry.getDouble("value");
+				
+				suma = suma.add(BigDecimal.valueOf(value));
+				
+				row.addView(createLabel(text, Gravity.LEFT));
+				row.addView(createLabelTitles(formatter.format(value), Gravity.RIGHT));
+				table.addView(row, new TableLayout.LayoutParams());
+			}
+
+			row = new TableRow(context);
+			row.addView(createLabelTitles("Total", Gravity.LEFT));
+			row.addView(createLabelTitles(formatter.format(suma.doubleValue()), Gravity.RIGHT));
+			table.addView(row, new TableLayout.LayoutParams());
+			
+		} catch (JSONException e) {
+			throw new TabTableCreatorException("No Mostrar generar la Tabla, error json", e);
+		}
+		
+		return table;
+	}
+
+	private TextView createLabelTitles(String text, int gravity) {
+		TextView t = createLabel(text, gravity);
+		
+//		t.setTextColor(android.graphics.Color.WHITE);
+//		t.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10);
+//		t.set
+		t.setTextAppearance(context, R.style.WhiteBoldText);
+		return t;
+	}
+	
+	private TextView createLabel(String text, int gravity) {
+		TextView t = new TextView(context);
+		t.setText(text);
+		t.setGravity(gravity);
+		return t;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.datamyne.mobile.xml.ITabTableCreator#crearTablaTabOther(org.json.JSONObject)
+	 */
+	public View crearTablaTabOther (JSONObject data) throws TabTableCreatorException{
+		return null;
+	}
 }
