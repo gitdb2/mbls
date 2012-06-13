@@ -24,12 +24,13 @@ public class OfflineProfileList extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.offline_profile_list);
 
-		//createDatabase();
 		dbHelper = new ProfilesSQLiteHelper(this);
 		
+		/*
 		dbHelper.insert("consignee", 1, "DOLE", "archivo1");
 		dbHelper.insert("consignee", 2, "SONY", "archivo2");
 		dbHelper.insert("consignee", 3, "MAERSK", "archivo3");
+		*/
 		
 		ListView list = (ListView)findViewById(R.id.profiles);
 

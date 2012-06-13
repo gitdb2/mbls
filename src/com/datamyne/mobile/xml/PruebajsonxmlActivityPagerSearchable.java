@@ -37,6 +37,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.datamyne.mobile.dashboard.HomeActivity;
+import com.datamyne.mobile.offline.ProfilesSQLiteHelper;
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.IRestTradeProfileClient;
 import com.datamyne.mobile.providers.ProfileProvider;
@@ -46,6 +47,7 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 	private static final int NUMBER_OF_PAGES = 6;
 	private SearchView searchView;
+	private ProfilesSQLiteHelper dbHelper;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,8 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
+		
+		dbHelper = new ProfilesSQLiteHelper(this);
 		 
 		ActionBar actionBar = getActionBar();
         actionBar.show();
@@ -63,6 +67,10 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		searchView = (SearchView) findViewById(R.id.searchViewCompany);
 		searchView.setIconifiedByDefault(false);
 		searchView.setOnQueryTextListener(this);
+	}
+	
+	public ProfilesSQLiteHelper getDBHelper() {
+		return dbHelper;
 	}
 	
 	@Override
@@ -82,16 +90,26 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 		String id;
 		String type;
+		String name;
 		int selectedIndex;
+		
 		public MyFragmentPagerAdapter(FragmentManager fm, String id, String type, int selectedIndex) {  
 			super(fm);
 			this.id = id;
 			this.type = type;
 			this.selectedIndex = selectedIndex;
-		}  
+		}
+		
+		public MyFragmentPagerAdapter(FragmentManager fm, String id, String name, String type, int selectedIndex) {  
+			super(fm);
+			this.id = id;
+			this.name = name;
+			this.type = type;
+			this.selectedIndex = selectedIndex;
+		} 
 
 		public Fragment getItem(int page) {  
-			return PageFragment.newInstance(id, type, page, selectedIndex);
+			return PageFragment.newInstance(id, name, type, page, selectedIndex);
 		}  
 
 		@Override  
@@ -289,28 +307,11 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 						ViewPager details = (ViewPager) getActivity().findViewById(R.id.viewPager);
 				
 						
-						if (details != null){// || details.getBundleIndex() != index) {
-							// Make new fragment to show this selection.
-							//new MyFragmentPagerAdapter(getSupportFragmentManager())
-							
-//							ViewPager mViewPager = (ViewPager) getFragmentManager().findFragmentById(R.id.viewPager);  
-//							mViewPager.setAdapter(new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), "consignee", 0) );  
-
+						if (details != null){
 
 							MyFragmentPagerAdapter mMyFragmentPagerAdapter = 
-									new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), "consignee", index);  
+									new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), item.getName(), "consignee", index);  
 							details.setAdapter(mMyFragmentPagerAdapter);  
-						
-//							
-//							details = PageFragment.newInstance(item.getCode(), "consignee", 0, index);
-//
-//
-//							// Execute a transaction, replacing any existing fragment
-//							// with this one inside the frame.
-//							FragmentTransaction ft = getFragmentManager().beginTransaction();
-//							ft.replace(R.id.viewPager, details);
-//							ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//							ft.commit();
 						}
 
 					} else {
@@ -333,9 +334,10 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 		}
 	}
 
-	public static class PageFragment extends Fragment {  
+	public static class PageFragment extends Fragment {
 
-		public static PageFragment newInstance(String id, String type, int page, int index) {
+		public static PageFragment newInstance(String id, String type,
+				int page, int index) {
 
 			PageFragment pageFragment = new PageFragment();
 			Bundle args = new Bundle();
@@ -346,74 +348,103 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 			pageFragment.setArguments(args);
 			return pageFragment;
 		}
+		
+		public static PageFragment newInstance(String id, String name, String type,
+				int page, int index) {
 
-		  public int getBundledIndex() {
-	            return getArguments().getInt("index", 0);
-	        }
-		  public int getBundledPage() {
-	            return getArguments().getInt("page", 0);
-	        }
+			PageFragment pageFragment = new PageFragment();
+			
+			Bundle args = new Bundle();
+			args.putString("type", type);
+			args.putString("id", id);
+			args.putString("name", name);
+			args.putInt("index", index);
+			args.putInt("page", page);
+			
+			pageFragment.setArguments(args);
+			return pageFragment;
+		}
 
-			public String getBundledId(){
-				return getArguments().getString("id");
-			}
-			public String getBundledType(){
-				return getArguments().getString("type");
-			}
+		public int getBundledIndex() {
+			return getArguments().getInt("index", 0);
+		}
 
-		@Override  
-		public void onCreate(Bundle savedInstanceState) {  
-			super.onCreate(savedInstanceState);  
-		}  
+		public int getBundledPage() {
+			return getArguments().getInt("page", 0);
+		}
 
-		@Override  
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
+		public String getBundledId() {
+			return getArguments().getString("id");
+		}
+
+		public String getBundledName() {
+			return getArguments().getString("name");
+		}
+
+		public String getBundledType() {
+			return getArguments().getString("type");
+		}
+
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
 
 			if (container == null) {
 				// We have different layouts, and in one of them this
-				// fragment's containing frame doesn't exist.  The fragment
+				// fragment's containing frame doesn't exist. The fragment
 				// may still be created from its saved state, but there is
 				// no reason to try to create its view hierarchy because it
-				// won't be displayed.  Note this is not needed -- we could
+				// won't be displayed. Note this is not needed -- we could
 				// just run the code below, where we would create and return
 				// the view hierarchy; it would just never be used.
 				return null;
 			}
-			
-			String localBasePath = getActivity().getExternalFilesDir(null).getPath();
+
+			String localBasePath = getActivity().getExternalFilesDir(null)
+					.getPath();
 			System.out.println(localBasePath);
-			
-			
-			
+
 			ScrollView scroller = new ScrollView(getActivity());
 			TextView text = new TextView(getActivity());
-			int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-					4, getActivity().getResources().getDisplayMetrics());
+			int padding = (int) TypedValue.applyDimension(
+					TypedValue.COMPLEX_UNIT_DIP, 4, getActivity()
+							.getResources().getDisplayMetrics());
 			text.setPadding(padding, padding, padding, padding);
 			scroller.addView(text);
-			IProfileProvider profileProvider 	= new ProfileProvider();
-			boolean showDialog = !profileProvider.checkFileExists(localBasePath, getBundledType(), getBundledId());
-			
-			new HttpClientTask2(this.getActivity(), text, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
-			
+			IProfileProvider profileProvider = new ProfileProvider();
+			boolean showDialog = !profileProvider.checkFileExists(
+					localBasePath, getBundledType(), getBundledId());
+
+			new HttpClientTask2(this.getActivity(), text, showDialog,
+					getBundledPage()).execute(localBasePath, getBundledType(),
+					getBundledId(), getBundledName());
+
 			return scroller;
-		}  
-		
-	} 
+		}
+
+	}
 	
 	public static class HttpClientTask2 extends AsyncTask<String, Float, String> {
 
-		//private IRestTradeProfileClient client 		= new RestTradeProfileClient();
-		private IProfileProvider profileProvider 	= new ProfileProvider();
+		private IProfileProvider profileProvider = new ProfileProvider();
+		private ProfilesSQLiteHelper dbHelper;
+		
 		private ProgressDialog dialog;
 		private View view;
 		boolean showDialog= true;
 		int page = 0;
+		
 		public HttpClientTask2(Context context, TextView view, boolean showDialog, int page) {
 			super();
 			this.view = view;
 			this.showDialog = showDialog;  
 			this.page = page;
+			this.dbHelper = new ProfilesSQLiteHelper(context);
 			
 			if(showDialog){
 				dialog = new ProgressDialog(context);
@@ -426,7 +457,9 @@ public class PruebajsonxmlActivityPagerSearchable extends FragmentActivity imple
 
 		@Override
 		protected String doInBackground(String... params) {
-			String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2]);
+			//String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3]);
+			String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3], dbHelper);
+			dbHelper.close();
 			return tmp;
 		}
 
