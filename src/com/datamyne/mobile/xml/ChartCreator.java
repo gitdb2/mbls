@@ -13,19 +13,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Typeface;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
-import android.graphics.drawable.shapes.RectShape;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageView;
-import android.widget.Space;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -150,7 +141,7 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		chart.getAxes().getBottom().setIncrement(1);
 		line.setTitle("Total Annual imports in teus");
 		((Line)chart.getSeries(0)).getLinePen().setWidth(3);
-		//line.setShowInLegend(false);
+//		line.setShowInLegend(false);
 		try {
 			for (int i = 0; i < arr.length(); i++) {
 				JSONObject entry =  arr.getJSONObject(i);
@@ -225,6 +216,8 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		try {
 
 			String dimensionName = data.getString("dimensionName");
+			boolean showCode = isShowCode(dimensionName);
+			
 			chart.getLegend().setAlignment(LegendAlignment.BOTTOM);
 			chart.getHeader().setText(convertName(dimensionName));
 			chart.getHeader().getFont().setSize(14);
@@ -238,11 +231,11 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 			
 			JSONArray arr = tmp.optJSONArray("dimensionData");
 			if(arr ==  null){//esto quiere decir que solo viene un resultado entonces hay que tratarlo como objeto
-				generateSeries(chart, 0, tmp.getJSONObject("dimensionData"));
+				generateSeries(chart, 0, tmp.getJSONObject("dimensionData"), showCode);
 			}else{
 				for (int i = 0; i < Math.min(arr.length(), colorArr.length) ; i++) {
 					JSONObject seriesEntry 	=  arr.getJSONObject(i);
-					generateSeries(chart, i, seriesEntry);
+					generateSeries(chart, i, seriesEntry, showCode);
 				}
 			}
 		} catch (JSONException e) {
@@ -261,15 +254,22 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	 * @return
 	 * @throws JSONException
 	 */
-	private void generateSeries(TChart chart, int index, JSONObject seriesEntry ) throws JSONException{
+	private void generateSeries(TChart chart, int index, JSONObject seriesEntry , boolean showCode) throws JSONException{
 		String seriesName 		= seriesEntry.getString("name");
+		
+		if(showCode){
+			String code 	= seriesEntry.getString("code");
+			seriesName = code + " - " + seriesName;
+		}
+		
 		//en este no hay problema de que venga solo un elemento porque por lo menos siempre hay 12 meses, sino esta mal la generacion
 		JSONArray seriesData 	= seriesEntry.getJSONObject("monthlyValueList").getJSONArray("simpleMonthData");
 		
 		Area series = new Area(chart.getChart());
 		series.setTitle(seriesName);
 		series.setColor(colorArr[index]);
-		series.setTransparency(50);
+		series.setTransparency(30);
+		series.setShowInLegend(false);
 		
 		for (int j = 0; j < seriesData.length(); j++) {
 			JSONObject valueData 	= seriesData.getJSONObject(j);
@@ -354,7 +354,7 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 				
 				suma = suma.add(BigDecimal.valueOf(value));
 				
-				row.addView(createLabel(text, Gravity.LEFT));
+				row.addView(createLabel(text, Gravity.LEFT, R.style.WhiteNormalText));
 				row.addView(createLabelTitles(formatter.format(value), Gravity.RIGHT));
 				table.addView(row, new TableLayout.LayoutParams());
 			}
@@ -392,7 +392,15 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		TextView t = new TextView(context);
 		t.setText(text);
 		t.setGravity(gravity);
+		int padding = getPadding();
+		t.setPadding(padding, padding, padding, padding);
 		return t;
+	}
+
+	private int getPadding() {
+		int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+				4, context.getResources().getDisplayMetrics());
+		return padding;
 	}
 	
 	/* (non-Javadoc)
@@ -414,7 +422,7 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		try {
 			
 			String dimensionName = data.getString("dimensionName");
-			
+			boolean showCode = isShowCode(dimensionName);
 			// Row de titulos
 			TableRow row = new TableRow(context);
 			row.addView(createLabelTitles(convertNameTab(dimensionName), Gravity.CENTER_HORIZONTAL, R.style.TwoColsWhiteBoldText));
@@ -429,28 +437,13 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 			
 			JSONArray arr = tmp.optJSONArray("dimensionData");
 			if(arr ==  null){//esto quiere decir que solo viene un resultado entonces hay que tratarlo como objeto
-				generateRow(table, 0, tmp.getJSONObject("dimensionData"));
+				generateRow(table, 0, tmp.getJSONObject("dimensionData"), showCode);
 			}else{
 				for (int i = 0; i < Math.min(arr.length(), colorArr.length) ; i++) {
 					JSONObject seriesEntry 	=  arr.getJSONObject(i);
-					generateRow(table, i, seriesEntry);
+					generateRow(table, i, seriesEntry, showCode);
 				}
 			}
-			
-			
-			
-//			for (int i = 0; i < arr.length(); i++) {
-//				row = new TableRow(context);
-//				JSONObject entry =  arr.getJSONObject(i);
-//				String text = convertDates("MMMM yyyy", "yyyyMM", entry.getString("year")+entry.getString("month")) +"'";// obtenerYYYYMM(entry));
-//				double value = entry.getDouble("value");
-//				
-//				row.addView(createLabel(text, Gravity.LEFT));
-//				row.addView(createLabelTitles(formatter.format(value), Gravity.RIGHT));
-//				table.addView(row, new TableLayout.LayoutParams());
-//			}
-
-		
 			
 		} catch (JSONException e) {
 			throw new TabTableCreatorException("No Mostrar generar la Tabla, error json", e);
@@ -459,28 +452,39 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		return table;
 	}
 
+	private boolean isShowCode(String dimensionName) {
+		// TODO Auto-generated method stub
+		return "product".equalsIgnoreCase(dimensionName);
+	}
+
 	//"name":"UNION DE BANANEROS ECUATORIANOS S A (EC)",
 	//												"code":"1583080",
 	//												"total":"24854",
-	private void generateRow(TableLayout table, int index, JSONObject dimensionData) throws JSONException {
+	private void generateRow(TableLayout table, int index, JSONObject dimensionData, boolean showCode) throws JSONException {
 		String name 	= dimensionData.getString("name");
+		if(showCode){
+			String code 	= dimensionData.getString("code");
+			name = code + " - " + name;
+		}
+		
 		double value 	= dimensionData.getDouble("total");
 //		int color 		= Color.parseColor(colorString);
 		int color		= colorArr[index].getRGB();
 		
 		TableRow row = new TableRow(context);
 		row.addView(createSquare(color));
-		row.addView(createLabel(name, Gravity.LEFT));
+		row.addView(createLabel(name, Gravity.LEFT, R.style.WhiteNormalText));
 		row.addView(createLabelTitles(formatter.format(value), Gravity.RIGHT));
 		table.addView(row, new TableLayout.LayoutParams());
 		
 	}
 
 	private View createSquare(int color) {
-		Space space = new Space(context);
-		space.setBackgroundColor(color);
-		
-		return space;
+		DrawView drawView = new DrawView(context,color);
+		drawView.setBackgroundColor(android.graphics.Color.BLACK);
+		int padding = getPadding();
+		drawView.setPadding(padding, padding, padding, padding);
+		return drawView;
 		
 	}
 	
