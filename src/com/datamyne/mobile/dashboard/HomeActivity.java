@@ -18,12 +18,13 @@ package com.datamyne.mobile.dashboard;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
-import com.datamyne.mobile.offline.OfflineProfileList;
 import com.datamyne.mobile.xml.PruebajsonxmlActivityPagerSearchable;
 import com.datamyne.mobile.xml.R;
 
@@ -31,31 +32,72 @@ import com.datamyne.mobile.xml.R;
  * This is a simple activity that demonstrates the dashboard user interface pattern.
  *
  */
-
 public class HomeActivity extends Activity {
-
+	
+	public static final String PREFS_NAME = "MyPrefsFile";
+	private static final String WORK_MODE = "workMode";
+	private boolean workOffline;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        workOffline = settings.getBoolean(WORK_MODE, false);
 	}
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu.add(0, Menu.FIRST, Menu.NONE, R.string.exit_application);
-		return true;
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.clear();
+		if (workOffline) {
+			menu.add(0, Menu.FIRST, 0, R.string.work_online);
+		} else {
+			menu.add(0, Menu.FIRST, 0, R.string.work_offline);
+		}
+		menu.add(0, Menu.FIRST + 1, Menu.NONE, R.string.exit_application);
+		return super.onPrepareOptionsMenu(menu);
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
-
-		switch(item.getItemId()) {
+		switch (item.getItemId()) {
 		case (Menu.FIRST):
+			if (workOffline) {
+				workOffline = false;
+			} else {
+				workOffline = true;
+			}
+			showCurrentWorkMode();
+			saveWorkMode();
+			break;
+		case (Menu.FIRST + 1):
 			this.finish();
 			return true;
 		}
 		return false;
+	}
+	
+	private void showCurrentWorkMode() {
+		String message;
+		if (workOffline) {
+			message = getResources().getString(R.string.work_offline_message);
+		} else {
+			message = getResources().getString(R.string.work_online_message);
+		}
+		Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+	}
+
+	private void saveWorkMode() {
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+      	SharedPreferences.Editor editor = settings.edit();
+      	editor.putBoolean(WORK_MODE, workOffline);
+      	editor.commit();
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
 	}
 	
 	public void onClickAbout(View v) {
