@@ -7,6 +7,17 @@
     </style>
       <style name="WhiteNormalText">
         <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textStyle">bold</item>
+         <item name="android:textStyle">normal</item>
     </style>
+     <style name="TwoColsWhiteBoldText">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_span">2</item>
+    </style>
+      <style name="TwoColsWhiteNormalText">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+      
+      
 </resources>

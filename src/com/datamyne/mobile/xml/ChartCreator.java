@@ -13,13 +13,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.drawable.shapes.RectShape;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
+import android.widget.Space;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -186,7 +192,9 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		//		            			{	"dimensionData":
 		//		            						[
 		//		            							{
-		//		            							"name":"UNION DE BANANEROS ECUATORIANOS S A (EC)","code":"1583080","total":"24854",
+		//		            							"name":"UNION DE BANANEROS ECUATORIANOS S A (EC)",
+		//												"code":"1583080",
+		//												"total":"24854",
 		//		            							"monthlyValueList":
 		//		            									{"simpleMonthData":
 		//		            												[
@@ -286,6 +294,16 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	
 	
 	//////////////////////////////////////////////////////////////////////////////////
+	final DecimalFormat formatter = new DecimalFormat("#,##0.0");
+	private String convertNameTab(String dimensionName) {
+		String found = this.namesDimension.get(dimensionName);
+		
+		if(found == null){
+			found = dimensionName;
+		}
+		
+		return "Top "+ found;
+	}
 	
 	/* (non-Javadoc)
 	 * @see com.datamyne.mobile.xml.ITabTableCreator#crearTablaTabProfile(org.json.JSONObject)
@@ -297,7 +315,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	 * @see com.datamyne.mobile.xml.ITabTableCreator#crearTablaTabMonthly(org.json.JSONObject)
 	 */
 	public View crearTablaTabMonthly (JSONObject data) throws TabTableCreatorException{
-		DecimalFormat formatter = new DecimalFormat("#,##0.0");
 		TableLayout table = new TableLayout(context);
 
 		// Row de titulos
@@ -355,12 +372,19 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	}
 
 	private TextView createLabelTitles(String text, int gravity) {
+		TextView t = createLabelTitles(text, gravity, R.style.WhiteBoldText);
+		return t;
+	}
+	
+	private TextView createLabelTitles(String text, int gravity, int style) {
 		TextView t = createLabel(text, gravity);
-		
-//		t.setTextColor(android.graphics.Color.WHITE);
-//		t.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10);
-//		t.set
-		t.setTextAppearance(context, R.style.WhiteBoldText);
+		t.setTextAppearance(context, style);
+		return t;
+	}
+	
+	private TextView createLabel(String text, int gravity, int style) {
+		TextView t = createLabel(text, gravity);
+		t.setTextAppearance(context, style);
 		return t;
 	}
 	
@@ -375,6 +399,91 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	 * @see com.datamyne.mobile.xml.ITabTableCreator#crearTablaTabOther(org.json.JSONObject)
 	 */
 	public View crearTablaTabOther (JSONObject data) throws TabTableCreatorException{
-		return null;
+	
+		TableLayout table = new TableLayout(context);
+
+		//		            		"dimensionItemList":
+		//		            			{	"dimensionData":
+		//		            						[
+		//		            							{
+		//		            							"name":"UNION DE BANANEROS ECUATORIANOS S A (EC)",
+		//												"code":"1583080",
+		//												"total":"24854",
+
+		
+		try {
+			
+			String dimensionName = data.getString("dimensionName");
+			
+			// Row de titulos
+			TableRow row = new TableRow(context);
+			row.addView(createLabelTitles(convertNameTab(dimensionName), Gravity.CENTER_HORIZONTAL, R.style.TwoColsWhiteBoldText));
+			row.addView(createLabelTitles("Teus", Gravity.LEFT));
+			table.addView(row, new TableLayout.LayoutParams());
+			
+			
+			JSONObject tmp = data.getJSONObject("dimensionItemList");
+			if(tmp== null|| !tmp.has("dimensionData")){//si no tiene datos o sea no tiene movimientos
+				throw new TabTableCreatorException("No Mostrar la Tabla porqu no hay datos");
+			}
+			
+			JSONArray arr = tmp.optJSONArray("dimensionData");
+			if(arr ==  null){//esto quiere decir que solo viene un resultado entonces hay que tratarlo como objeto
+				generateRow(table, 0, tmp.getJSONObject("dimensionData"));
+			}else{
+				for (int i = 0; i < Math.min(arr.length(), colorArr.length) ; i++) {
+					JSONObject seriesEntry 	=  arr.getJSONObject(i);
+					generateRow(table, i, seriesEntry);
+				}
+			}
+			
+			
+			
+//			for (int i = 0; i < arr.length(); i++) {
+//				row = new TableRow(context);
+//				JSONObject entry =  arr.getJSONObject(i);
+//				String text = convertDates("MMMM yyyy", "yyyyMM", entry.getString("year")+entry.getString("month")) +"'";// obtenerYYYYMM(entry));
+//				double value = entry.getDouble("value");
+//				
+//				row.addView(createLabel(text, Gravity.LEFT));
+//				row.addView(createLabelTitles(formatter.format(value), Gravity.RIGHT));
+//				table.addView(row, new TableLayout.LayoutParams());
+//			}
+
+		
+			
+		} catch (JSONException e) {
+			throw new TabTableCreatorException("No Mostrar generar la Tabla, error json", e);
+		}
+		
+		return table;
 	}
+
+	//"name":"UNION DE BANANEROS ECUATORIANOS S A (EC)",
+	//												"code":"1583080",
+	//												"total":"24854",
+	private void generateRow(TableLayout table, int index, JSONObject dimensionData) throws JSONException {
+		String name 	= dimensionData.getString("name");
+		double value 	= dimensionData.getDouble("total");
+//		int color 		= Color.parseColor(colorString);
+		int color		= colorArr[index].getRGB();
+		
+		TableRow row = new TableRow(context);
+		row.addView(createSquare(color));
+		row.addView(createLabel(name, Gravity.LEFT));
+		row.addView(createLabelTitles(formatter.format(value), Gravity.RIGHT));
+		table.addView(row, new TableLayout.LayoutParams());
+		
+	}
+
+	private View createSquare(int color) {
+		Space space = new Space(context);
+		space.setBackgroundColor(color);
+		
+		return space;
+		
+	}
+	
+
+	
 }

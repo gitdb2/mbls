@@ -108,8 +108,9 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 				case 5:
 				{
 					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-					ret = arr.getString(page-2);
+					//ret = arr.getString(page-2);
 					try {
+						tableLayout.addView(tabCreator.crearTablaTabOther(arr.getJSONObject(page-2)));
 						graficaLayout.addView(chartCreator.crearGraficaMulti(arr.getJSONObject(page-2)));
 					} catch (ChartCreatorException e) {
 						// TODO Auto-generated catch block
