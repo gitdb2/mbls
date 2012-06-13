@@ -382,7 +382,7 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 			for (int i = 0; i < arr.length(); i++) {
 				row = new TableRow(context);
 				JSONObject entry =  arr.getJSONObject(i);
-				String text = convertDates("MMMM yyyy", "yyyyMM", entry.getString("year")+entry.getString("month")) +"'";// obtenerYYYYMM(entry));
+				String text = convertDates("MMMM yyyy", "yyyyMM", entry.getString("year")+entry.getString("month"));// obtenerYYYYMM(entry));
 				double value = entry.getDouble("value");
 				
 				suma = suma.add(BigDecimal.valueOf(value));
@@ -508,6 +508,15 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		TableRow row = new TableRow(context);
 		row.setMinimumHeight(30);
 		row.addView(createSquare(color));
+		
+		if(!isPanatallGrande()){
+			int origLength = name.length();
+			final int MAX = 20;
+			if(origLength > MAX){
+				name = name.substring(0, MAX)+"...";	
+			}
+			
+		}
 		row.addView(createLabel(name, Gravity.LEFT, R.style.WhiteNormalText));
 		row.addView(createLabelTitles(formatter.format(value), Gravity.RIGHT));
 		table.addView(row, new TableLayout.LayoutParams());
@@ -620,9 +629,8 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	
 	private List<List<ColumnPair>> parseData(JSONObject data) {
 		int columnsInRow = 1;
-		 if (context.getResources().getConfiguration().orientation
-				== Configuration.ORIENTATION_LANDSCAPE 
-				&& context.getResources().getConfiguration().isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE)) {
+		 if (isLandscape()
+				&& isPanatallGrande()) {
 			 columnsInRow = 2;
 		 }
 		
@@ -646,8 +654,12 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	
 	
 	
-	
-	
+	private boolean isLandscape(){
+		return context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ;
+	}
+	private boolean isPanatallGrande(){
+		return context.getResources().getConfiguration().isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE);
+	}
 	
 	
 	
