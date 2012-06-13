@@ -375,7 +375,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 			IProfileProvider profileProvider = new ProfileProvider();
 			boolean showDialog = !profileProvider.checkFileExists(localBasePath, getBundledType(), getBundledId());
 
-			new DetailsAsyncTask(getActivity(), layout, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId());
+			new DetailsAsyncTask(getActivity(), layout, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId(), getBundledName());
 			
 			return layout;
 		}  

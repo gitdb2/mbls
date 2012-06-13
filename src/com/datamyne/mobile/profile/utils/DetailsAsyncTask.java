@@ -9,7 +9,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.datamyne.mobile.profile.utils.ChartCreator.ChartCreatorException;
@@ -18,7 +17,6 @@ import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.ProfileProvider;
 import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
 import com.datamyne.mobile.xml.R;
-import com.datamyne.mobile.xml.R.id;
 
 
 public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
