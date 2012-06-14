@@ -38,6 +38,10 @@ import com.steema.teechart.styles.Line;
 import com.steema.teechart.styles.Series;
 import com.steema.teechart.themes.ThemesList;
 
+/*
+ * Clase para la creacion de graficas y tablas de datos.
+ */
+
 public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	private static final String TAG = "ChartCreator";
 	public static class ChartCreatorException extends Exception{
@@ -86,7 +90,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	
 	private Context context;
 
-
 	private final Map<String, String> namesDimension = new HashMap<String, String>();
 	
 	public ChartCreator(Context context){
@@ -96,7 +99,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		namesDimension.put("product", context.getString(R.string.consignee_product));
 		namesDimension.put("port", context.getString(R.string.consignee_port));
 	}
-
 
 	final Color[] colorArr ={
 			new Color( Color.parseColor("#AFD8F8")),
@@ -110,24 +112,12 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 			new Color( Color.parseColor("#B0A700")),
 			new Color( Color.parseColor("#008ED6")),
 	};
-	//	Color.parseColor(4)
+
 	/* (non-Javadoc)
 	 * @see com.datamyne.mobile.xml.IChartsCreator#crearGraficaMonthly(org.json.JSONObject)
 	 */
 	public View crearGraficaMonthly(JSONObject data) throws ChartCreatorException{
 
-		/*
-
-		{"monthlyValueList":
-		{"fullMonthData":[
-			{	"year":"2011",
-				"month":"4",
-				"value":"6174",
-				"name":"APRIL",
-				"code":"3"},
-
-		fullMonthData
-		 */
 		JSONObject tmp =  data.optJSONObject("monthlyValueList");
 		if(tmp== null|| !tmp.has("fullMonthData")){//si no tiene datos o sea no tiene movimientos
 			throw new ChartCreatorException("No Mostrar la grafica porqu no hay datos");
@@ -150,11 +140,10 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		chart.getAxes().getBottom().setIncrement(1);
 		line.setTitle("Total Annual imports in teus");
 		((Line)chart.getSeries(0)).getLinePen().setWidth(3);
-//		line.setShowInLegend(false);
 		try {
 			for (int i = 0; i < arr.length(); i++) {
 				JSONObject entry =  arr.getJSONObject(i);
-				String axisX = convertDates("MMM yy", "yyyyMM", entry.getString("year")+entry.getString("month"));// obtenerYYYYMM(entry));
+				String axisX = convertDates("MMM yy", "yyyyMM", entry.getString("year")+entry.getString("month"));
 				double value = entry.getDouble("value");
 				line.add(value, axisX);
 			}
@@ -184,36 +173,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	 * @see com.datamyne.mobile.xml.IChartsCreator#crearGraficaMulti(org.json.JSONObject)
 	 */
 	public View crearGraficaMulti(JSONObject data)throws ChartCreatorException{
-
-		//		"tabDimension":[ //no viene
-		//		            	{	viene este objeto
-		//		            		"dimensionName":"partner",
-		//		            		"dimensionItemList":
-		//		            			{	"dimensionData":
-		//		            						[
-		//		            							{
-		//		            							"name":"UNION DE BANANEROS ECUATORIANOS S A (EC)",
-		//												"code":"1583080",
-		//												"total":"24854",
-		//		            							"monthlyValueList":
-		//		            									{"simpleMonthData":
-		//		            												[
-		//		            													{"year":"2011","month":"4","value":"2407"},
-		//		            													{"year":"2011","month":"5","value":"2937.67"},
-		//		            													{"year":"2011","month":"6","value":"2006"},
-		//		            													{"year":"2011","month":"7","value":"2487"},
-		//		            													{"year":"2011","month":"8","value":"1594"},
-		//		            													{"year":"2011","month":"9","value":"1207.67"},
-		//		            													{"year":"2011","month":"10","value":"1849"},
-		//		            													{"year":"2011","month":"11","value":"2359"},
-		//		            													{"year":"2011","month":"12","value":"1433"},
-		//		            													{"year":"2012","month":"1","value":"2115"},
-		//		            													{"year":"2012","month":"2","value":"1998"},
-		//		            													{"year":"2012","month":"3","value":"2460.67"}
-		//		            												]
-		//		            									}
-		//		            								},
-
 
 		TChart chart = new TChart(context);
 		chart.removeAllSeries();
@@ -299,9 +258,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		return "Top "+ found + " in Teus";
 	}
 
-	
-	
-	
 	//////////////////////////////////////////////////////////////////////////////////
 	final DecimalFormat formatter = new DecimalFormat("#,##0.0");
 	private String convertNameTab(String dimensionName) {
@@ -340,12 +296,9 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
     
 	    mWebView1.loadDataWithBaseURL("file:///android_asset/", sb.toString(), "text/html", "UTF-8", null);
 		
-		
 		return mWebView1;
 		
-		
 	}
-
 
 	/* (non-Javadoc)
 	 * @see com.datamyne.mobile.xml.ITabTableCreator#crearTablaTabMonthly(org.json.JSONObject)
@@ -361,18 +314,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		// add the TableRow to the TableLayout
 		table.addView(row, new TableLayout.LayoutParams());
 
-		/*
-		
-		{"monthlyValueList":
-		{"fullMonthData":[
-			{	"year":"2011",
-				"month":"4",
-				"value":"6174",
-				"name":"APRIL",
-				"code":"3"},
-
-		fullMonthData
-		 */
 		JSONObject tmp =  data.optJSONObject("monthlyValueList");
 		if(tmp== null|| !tmp.has("fullMonthData")){//si no tiene datos o sea no tiene movimientos
 			throw new TabTableCreatorException("No Mostrar la Tabla porqu no hay datos");
@@ -446,15 +387,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 	
 		TableLayout table = new TableLayout(context);
 
-		//		            		"dimensionItemList":
-		//		            			{	"dimensionData":
-		//		            						[
-		//		            							{
-		//		            							"name":"UNION DE BANANEROS ECUATORIANOS S A (EC)",
-		//												"code":"1583080",
-		//												"total":"24854",
-
-		
 		try {
 			
 			String dimensionName = data.getString("dimensionName");
@@ -465,7 +397,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 			row.addView(createLabelTitles(convertNameTab(dimensionName), Gravity.CENTER_HORIZONTAL, R.style.TwoColsWhiteBoldText));
 			row.addView(createLabelTitles("Teus", Gravity.LEFT));
 			table.addView(row, new TableLayout.LayoutParams());
-			
 			
 			JSONObject tmp = data.getJSONObject("dimensionItemList");
 			if(tmp== null|| !tmp.has("dimensionData")){//si no tiene datos o sea no tiene movimientos
@@ -494,9 +425,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		return "product".equalsIgnoreCase(dimensionName);
 	}
 
-	//"name":"UNION DE BANANEROS ECUATORIANOS S A (EC)",
-	//												"code":"1583080",
-	//												"total":"24854",
 	private void generateRow(TableLayout table, int index, JSONObject dimensionData, boolean showCode) throws JSONException {
 		String name 	= dimensionData.getString("name");
 		if(showCode){
@@ -505,7 +433,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		}
 		
 		double value 	= dimensionData.getDouble("total");
-//		int color 		= Color.parseColor(colorString);
 		int color		= colorArr[index].getRGB();
 		
 		TableRow row = new TableRow(context);
@@ -535,10 +462,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		
 	}
 	
-
-
-	
-	
 	private class ColumnPair{
 		String label;
 		String value;
@@ -553,8 +476,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 			return "<td class='label'>" + label + ":</td><td class='value'><b>" + value + "</b></td>";
 		}
 	}
-	
-	
 	
 	private StringBuilder generateHTML(JSONObject data) {
 
@@ -638,8 +559,6 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		 }
 		
 		List<List<ColumnPair>> ret = new ArrayList<List<ColumnPair>>();
-		
-			
 		 
 		for (String field : fields) {
 			ArrayList<ColumnPair> tmp = new ArrayList<ColumnPair>();
@@ -654,30 +573,12 @@ public class ChartCreator implements IChartsCreator, ITabTableCreator {
 		return ret;
 	}
 	
-	
-	
-	
 	private boolean isLandscape(){
 		return context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ;
 	}
 	private boolean isPanatallGrande(){
 		return context.getResources().getConfiguration().isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 }
 

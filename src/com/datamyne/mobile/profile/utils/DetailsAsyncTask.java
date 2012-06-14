@@ -21,7 +21,10 @@ import com.datamyne.mobile.providers.ProfileProvider;
 import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
 import com.datamyne.mobile.xml.R;
 
-
+/*
+ * Clase que gestiona las tareas a ejecutarse en background cuando el
+ * usuario elige un elemento del resultado de una busqueda.
+ */
 public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
 
 	private IProfileProvider profileProvider 	= new ProfileProvider();
@@ -119,7 +122,6 @@ public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
       {
          super.onCancelled();
       }
-	
 	
 	
 	private void writeData(String payload) {

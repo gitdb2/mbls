@@ -8,7 +8,6 @@ import com.datamyne.mobile.profile.utils.ChartCreator.ChartCreatorException;
 
 public interface IChartsCreator {
 
-	//	Color.parseColor(4)
 	public abstract View crearGraficaMonthly(JSONObject data)
 			throws ChartCreatorException;
 

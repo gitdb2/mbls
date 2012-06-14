@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.util.TypedValue;
 import android.view.View;
 
-
 public  class DrawView extends View {
     Paint paint = new Paint();
 
@@ -31,26 +30,17 @@ public  class DrawView extends View {
         this.color = color;
         setBackgroundColor(Color.WHITE);
     }
-    
 
     @Override
     public void onDraw(Canvas canvas) {
-//        paint.setColor(Color.WHITE);
-//        paint.setStrokeWidth(1);
-////        canvas.drawRect(convertMetric(0), convertMetric(0), convertMetric(width), convertMetric(height), paint);
-//        canvas.drawRect(0, 0, width, height, paint);
-//        
         paint.setStrokeWidth(0);
         paint.setColor(color);
-//        canvas.drawRect(convertMetric(borderWidth), convertMetric(borderWidth), convertMetric(width-borderWidth), convertMetric( height-borderWidth), paint );
         canvas.drawRect(borderWidth, borderWidth,width-borderWidth, height-borderWidth, paint );
     }
     
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    	// TODO Auto-generated method stub
     	super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//    	setMeasuredDimension(convertMetric(width), convertMetric(height));
     	setMeasuredDimension(width,height);
 
     }

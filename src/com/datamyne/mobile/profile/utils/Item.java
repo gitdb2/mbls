@@ -3,6 +3,9 @@ package com.datamyne.mobile.profile.utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/*
+ * Contenedor de datos.
+ */
 public class Item implements Parcelable{
 	String code;
 	String name;
@@ -20,7 +23,6 @@ public class Item implements Parcelable{
 	}
 	public Item() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public Item(String code, String name) {
 		super();
@@ -32,14 +34,12 @@ public class Item implements Parcelable{
 		return name;
 	}
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(code);
 		dest.writeString(name);
 	}
-
 
      public static final Parcelable.Creator<Item> CREATOR
              = new Parcelable.Creator<Item>() {
