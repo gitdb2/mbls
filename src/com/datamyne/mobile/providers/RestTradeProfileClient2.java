@@ -13,7 +13,9 @@ import org.json.JSONObject;
 
 public class RestTradeProfileClient2  implements IRestTradeProfileClient{
 
+	//Servidor beta 
 	final private String BASE_SERVER =   "http://200.40.197.173:8082/system";
+	//servidor produccion
 //	final private String BASE_SERVER =   "http://www.datamyne20.com/system";
 	public String getFullProfileJson(String type, String id) throws IOException{
 
