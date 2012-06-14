@@ -1,5 +1,6 @@
 package com.datamyne.mobile.xml;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -368,11 +369,20 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 				return null;
 			}
 
-
-			ViewGroup layout = (ViewGroup)inflater.inflate(R.layout.fragment_trade_profile_detail_pager, null);
-			String localBasePath = getActivity().getExternalFilesDir(null).getPath();
-	
 			IProfileProvider profileProvider = new ProfileProvider();
+			ViewGroup layout = (ViewGroup)inflater.inflate(R.layout.fragment_trade_profile_detail_pager, null);
+	
+			String localBasePath = null; 
+			//Chequea si existe SD cuando file es null
+			if(profileProvider.isSdPresent()){
+				File file = getActivity().getExternalFilesDir(null);
+				if(file != null){
+					localBasePath = file.getPath();
+				}
+			}
+
+			
+			
 			boolean showDialog = !profileProvider.checkFileExists(localBasePath, getBundledType(), getBundledId());
 
 			new DetailsAsyncTask(getActivity(), layout, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId(), getBundledName());
@@ -492,21 +502,39 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 	}
 
 	private String lastQuery = null;
+	
+	/**
+	 * MEtodo ejecutado cuando se ejecuta un submit en el rearchView
+	 */
 	public boolean onQueryTextSubmit(String query) {
 		
 		boolean trigger= lastQuery == null || !query.equals(lastQuery); 
+		//Existe un caso en que cuando se usa teclado al presionar enter se produce un rebote (KeyUp y down), y este metodo se llama dos veces,
+		//por lo que controlamos que lo escrito antes sea distinto a lo escrito ahora, para dispoarar la busqueda
 		if(trigger){
 			lastQuery = query;
-			String baseDir = getExternalFilesDir(null).getPath();
-	
+			
+			String baseDir = null; 
+
+			//Chequea si existe SD cuando file es null
+			File file = getExternalFilesDir(null);
+//			boolean cacheEnabled = false;
+			if(file != null){
+				baseDir = file.getPath();
+//				cacheEnabled = true;
+			}
+			
 			TitlesFragment titles = new TitlesFragment();
 			
 			Bundle args = new Bundle();
 			args.putString("target", query);
 			args.putString("baseDir", baseDir);
+//			args.putBoolean("cacheEnabled", cacheEnabled);
+			
 			
 			titles.setArguments(args);
 			
+			//Se reemplaza con un fragmento el frameLayout titles, donde muestra el resultado de la busqueda
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 			ft.replace(R.id.titles, titles);
 			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);

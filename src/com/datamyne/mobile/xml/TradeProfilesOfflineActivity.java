@@ -1,21 +1,14 @@
 package com.datamyne.mobile.xml;
 
+import java.io.File;
 import java.util.ArrayList;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -23,15 +16,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.datamyne.mobile.dashboard.HomeActivity;
 import com.datamyne.mobile.profile.utils.DetailsAsyncTask;
@@ -52,9 +42,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_trade_profiles_offline);
 		
-//		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//		StrictMode.setThreadPolicy(policy);
-
 		dbHelper = new ProfilesSQLiteHelper(this);
 		 
 		ActionBar actionBar = getActionBar();
@@ -70,7 +57,14 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 		
 		Bundle args = new Bundle();
 		args.putString("target", "");
-		args.putString("baseDir", getExternalFilesDir(null).getPath());
+		
+		String baseDir = null; 
+		//Chequea si existe SD cuando file es null
+		File file = getExternalFilesDir(null);
+		if(file != null){
+			baseDir = file.getPath();
+		}
+		args.putString("baseDir", baseDir);
 		
 		titles.setArguments(args);
 		
@@ -374,11 +368,19 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 				// the view hierarchy; it would just never be used.
 				return null;
 			}
-
-			ViewGroup layout = (ViewGroup)inflater.inflate(R.layout.fragment_trade_profile_detail_pager, null);
-			String localBasePath = getActivity().getExternalFilesDir(null).getPath();
-	
 			IProfileProvider profileProvider = new ProfileProvider();
+			
+			ViewGroup layout = (ViewGroup)inflater.inflate(R.layout.fragment_trade_profile_detail_pager, null);
+			String localBasePath = null; 
+			//Chequea si existe SD cuando file es null
+			if(profileProvider.isSdPresent()){
+				File file = getActivity().getExternalFilesDir(null);
+				if(file != null){
+					localBasePath = file.getPath();
+				}
+			}
+	
+			
 			boolean showDialog = !profileProvider.checkFileExists(localBasePath, getBundledType(), getBundledId());
 
 			new DetailsAsyncTask(getActivity(), layout, showDialog, getBundledPage()).execute(localBasePath, getBundledType(), getBundledId(), getBundledName());

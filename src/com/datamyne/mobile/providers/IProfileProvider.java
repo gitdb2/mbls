@@ -9,4 +9,8 @@ public interface IProfileProvider {
 	
 	boolean checkFileExists(String localBasePath, String type, String id);
 
+	public boolean isSdPresent();
+
+	boolean isOnTheflyData();
+
 }

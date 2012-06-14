@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -14,10 +15,17 @@ import android.util.Log;
 
 public class ProfileProvider implements IProfileProvider {
 
-	
-	//private IRestTradeProfileClient client = new RestTradeProfileClient();
+	boolean onTheflyData;
 	private IRestTradeProfileClient client;
 	
+	
+	/**
+	 * Estado que cambi en caso que no haya sd a true
+	 */
+	public boolean isOnTheflyData() {
+		return onTheflyData;
+	}
+
 	public ProfileProvider(){
 		 client = new RestTradeProfileClient2();
 	}
@@ -29,11 +37,12 @@ public class ProfileProvider implements IProfileProvider {
 	public boolean checkFileExists(String localBasePath, String type, String id){
 			boolean ret = false;
 			try {
-				File root = new File(localBasePath, type + File.separatorChar + id+".json");
-				ret = root.exists();
+				if(mExternalStorageAvailable && localBasePath != null){
+					File root = new File(localBasePath, type + File.separatorChar + id+".json");
+					ret = root.exists();
+				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("ExternalStorage", "Error checkFileExists" +   localBasePath + " - "+ id, e);
 				ret = false;
 			}
 			return ret;
@@ -55,51 +64,7 @@ public class ProfileProvider implements IProfileProvider {
 		}
 	}
 	
-	/**
-	 * Busca un profile completo a partir del tipo y del id y retorna la representacion json del profile
-	 * @param localBasePath
-	 * @param type
-	 * @param id
-	 * @return
-	 */
-	@Deprecated
-	public String loadFullProfile(String localBasePath, String type, String id){
-		String result ="";
-		
-		
-		File root = new File(localBasePath, type + File.separatorChar + id+".json");
-		
-		updateExternalStorageState();
-		try {
 
-			if(mExternalStorageAvailable){
-				String payload = "";
-				if (!root.exists()) {
-					payload = client.getFullProfileJson(type, id);
-					saveToSD(localBasePath, type, id, payload);
-				}else{
-					InputStreamReader isReader = new FileReader(root);
-					BufferedReader reader = new BufferedReader(isReader);
-
-					payload = reader.readLine();
-					reader.close();
-				}
-
-				if(payload!= null && !payload.trim().isEmpty()){
-					result = payload;
-				}else{
-					Log.w("ExternalStorage", "Error reading " + root + " Payload is empty");
-				}
-			}else{
-				Log.w("ExternalStorage", "Error reading " + root + " Payload is empty");
-			}
-		} catch (IOException e) {
-			// Unable to create file, likely because external storage is
-			// not currently mounted.
-			Log.w("ExternalStorage", "Error reading " + root, e);
-		}
-		return result;
-	}
 	
 	/**
 	 * Busca un profile completo a partir del tipo y del id y retorna la representacion json del profile
@@ -110,18 +75,21 @@ public class ProfileProvider implements IProfileProvider {
 	 */
 	public String loadFullProfile(String localBasePath, String type, String id, String name, ProfilesSQLiteHelper dbHelper){
 		String result ="";
-		
-		File root = new File(localBasePath, type + File.separatorChar + id+ ".json");
-		
 		updateExternalStorageState();
+		
 		try {
-
-			if(mExternalStorageAvailable){
-				String payload = "";
-				if (!root.exists()) {
+			String payload = "";
+			if(mExternalStorageAvailable){//si la sd esta disponible
+				onTheflyData =false;
+				File root = new File(localBasePath, type + File.separatorChar + id+ ".json");
+				if ( !root.exists()) {
 					payload = client.getFullProfileJson(type, id);
-					saveToSD(localBasePath, type, id, payload);
-					saveToBD(root.getAbsolutePath(), type, id, name, dbHelper);
+					
+					//si se salva en la sd entonces se salva en la db
+					if(saveToSD(localBasePath, type, id, payload)){
+						saveToBD(root.getAbsolutePath(), type, id, name, dbHelper);
+					}
+			
 				}else{
 					InputStreamReader isReader = new FileReader(root);
 					BufferedReader reader = new BufferedReader(isReader);
@@ -129,20 +97,23 @@ public class ProfileProvider implements IProfileProvider {
 					payload = reader.readLine();
 					reader.close();
 				}
-
-				if(payload!= null && !payload.trim().isEmpty()){
-					result = payload;
-				}else{
-					Log.w("ExternalStorage", "Error reading " + root + " Payload is empty");
-				}
 			}else{
-				Log.w("ExternalStorage", "Error reading " + root + " Payload is empty");
+				Log.w("ExternalStorage", "No hay SD usando modo onthe fly ");
+				payload = client.getFullProfileJson(type, id);
+				onTheflyData = true;
+			}
+			
+			if(payload!= null && !payload.trim().isEmpty()){
+				result = payload;
+			}else{
+				Log.e("ExternalStorage", "Error reading " + name + " - "+ id + " Payload is empty");
 			}
 		} catch (IOException e) {
 			// Unable to create file, likely because external storage is
 			// not currently mounted.
-			Log.w("ExternalStorage", "Error reading " + root, e);
+			Log.e("ExternalStorage", "loadFullProfile Error reading IOException" +   name + " - "+ id, e);
 		}
+		
 		return result;
 	}
 	
@@ -161,35 +132,86 @@ public class ProfileProvider implements IProfileProvider {
 	 */
 	private boolean saveToSD(String localBasePath, String type, String id, String payload) {
 		boolean ret = false;
-		File root = new File(localBasePath, type);
 		updateExternalStorageState();
-		try {
-
-			if(mExternalStorageWriteable){
-				if (!root.exists()) {
-					root.mkdirs();
-				}
-				File gpxfile = new File(root, id+".json");
-				if(!gpxfile.exists()){
-					FileWriter writer = new FileWriter(gpxfile);
-					writer.append(payload);
-					writer.flush();
-					writer.close();
-					Log.w("ExternalStorage", root + " Saved");
+		if(isSdPresent()){//si hay sd 
+			File root = new File(localBasePath, type);
+			try {
+				
+				if(mExternalStorageWriteable){
+					if (!root.exists()) {
+						root.mkdirs();
+					}
+					File gpxfile = new File(root, id+".json");
+					if(!gpxfile.exists()){
+						FileWriter writer = new FileWriter(gpxfile);
+						writer.append(payload);
+						writer.flush();
+						writer.close();
+						Log.w("ExternalStorage", root + " Saved");
+					}else{
+						Log.w("ExternalStorage", root + " Already Saved");
+					}
+					ret = true;
 				}else{
-					Log.w("ExternalStorage", root + " Already Saved");
+					Log.w("ExternalStorage", root + " No se puede escribir en la SD");
 				}
-				ret = true;
-			}else{
-				Log.w("ExternalStorage", root + " No se puede escribir en la SD");
+			} catch (IOException e) {
+	
+				Log.e("ExternalStorage", "Error writing " + root, e);
 			}
-		} catch (IOException e) {
-
-			Log.w("ExternalStorage", "Error writing " + root, e);
+		}else{
+			Log.w("ExternalStorage", "No SD present ");
 		}
 		return ret;
 	}
 	
-		
+	public boolean isSdPresent() {
+	    return android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+	}	
 
+	
+//	public String loadFullProfileInternalCache(Context context, String type, String id, String name, ProfilesSQLiteHelper dbHelper){
+//		String result ="";
+//		updateExternalStorageState();
+//		
+//		try {
+//			String payload = "";
+//			if(mExternalStorageAvailable){//si la sd esta disponible
+//				onTheflyData =false;
+//				File root = new File(localBasePath, type + File.separatorChar + id+ ".json");
+//				if ( !root.exists()) {
+//					payload = client.getFullProfileJson(type, id);
+//					
+//					//si se salva en la sd entonces se salva en la db
+//					if(saveToSD(localBasePath, type, id, payload)){
+//						saveToBD(root.getAbsolutePath(), type, id, name, dbHelper);
+//					}
+//			
+//				}else{
+//					InputStreamReader isReader = new FileReader(root);
+//					BufferedReader reader = new BufferedReader(isReader);
+//
+//					payload = reader.readLine();
+//					reader.close();
+//				}
+//			}else{
+//				Log.w("ExternalStorage", "No hay SD usando modo onthe fly ");
+//				payload = client.getFullProfileJson(type, id);
+//				onTheflyData = true;
+//			}
+//			
+//			if(payload!= null && !payload.trim().isEmpty()){
+//				result = payload;
+//			}else{
+//				Log.e("ExternalStorage", "Error reading " + name + " - "+ id + " Payload is empty");
+//			}
+//		} catch (IOException e) {
+//			// Unable to create file, likely because external storage is
+//			// not currently mounted.
+//			Log.e("ExternalStorage", "loadFullProfile Error reading IOException" +   name + " - "+ id, e);
+//		}
+//		
+//		return result;
+//	}
+	
 }
