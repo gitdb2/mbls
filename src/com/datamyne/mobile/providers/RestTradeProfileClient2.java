@@ -13,9 +13,10 @@ import org.json.JSONObject;
 
 public class RestTradeProfileClient2  implements IRestTradeProfileClient{
 
+	final private String BASE_SERVER =   "http://200.40.197.173:8082/system";
 	public String getFullProfileJson(String type, String id) throws IOException{
 
-		 String urlStr = "http://200.40.197.173:8082/system/rest/fullTradeprofile/"+type+"/"+id;
+		 String urlStr = BASE_SERVER+"/rest/fullTradeprofile/"+type+"/"+id;
 
 		HttpURLConnection con = null;
 		StringBuilder payload = new StringBuilder();
@@ -73,7 +74,7 @@ public class RestTradeProfileClient2  implements IRestTradeProfileClient{
 		try {
 	
 			String q 	= URLEncoder.encode(target, "UTF-8");
-						URL url 	= new URL("http://200.40.197.173:8082/system/rest/autocomplete?" +
+						URL url 	= new URL(BASE_SERVER+"/rest/autocomplete?" +
 								"Base=usa_hid12&idComponent=402&compositeid=402&targetTerm="+q);
 
 			/*

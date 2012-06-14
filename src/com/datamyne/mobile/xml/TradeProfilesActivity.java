@@ -402,6 +402,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		private IRestTradeProfileClient client 		= new RestTradeProfileClient2();
 		private ProgressDialog dialog;
 		private TitlesFragment titlesFragment;
+		int errorCode = 0;
 		
 		public HttpClientTask(TitlesFragment titlesFragment) {
 			super();
@@ -458,22 +459,34 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 				dialog.dismiss();
 				
 			}
+				//para que se busque de nuevo al hacer enter
+			((TradeProfilesActivity) titlesFragment.getActivity()).lastQuery = null;
+			
 			titlesFragment.itemList = result;	
 			titlesFragment.displayData();
+	
 		}
 		
 		  @Override
           protected void onCancelled()
           {
-                  super.onCancelled();
+             super.onCancelled();
+             ((TradeProfilesActivity) titlesFragment.getActivity()).lastQuery = null;
+ 			
+ 			titlesFragment.itemList = new ArrayList<Item>();	
+ 			titlesFragment.displayData();
+                    
           }
 		
 		@Override
 		protected void onProgressUpdate(Integer... values) {
 			// TODO Auto-generated method stub
 			super.onProgressUpdate(values);
+			
+			errorCode = values[0]; 
 			switch (values[0]) {
 			case -1:
+				
 				dialog.setMessage("Unknown data");
 				dialog.setCancelable(true);
 				
@@ -484,7 +497,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 				
 				break;
 			case -3:
-				dialog.setMessage("Other IO Exception, try later");
+				dialog.setMessage("Communication error Could not reach server, try later");
 				dialog.setCancelable(true);
 				
 				break;
