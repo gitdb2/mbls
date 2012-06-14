@@ -1,6 +1,7 @@
 package com.datamyne.mobile.xml;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import android.app.ActionBar;
@@ -16,6 +17,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +27,7 @@ import android.widget.ListView;
 
 import com.datamyne.mobile.dashboard.HomeActivity;
 import com.datamyne.mobile.profile.utils.DetailsAsyncTask;
+import com.datamyne.mobile.profile.utils.HoneycombCompatibility;
 import com.datamyne.mobile.profile.utils.Item;
 import com.datamyne.mobile.providers.DataBaseProfileProvider;
 import com.datamyne.mobile.providers.IDatabaseProfileProvider;
@@ -47,8 +50,9 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 		ActionBar actionBar = getActionBar();
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setLogo(R.drawable.title_home_default);
         actionBar.setTitle("Trade Profiles (Offline mode)");
+        HoneycombCompatibility.actionBarSetLogo(actionBar, R.drawable.title_home_default);
+//      actionBar.setLogo(R.drawable.title_home_default);
         populateTitles();
 	}
 	
@@ -150,7 +154,15 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 			ActionBar actionBar = getActionBar();
 	        actionBar.show();
 	        actionBar.setDisplayHomeAsUpEnabled(true);
-	        actionBar.setLogo(R.drawable.title_home_default);
+//	        if(Build.VERSION.SDK_INT < 14){
+				try {
+					Method setLogo = ActionBar.class.getMethod("setLogo");//, new Class[]{int.class});
+					setLogo.invoke(actionBar, new Object[] {R.drawable.title_home_default});
+				} catch (Exception e) {
+					Log.i("tradeProfilesActivity", e.getMessage());
+				}
+//	        }
+//	        actionBar.setLogo(R.drawable.title_home_default);
 			
 			if (savedInstanceState == null) {
  

@@ -33,6 +33,7 @@ import android.widget.SearchView;
 
 import com.datamyne.mobile.dashboard.HomeActivity;
 import com.datamyne.mobile.profile.utils.DetailsAsyncTask;
+import com.datamyne.mobile.profile.utils.HoneycombCompatibility;
 import com.datamyne.mobile.profile.utils.Item;
 import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.IRestTradeProfileClient;
@@ -59,8 +60,12 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		ActionBar actionBar = getActionBar();
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setLogo(R.drawable.title_home_default);
         actionBar.setTitle("Trade Profiles (Online mode)");
+
+        HoneycombCompatibility.actionBarSetLogo(actionBar, R.drawable.title_home_default);
+//      actionBar.setLogo(R.drawable.title_home_default);
+        
+        
 		
 		searchView = (SearchView) findViewById(R.id.searchViewCompany);
 		searchView.setIconifiedByDefault(false);
@@ -143,8 +148,9 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 			ActionBar actionBar = getActionBar();
 	        actionBar.show();
 	        actionBar.setDisplayHomeAsUpEnabled(true);
-	        actionBar.setLogo(R.drawable.title_home_default);
-			
+	        HoneycombCompatibility.actionBarSetLogo(actionBar, R.drawable.title_home_default);
+//	      actionBar.setLogo(R.drawable.title_home_default);
+	        
 			if (savedInstanceState == null) {
  
 				id = getIntent().getExtras().getString("id");

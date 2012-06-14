@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.datamyne.mobile.profile.utils.HoneycombCompatibility;
 import com.datamyne.mobile.xml.R;
 
 public class AboutActivity extends Activity {
@@ -17,7 +18,10 @@ public class AboutActivity extends Activity {
 		ActionBar actionBar = getActionBar();
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setLogo(R.drawable.title_home_default);
+        
+        
+        HoneycombCompatibility.actionBarSetLogo(actionBar, R.drawable.title_home_default);
+//      actionBar.setLogo(R.drawable.title_home_default);
 	}
 	
 	@Override
