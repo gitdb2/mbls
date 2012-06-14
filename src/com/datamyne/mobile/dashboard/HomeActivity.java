@@ -16,12 +16,12 @@
 
 package com.datamyne.mobile.dashboard;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -46,31 +46,57 @@ public class HomeActivity extends Activity {
 	}
 	
 	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
-		if (workOffline) {
-			
-			
-			menu.add(0, Menu.FIRST, 0, R.string.work_online);
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.home_menu, menu);
+	    
+	    
+	    
+	    if (workOffline) {
+	    	menu.getItem(0).setTitle(R.string.work_online);
+//			menu.add(0, Menu.FIRST, 0, R.string.work_online);
 		} else {
-			menu.add(0, Menu.FIRST, 0, R.string.work_offline);
+//			menu.add(0, Menu.FIRST, 0, R.string.work_offline);
+			menu.getItem(0).setTitle(R.string.work_offline);
 		}
+	    
+	    
 		menu.add(0, Menu.FIRST + 1, Menu.NONE, R.string.exit_application);
-		return super.onPrepareOptionsMenu(menu);
+	
+		
+	    return true;
 	}
+	
+	
+	
+	
+//	@Override
+//	public boolean onPrepareOptionsMenu(Menu menu) {
+//		menu.clear();
+//		
+//		
+//		
+//		if (workOffline) {
+//			
+//			
+//			menu.add(0, Menu.FIRST, 0, R.string.work_online);
+//		} else {
+//			menu.add(0, Menu.FIRST, 0, R.string.work_offline);
+//		}
+//		menu.add(0, Menu.FIRST + 1, Menu.NONE, R.string.exit_application);
+//	
+//		return super.onPrepareOptionsMenu(menu);
+//	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-		case (Menu.FIRST):
-			if (workOffline) {
-				workOffline = false;
-			} else {
-				workOffline = true;
-			}
+		case (R.id.menu_offline):
+			workOffline = !workOffline;
 			showCurrentWorkMode();
 			saveWorkMode();
+			item.setTitle(workOffline? R.string.work_online: R.string.work_offline);
 			break;
 		case (Menu.FIRST + 1):
 			this.finish();

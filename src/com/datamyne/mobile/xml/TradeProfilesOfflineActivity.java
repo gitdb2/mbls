@@ -48,7 +48,7 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setLogo(R.drawable.title_home_default);
-        
+        actionBar.setTitle("Trade Profiles (Offline mode)");
         populateTitles();
 	}
 	

@@ -60,6 +60,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setLogo(R.drawable.title_home_default);
+        actionBar.setTitle("Trade Profiles (Online mode)");
 		
 		searchView = (SearchView) findViewById(R.id.searchViewCompany);
 		searchView.setIconifiedByDefault(false);

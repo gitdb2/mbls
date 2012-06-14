@@ -2,10 +2,10 @@
 <resources>
 
     <string name="exit_application">Exit Datamyne Mobile</string>
-    <string name="work_online">Work online</string>
+    <string name="work_online">Go online</string>
     <string name="work_online_message">You are working in online mode.</string>
     
-    <string name="work_offline">Work offline</string>
+    <string name="work_offline">Go offline</string>
     <string name="work_offline_message">You are working in offline mode, only previously saved profiles are available.</string>
     
     <string name="hello">Hello World, PruebajsonxmlActivity!</string>
