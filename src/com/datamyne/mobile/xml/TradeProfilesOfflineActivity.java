@@ -35,6 +35,9 @@ import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.ProfileProvider;
 import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
 
+/*
+ * Clase que resuelve los Trade Profiles en modo online, se accede a ella desde el Dashboard
+ */
 public class TradeProfilesOfflineActivity extends FragmentActivity {
 
 	private static final int NUMBER_OF_PAGES = 6;
@@ -52,7 +55,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Trade Profiles (Offline mode)");
         HoneycombCompatibility.actionBarSetLogo(actionBar, R.drawable.title_home_default);
-//      actionBar.setLogo(R.drawable.title_home_default);
         populateTitles();
 	}
 	
@@ -102,13 +104,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 		String name;
 		int selectedIndex;
 		
-//		public MyFragmentPagerAdapter(FragmentManager fm, String id, String type, int selectedIndex) {  
-//			super(fm);
-//			this.id = id;
-//			this.type = type;
-//			this.selectedIndex = selectedIndex;
-//		}
-		
 		public MyFragmentPagerAdapter(FragmentManager fm, String id, String name, String type, int selectedIndex) {  
 			super(fm);
 			this.id = id;
@@ -154,15 +149,13 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 			ActionBar actionBar = getActionBar();
 	        actionBar.show();
 	        actionBar.setDisplayHomeAsUpEnabled(true);
-//	        if(Build.VERSION.SDK_INT < 14){
-				try {
-					Method setLogo = ActionBar.class.getMethod("setLogo");//, new Class[]{int.class});
-					setLogo.invoke(actionBar, new Object[] {R.drawable.title_home_default});
-				} catch (Exception e) {
-					Log.i("tradeProfilesActivity", e.getMessage());
-				}
-//	        }
-//	        actionBar.setLogo(R.drawable.title_home_default);
+
+		    try {
+				Method setLogo = ActionBar.class.getMethod("setLogo");//, new Class[]{int.class});
+				setLogo.invoke(actionBar, new Object[] {R.drawable.title_home_default});
+			} catch (Exception e) {
+				Log.i("tradeProfilesActivity", e.getMessage());
+			}
 			
 			if (savedInstanceState == null) {
  
@@ -193,7 +186,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 	                 Intent intent = new Intent(this, HomeActivity.class);
 	                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	                 startActivity(intent);
-//	            	finish(); //VER QUE ES MEJOR SI BACK O HOME
 	                return true;
 	            default:
 	                return super.onOptionsItemSelected(item);
@@ -273,7 +265,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 
 		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
-			//Item item = (Item)l.getAdapter().getItem(position);
 			viewing = true;
 			showDetails(position);
 		}
@@ -295,7 +286,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 
 						// Check what fragment is currently shown, replace if needed.
 						ViewPager details = (ViewPager) getActivity().findViewById(R.id.viewPager);
-				
 						
 						if (details != null){
 
@@ -391,7 +381,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 					localBasePath = file.getPath();
 				}
 			}
-	
 			
 			boolean showDialog = !profileProvider.checkFileExists(localBasePath, getBundledType(), getBundledId());
 
@@ -401,7 +390,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 		}
 
 	}
-	
 	
 	/**
 	 * Realiza la busqueda de empresas

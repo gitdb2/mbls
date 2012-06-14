@@ -41,6 +41,9 @@ import com.datamyne.mobile.providers.ProfileProvider;
 import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
 import com.datamyne.mobile.providers.RestTradeProfileClient2;
 
+/*
+ * Clase que resuelve los Trade Profiles en modo online, se accede a ella desde el Dashboard
+ */
 public class TradeProfilesActivity extends FragmentActivity implements SearchView.OnQueryTextListener {
 
 	private static final int NUMBER_OF_PAGES = 6;
@@ -63,9 +66,6 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
         actionBar.setTitle("Trade Profiles (Online mode)");
 
         HoneycombCompatibility.actionBarSetLogo(actionBar, R.drawable.title_home_default);
-//      actionBar.setLogo(R.drawable.title_home_default);
-        
-        
 		
 		searchView = (SearchView) findViewById(R.id.searchViewCompany);
 		searchView.setIconifiedByDefault(false);
@@ -95,13 +95,6 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		String type;
 		String name;
 		int selectedIndex;
-		
-//		public MyFragmentPagerAdapter(FragmentManager fm, String id, String type, int selectedIndex) {  
-//			super(fm);
-//			this.id = id;
-//			this.type = type;
-//			this.selectedIndex = selectedIndex;
-//		}
 		
 		public MyFragmentPagerAdapter(FragmentManager fm, String id, String name, String type, int selectedIndex) {  
 			super(fm);
@@ -149,7 +142,6 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 	        actionBar.show();
 	        actionBar.setDisplayHomeAsUpEnabled(true);
 	        HoneycombCompatibility.actionBarSetLogo(actionBar, R.drawable.title_home_default);
-//	      actionBar.setLogo(R.drawable.title_home_default);
 	        
 			if (savedInstanceState == null) {
  
@@ -180,7 +172,6 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 	                 Intent intent = new Intent(this, HomeActivity.class);
 	                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	                 startActivity(intent);
-//	            	finish(); //VER QUE ES MEJOR SI BACK O HOME
 	                return true;
 	            default:
 	                return super.onOptionsItemSelected(item);
@@ -289,7 +280,6 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 
 						// Check what fragment is currently shown, replace if needed.
 						ViewPager details = (ViewPager) getActivity().findViewById(R.id.viewPager);
-				
 						
 						if (details != null){
 
@@ -387,8 +377,6 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 					localBasePath = file.getPath();
 				}
 			}
-
-			
 			
 			boolean showDialog = !profileProvider.checkFileExists(localBasePath, getBundledType(), getBundledId());
 
@@ -538,10 +526,8 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 
 			//Chequea si existe SD cuando file es null
 			File file = getExternalFilesDir(null);
-//			boolean cacheEnabled = false;
 			if(file != null){
 				baseDir = file.getPath();
-//				cacheEnabled = true;
 			}
 			
 			TitlesFragment titles = new TitlesFragment();
@@ -549,8 +535,6 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 			Bundle args = new Bundle();
 			args.putString("target", query);
 			args.putString("baseDir", baseDir);
-//			args.putBoolean("cacheEnabled", cacheEnabled);
-			
 			
 			titles.setArguments(args);
 			
