@@ -9,6 +9,10 @@ import android.view.MenuItem;
 import com.datamyne.mobile.profile.utils.HoneycombCompatibility;
 import com.datamyne.mobile.xml.R;
 
+/*
+ * Activity dummy para representar un feature a agregar 
+ * en el futuro.
+ */
 public class FeatureActivity extends Activity {
 	
 	protected void onCreate(Bundle savedInstanceState) {
@@ -19,8 +23,6 @@ public class FeatureActivity extends Activity {
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
         HoneycombCompatibility.actionBarSetLogo(actionBar, R.drawable.title_home_default);
-//      actionBar.setLogo(R.drawable.title_home_default);
-        
     }
 	
 	@Override

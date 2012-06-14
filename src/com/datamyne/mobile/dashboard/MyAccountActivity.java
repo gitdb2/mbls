@@ -9,6 +9,9 @@ import android.view.MenuItem;
 import com.datamyne.mobile.profile.utils.HoneycombCompatibility;
 import com.datamyne.mobile.xml.R;
 
+/*
+ *Activity dummy que representa la opcion de My Account, sin implementar
+ */
 public class MyAccountActivity extends Activity {
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +22,6 @@ public class MyAccountActivity extends Activity {
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
         HoneycombCompatibility.actionBarSetLogo(actionBar, R.drawable.title_home_default);
-//      actionBar.setLogo(R.drawable.title_home_default);
 	}
 	
 	@Override

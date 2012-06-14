@@ -9,6 +9,10 @@ import android.view.MenuItem;
 import com.datamyne.mobile.profile.utils.HoneycombCompatibility;
 import com.datamyne.mobile.xml.R;
 
+/*
+ * Activity para mostrar el About de la aplicacion, no esta en uso 
+ * en esta version.
+ */
 public class AboutActivity extends Activity {
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -18,10 +22,7 @@ public class AboutActivity extends Activity {
 		ActionBar actionBar = getActionBar();
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        
-        
         HoneycombCompatibility.actionBarSetLogo(actionBar, R.drawable.title_home_default);
-//      actionBar.setLogo(R.drawable.title_home_default);
 	}
 	
 	@Override

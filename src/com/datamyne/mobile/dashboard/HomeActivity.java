@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2011 Wglxy.com
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.datamyne.mobile.dashboard;
 
@@ -30,6 +15,10 @@ import com.datamyne.mobile.xml.R;
 import com.datamyne.mobile.xml.TradeProfilesActivity;
 import com.datamyne.mobile.xml.TradeProfilesOfflineActivity;
 
+/*
+ * Esta activity representa el Dashboard de la aplicacion, 
+ * desde aca se lanzan las diferentes funcionalidades.
+ */ 
 public class HomeActivity extends Activity {
 	
 	public static final String PREFS_NAME = "MyPrefsFile";
@@ -40,7 +29,10 @@ public class HomeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 
-		
+
+        //se setea el modo de trabajo que estaba guardado en las preferencias
+        //esto se setea si se viene desde otra activity presionando HOME 
+        //o si se inicia la aplicacion desde cero
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         workOffline = settings.getBoolean(WORK_MODE, false);
 	}
@@ -50,43 +42,16 @@ public class HomeActivity extends Activity {
 	    MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.home_menu, menu);
 	    
-	    
-	    
 	    if (workOffline) {
 	    	menu.getItem(0).setTitle(R.string.work_online);
-//			menu.add(0, Menu.FIRST, 0, R.string.work_online);
 		} else {
-//			menu.add(0, Menu.FIRST, 0, R.string.work_offline);
 			menu.getItem(0).setTitle(R.string.work_offline);
 		}
 	    
-	    
 		menu.add(0, Menu.FIRST + 1, Menu.NONE, R.string.exit_application);
-	
 		
 	    return true;
 	}
-	
-	
-	
-	
-//	@Override
-//	public boolean onPrepareOptionsMenu(Menu menu) {
-//		menu.clear();
-//		
-//		
-//		
-//		if (workOffline) {
-//			
-//			
-//			menu.add(0, Menu.FIRST, 0, R.string.work_online);
-//		} else {
-//			menu.add(0, Menu.FIRST, 0, R.string.work_offline);
-//		}
-//		menu.add(0, Menu.FIRST + 1, Menu.NONE, R.string.exit_application);
-//	
-//		return super.onPrepareOptionsMenu(menu);
-//	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
