@@ -12,28 +12,26 @@
         android:gravity="center_horizontal"
         android:orientation="vertical" >
 
-        <LinearLayout
-            android:id="@+id/pageDataTable"
-            
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:layout_width="300dp"
-            android:layout_marginTop="5dp"
-            
-            >
-            
-<!--             android:layout_width="match_parent" -->
-        </LinearLayout>
-
         <TextView
             android:id="@+id/textViewData"
+            style="@style/WhiteBoldText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical|center_horizontal"
             android:padding="4dp"
             android:text="" />
 
         <LinearLayout
+            android:id="@+id/pageDataTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+             android:layout_marginTop="5dp"
             android:id="@+id/linearLayoutTChart"
             android:layout_width="wrap_content"
             android:layout_height="300dp" >

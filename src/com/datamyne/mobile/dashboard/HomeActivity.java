@@ -16,6 +16,7 @@
 
 package com.datamyne.mobile.dashboard;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,6 +40,7 @@ public class HomeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 
+		
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         workOffline = settings.getBoolean(WORK_MODE, false);
 	}
@@ -47,6 +49,8 @@ public class HomeActivity extends Activity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
 		if (workOffline) {
+			
+			
 			menu.add(0, Menu.FIRST, 0, R.string.work_online);
 		} else {
 			menu.add(0, Menu.FIRST, 0, R.string.work_offline);

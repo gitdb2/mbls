@@ -34,6 +34,7 @@ public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
 	ITabTableCreator tabCreator; 
 	private ProfilesSQLiteHelper dbHelper;
 	int errorCode = 0;
+	String name;
 	
 	public DetailsAsyncTask(Context context, ViewGroup container, boolean showDialog, int page) {
 		super();
@@ -57,6 +58,7 @@ public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
 	@Override
 	protected String doInBackground(String... params) {
 		String tmp = "";
+		name = params[3];
 		try {
 			tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3], dbHelper);
 			dbHelper.close();
@@ -124,7 +126,7 @@ public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
 		
 		LinearLayout graficaLayout	= (LinearLayout) view.findViewById(R.id.linearLayoutTChart);
 		LinearLayout tableLayout	= (LinearLayout) view.findViewById(R.id.pageDataTable); //layout de tabla para mostrar los datos
-		TextView text = (TextView) view.findViewById(R.id.textViewData);
+		TextView text 				= (TextView) view.findViewById(R.id.textViewData);
 		
 		String ret  = "";
 		if(payload!=null && !payload.trim().isEmpty()){
@@ -137,11 +139,12 @@ public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
 					try {
 						tableLayout.addView(tabCreator.crearTablaTabProfile(tmp.getJSONObject("profileTab")));
 						view.removeView(graficaLayout);
+						ret = "Profile Information for\n"+name;
 					}catch (TabTableCreatorException e) {
 					
 						Log.e("DetailsAsyncTask", "writeData page "+page, e);
 						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
-						ret = "No data available";
+						ret += "\nNo data available";
 					}
 					
 					
@@ -150,17 +153,17 @@ public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
 					try {
 						tableLayout.addView(tabCreator.crearTablaTabMonthly(tmp.getJSONObject("totalMonthsTab")));
 						graficaLayout.addView(chartCreator.crearGraficaMonthly(tmp.getJSONObject("totalMonthsTab")));
-
+						ret = "Total Annual Imports for\n"+name;
 					}catch (ChartCreatorException e) {
 						Log.e("DetailsAsyncTask", "writeData page "+page, e);
 						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
-						ret = "No data available";
+						ret += "\nNo data available";
 					}
 					break;
-				case 2:
-				case 3:
-				case 4:
-				case 5:
+				case 2: ret = (ret.isEmpty())? "Top Suppliers for\n"+name : ret;
+				case 3: ret = (ret.isEmpty())? "Top Countries for\n"+name : ret;
+				case 4: ret = (ret.isEmpty())? "Top Products for\n"+name : ret;
+				case 5: ret = (ret.isEmpty())? "Top Ports for\n"+name : ret;
 				{
 					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
 					try {
@@ -168,7 +171,7 @@ public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
 						graficaLayout.addView(chartCreator.crearGraficaMulti(arr.getJSONObject(page-2)));
 					} catch (ChartCreatorException e) {
 						Log.e("DetailsAsyncTask", "writeData page "+page, e);
-						ret = "No data available";
+						ret += "\nNo data available";
 						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
 					}
 				}
