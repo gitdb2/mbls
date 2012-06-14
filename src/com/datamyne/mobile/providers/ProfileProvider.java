@@ -27,11 +27,12 @@ public class ProfileProvider implements IProfileProvider {
 	}
 
 	public ProfileProvider(){
-		 client = new RestTradeProfileClient2();
+		this(new RestTradeProfileClient2());
 	}
 	
 	public ProfileProvider(IRestTradeProfileClient client){
 		this.client = client;
+		updateExternalStorageState();
 	}
 
 	public boolean checkFileExists(String localBasePath, String type, String id){
