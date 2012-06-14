@@ -37,6 +37,7 @@ public class ProfileProvider implements IProfileProvider {
 	public boolean checkFileExists(String localBasePath, String type, String id){
 			boolean ret = false;
 			try {
+				updateExternalStorageState();
 				if(mExternalStorageAvailable && localBasePath != null){
 					File root = new File(localBasePath, type + File.separatorChar + id+".json");
 					ret = root.exists();
