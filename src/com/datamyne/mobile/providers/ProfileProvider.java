@@ -75,7 +75,7 @@ public class ProfileProvider implements IProfileProvider {
 	 * @param id
 	 * @return
 	 */
-	public String loadFullProfile(String localBasePath, String type, String id, String name, ProfilesSQLiteHelper dbHelper){
+	public String loadFullProfile(String localBasePath, String type, String id, String name, ProfilesSQLiteHelper dbHelper) throws IOException{
 		String result ="";
 		updateExternalStorageState();
 		
@@ -110,10 +110,18 @@ public class ProfileProvider implements IProfileProvider {
 			}else{
 				Log.e("ExternalStorage", "Error reading " + name + " - "+ id + " Payload is empty");
 			}
-		} catch (IOException e) {
+			
+			
+		}catch (java.net.ConnectException e) {
 			// Unable to create file, likely because external storage is
 			// not currently mounted.
-			Log.e("ExternalStorage", "loadFullProfile Error reading IOException" +   name + " - "+ id, e);
+			Log.e("ExternalStorage", "loadFullProfile Error de conexion " +   name + " - "+ id, e);
+			throw e;
+		}catch (IOException e) {
+			// Unable to create file, likely because external storage is
+			// not currently mounted.
+			Log.e("ExternalStorage", "loadFullProfile Error reading IOException " +   name + " - "+ id, e);
+			throw e;
 		}
 		
 		return result;

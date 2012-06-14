@@ -1,5 +1,7 @@
 package com.datamyne.mobile.profile.utils;
 
+import java.io.IOException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,6 +9,7 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,7 +22,7 @@ import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
 import com.datamyne.mobile.xml.R;
 
 
-public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
+public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
 
 	private IProfileProvider profileProvider 	= new ProfileProvider();
 	private ProgressDialog dialog;
@@ -30,6 +33,7 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 	IChartsCreator chartCreator;
 	ITabTableCreator tabCreator; 
 	private ProfilesSQLiteHelper dbHelper;
+	int errorCode = 0;
 	
 	public DetailsAsyncTask(Context context, ViewGroup container, boolean showDialog, int page) {
 		super();
@@ -52,11 +56,45 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 
 	@Override
 	protected String doInBackground(String... params) {
-		String tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3], dbHelper);
-		dbHelper.close();
+		String tmp = "";
+		try {
+			tmp = profileProvider.loadFullProfile(params[0],params[1],params[2], params[3], dbHelper);
+			dbHelper.close();
+		}catch (java.net.ConnectException e) {
+			Log.e("DetailsAsyncTask", "doInBackground ", e);
+			publishProgress(-1);
+			cancel(true);
+			
+		}catch (IOException e) {
+			Log.e("DetailsAsyncTask", "doInBackground", e);
+			publishProgress(-2);
+			cancel(true);
+		}
 		return tmp;
 	}
-
+	@Override
+	protected void onProgressUpdate(Integer... values) {
+		super.onProgressUpdate(values);
+		
+		errorCode = values[0]; 
+		switch (values[0]) {
+		case -1:
+			
+			dialog.setMessage("Server unreachable, try later or change To offline mode at home screen. Tap to close");
+			dialog.setCancelable(true);
+			
+			break;
+		case -2:
+			dialog.setMessage("Comunication error, try later. Tap to close");
+			dialog.setCancelable(true);
+			
+			break;
+		
+		default:
+			break;
+		}
+		
+	}
 	protected void onPreExecute() {
 		if(showDialog){
 			dialog.setProgress(0);
@@ -74,6 +112,12 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 		writeData(result);
 
 	}
+	  @Override
+      protected void onCancelled()
+      {
+         super.onCancelled();
+      }
+	
 	
 	
 	private void writeData(String payload) {
@@ -90,12 +134,12 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 				
 				switch (page) {
 				case 0:
-//					ret = tmp.getJSONObject("profileTab").toString();
 					try {
 						tableLayout.addView(tabCreator.crearTablaTabProfile(tmp.getJSONObject("profileTab")));
 						view.removeView(graficaLayout);
 					}catch (TabTableCreatorException e) {
-						e.printStackTrace();
+					
+						Log.e("DetailsAsyncTask", "writeData page "+page, e);
 						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
 						ret = "No data available";
 					}
@@ -103,15 +147,12 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 					
 					break;
 				case 1:
-//					ret = tmp.getJSONObject("totalMonthsTab").toString();
 					try {
 						tableLayout.addView(tabCreator.crearTablaTabMonthly(tmp.getJSONObject("totalMonthsTab")));
 						graficaLayout.addView(chartCreator.crearGraficaMonthly(tmp.getJSONObject("totalMonthsTab")));
-//					} catch (TabTableCreatorException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
+
 					}catch (ChartCreatorException e) {
-						e.printStackTrace();
+						Log.e("DetailsAsyncTask", "writeData page "+page, e);
 						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
 						ret = "No data available";
 					}
@@ -122,13 +163,11 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 				case 5:
 				{
 					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-					//ret = arr.getString(page-2);
 					try {
 						tableLayout.addView(tabCreator.crearTablaTabOther(arr.getJSONObject(page-2)));
 						graficaLayout.addView(chartCreator.crearGraficaMulti(arr.getJSONObject(page-2)));
 					} catch (ChartCreatorException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Log.e("DetailsAsyncTask", "writeData page "+page, e);
 						ret = "No data available";
 						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
 					}
@@ -139,7 +178,7 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 					try {
 						tableLayout.addView(tabCreator.crearTablaTabProfile(tmp.getJSONObject("profileTab")));
 					}catch (TabTableCreatorException e) {
-						e.printStackTrace();
+						Log.e("DetailsAsyncTask", "writeData page "+page+": default", e);
 						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
 						ret = "No data available";
 					}
@@ -148,70 +187,11 @@ public class DetailsAsyncTask extends AsyncTask<String, Float, String> {
 				
 				text.setText(ret);
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("DetailsAsyncTask", "writeData JSONException", e);
 				text.setText("Errorr");
 			}
 		}
 	
 	}
-
-	private String getPageData(String payload){
-		String ret  = "";
-		if(payload!=null && !payload.trim().isEmpty()){
-			try {
-				JSONObject obj = new JSONObject(payload);
-				JSONObject tmp = obj.getJSONObject("tradeProfileContainer");
-				
-				switch (page) {
-				case 0:
-					ret = tmp.getJSONObject("profileTab").toString();
-					break;
-				case 1:
-					ret = tmp.getJSONObject("totalMonthsTab").toString();
-					break;
-				case 2:
-				{
-					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-					ret = arr.getString(0);
-				}
-				break;
-				case 3:
-				{
-					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-					ret = arr.getString(1);
-				
-				}
-				break;
-				case 4:
-				{
-					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-					ret = arr.getString(2);
-				
-				}
-				break;					
-				case 5:
-				{
-					JSONArray arr = tmp.getJSONObject("dimensionTabList").getJSONArray("tabDimension");
-					ret = arr.getString(3);
-				
-				}
-				break;
-				default:
-					ret = tmp.getJSONObject("profileTab").toString();	
-					break;
-				}
-				
-				
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		return ret;
-	}
-	
-	
 
 }
