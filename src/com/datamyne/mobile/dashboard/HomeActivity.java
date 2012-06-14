@@ -15,7 +15,7 @@ import com.datamyne.mobile.xml.R;
 import com.datamyne.mobile.xml.TradeProfilesActivity;
 import com.datamyne.mobile.xml.TradeProfilesOfflineActivity;
 
-/*
+/**
  * Esta activity representa el Dashboard de la aplicacion, 
  * desde aca se lanzan las diferentes funcionalidades.
  */ 
@@ -30,9 +30,11 @@ public class HomeActivity extends Activity {
 		setContentView(R.layout.activity_home);
 
 
-        //se setea el modo de trabajo que estaba guardado en las preferencias
-        //esto se setea si se viene desde otra activity presionando HOME 
-        //o si se inicia la aplicacion desde cero
+  /**
+   *se setea el modo de trabajo que estaba guardado en las preferencias
+   *esto se setea si se viene desde otra activity presionando HOME 
+   *o si se inicia la aplicacion desde cero
+   */
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         workOffline = settings.getBoolean(WORK_MODE, false);
 	}

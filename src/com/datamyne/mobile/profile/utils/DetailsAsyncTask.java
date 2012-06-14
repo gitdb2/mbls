@@ -21,7 +21,7 @@ import com.datamyne.mobile.providers.ProfileProvider;
 import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
 import com.datamyne.mobile.xml.R;
 
-/*
+/**
  * Clase que gestiona las tareas a ejecutarse en background cuando el
  * usuario elige un elemento del resultado de una busqueda.
  */
@@ -182,10 +182,11 @@ public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
 				default:
 					try {
 						tableLayout.addView(tabCreator.crearTablaTabProfile(tmp.getJSONObject("profileTab")));
+						ret = ":( Profile Information for\n"+name;
 					}catch (TabTableCreatorException e) {
 						Log.e("DetailsAsyncTask", "writeData page "+page+": default", e);
 						//En caso que de error ver la causa y si es que no hay datos escribir que no hay datos
-						ret = "No data available";
+						ret += "\nNo data available";
 					}
 					break;
 				}

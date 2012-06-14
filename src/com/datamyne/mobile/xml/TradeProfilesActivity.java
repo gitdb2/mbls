@@ -41,7 +41,7 @@ import com.datamyne.mobile.providers.ProfileProvider;
 import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
 import com.datamyne.mobile.providers.RestTradeProfileClient2;
 
-/*
+/**
  * Clase que resuelve los Trade Profiles en modo online, se accede a ella desde el Dashboard
  */
 public class TradeProfilesActivity extends FragmentActivity implements SearchView.OnQueryTextListener {
@@ -88,7 +88,11 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
                 return super.onOptionsItemSelected(item);
         }
     }
-	
+	/**
+	 * Adapter para generar los fragments de las paginas del profiel en el pagerView
+	 * @author rodrigo
+	 *
+	 */
 	private static class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {  
 
 		String id;
@@ -115,10 +119,10 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 	}  	
 
 	/**
-	 * This is a secondary activity, to show what the user has selected
-	 * when the screen is not large enough to show it all in one activity.
+	 * Actividad que va a mostrar los datos de un profile (en caso que sea celular o tablet vertical)
+	 * @author rodrigo
+	 *
 	 */
-
 	public static class DetailsActivity extends FragmentActivity{
 		
 		String id;
@@ -126,12 +130,13 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			
+
+			/**
+			 * Si la orientacion es landscape y es pantalla grande (tablet), no se crea la activity DetailsActivity , ya que se va a usar un fragment
+			 */
 			if (getResources().getConfiguration().orientation
 					== Configuration.ORIENTATION_LANDSCAPE 
 					&& getResources().getConfiguration().isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE)) {
-				// If the screen is now in landscape mode, we can show the
-				// dialog in-line with the list so we don't need this activity.
 				finish();
 				return;
 			}
@@ -182,12 +187,14 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 
 	
 	/**
-	 * This is the "top-level" fragment, showing a list of items that the
-	 * user can pick.  Upon picking an item, it takes care of displaying the
-	 * data to the user as appropriate based on the currrent UI layout.
+	 * Fragmento que muestra los resultados de la busqueda 
+	 * @author rodrigo
+	 *
 	 */
-
 	public static class TitlesFragment extends ListFragment {
+		/**
+		 * Indica si se esta usando dos paneles (2 fragmentos)
+		 */
 		boolean mDualPane;
 		int mCurCheckPosition = 0;
 		ArrayList<Item> itemList;
@@ -198,7 +205,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 			super.onActivityCreated(savedInstanceState);
 
 			if (savedInstanceState != null) {
-				// Restore last state for checked position.
+				// se carga el estado anterior
 				mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
 				itemList= savedInstanceState.getParcelableArrayList("itemList");
 				viewing =  savedInstanceState.getBoolean("viewing", false);
@@ -214,31 +221,26 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		
 		@Override
 		public void onResume() {
-			// TODO Auto-generated method stub
 			super.onResume();
-			try {
+			try {//se pone entre try y catch para cuando se va al home de android y cuando se resume la aplciacion no de problema al recargar la vista e intentar agregarla de nuevo
 				displayData();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
 	
-		
+		/**
+		 * Muestra los datos del resultado
+		 */
 		public void displayData(){
 			if(itemList!= null){
 				setListAdapter(new ArrayAdapter<Item>(getActivity(), android.R.layout.simple_list_item_activated_1, itemList));
-				
-				// Check to see if we have a frame in which to embed the details
-				// fragment directly in the containing UI.
-				View detailsFrame = getActivity().findViewById(R.id.details);
-				mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
+				View detailsFrame 	= getActivity().findViewById(R.id.details);
+				mDualPane 			= detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
 	
 				if (mDualPane) {
-					// In dual-pane mode, the list view highlights the selected item.
 					getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-					// Make sure our UI is in the correct state.
 					if(viewing){ //si ese estaba mirando un detalle lo muestro
 						showDetails(mCurCheckPosition);
 					}
@@ -257,40 +259,30 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 
 		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
-			//Item item = (Item)l.getAdapter().getItem(position);
 			viewing = true;
 			showDetails(position);
 		}
 
-		/**
-		 * Helper function to show the details of a selected item, either by
-		 * displaying a fragment in-place in the current UI, or starting a
-		 * whole new activity in which it is displayed.
-		 */
+	
 		void showDetails( int index) {
-			//List<Item> itemList,
 			mCurCheckPosition = index;
 			if(itemList != null && !itemList.isEmpty()){
 				try {
 					Item item = itemList.get(index);
-					if (mDualPane) {
-						// We can display everything in-place with fragments, so update
-						// the list to highlight the selected item and show the data.
+					if (mDualPane) { //si se esta mostrando dos paneles, entonces se selecciona el item en la listView, se obtiene el contenedor del pager
+						//y se le asigna el adapter correspondiente, pasandole los parametros necesarios para ejecutar la consulta y armar las paginas del profile 
 						getListView().setItemChecked(index, true);
-
-						// Check what fragment is currently shown, replace if needed.
 						ViewPager details = (ViewPager) getActivity().findViewById(R.id.viewPager);
 						
 						if (details != null){
-
 							MyFragmentPagerAdapter mMyFragmentPagerAdapter = 
 									new MyFragmentPagerAdapter(getFragmentManager(), item.getCode(), item.getName(), "consignee", index);  
 							details.setAdapter(mMyFragmentPagerAdapter);  
 						}
 
 					} else {
-						// Otherwise we need to launch a new activity to display
-						// the dialog fragment with selected text.
+						//En caso que sea vista simple (celular o tablet vertical)
+						//se dispara una DetailsActivity
 						Intent intent = new Intent();
 						intent.setClass(getActivity(), DetailsActivity.class);
 						intent.putExtra("index", index);
@@ -301,16 +293,18 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 						startActivity(intent);
 					}
 				} catch (IndexOutOfBoundsException e) {
-
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
 	}
 
+	/**
+	 * Fragmento que representa una pagina del trade profile desplegado en el pagerView
+	 * @author rodrigo
+	 *
+	 */
 	public static class PageFragment extends Fragment {
-
 		
 		public static PageFragment newInstance(String id, String name, String type,	int page, int index) {
 
@@ -355,14 +349,10 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+			/**
+			 * Si no hay contenedor, entonces no es landscape, entonces no se debe crear esta vista, no hay pagerView
+			 */
 			if (container == null) {
-				// We have different layouts, and in one of them this
-				// fragment's containing frame doesn't exist. The fragment
-				// may still be created from its saved state, but there is
-				// no reason to try to create its view hierarchy because it
-				// won't be displayed. Note this is not needed -- we could
-				// just run the code below, where we would create and return
-				// the view hierarchy; it would just never be used.
 				return null;
 			}
 
@@ -388,7 +378,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 	
 		
 	/**
-	 * Realiza la busqueda de empresas
+	 * Task asincrona que Realiza la busqueda de empresas
 	 * @author rodrigo
 	 *
 	 */
@@ -454,7 +444,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 				dialog.dismiss();
 				
 			}
-				//para que se busque de nuevo al hacer enter
+			//para que se pueda buscar de nuevo al hacer enter
 			((TradeProfilesActivity) titlesFragment.getActivity()).lastQuery = null;
 			
 			titlesFragment.itemList = result;	
@@ -472,10 +462,12 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
  			titlesFragment.displayData();
                     
           }
-		
+
+		/***
+		 * Lo usamos para manejar las excepciones
+		 */
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-			// TODO Auto-generated method stub
 			super.onProgressUpdate(values);
 			
 			errorCode = values[0]; 
@@ -503,16 +495,18 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		}
 
 	}
-
+	
 	public boolean onQueryTextChange(String newText) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
+	/**
+	 * variable usada para evitar el rebote al presionar enter con un teclado fisico en el searchView
+	 */
 	private String lastQuery = null;
 	
 	/**
-	 * MEtodo ejecutado cuando se ejecuta un submit en el rearchView
+	 * MEtodo ejecutado cuando se ejecuta un submit en el searchView
 	 */
 	public boolean onQueryTextSubmit(String query) {
 		

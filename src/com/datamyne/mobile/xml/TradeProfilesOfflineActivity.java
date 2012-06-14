@@ -35,8 +35,8 @@ import com.datamyne.mobile.providers.IProfileProvider;
 import com.datamyne.mobile.providers.ProfileProvider;
 import com.datamyne.mobile.providers.ProfilesSQLiteHelper;
 
-/*
- * Clase que resuelve los Trade Profiles en modo online, se accede a ella desde el Dashboard
+/**
+ * Clase que resuelve los Trade Profiles en modo offline, se accede a ella desde el Dashboard
  */
 public class TradeProfilesOfflineActivity extends FragmentActivity {
 
@@ -58,6 +58,9 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
         populateTitles();
 	}
 	
+	/**
+	 * Carga los ultimas busquedas desde la sd
+	 */
 	private void populateTitles() {
 		TitlesFragment titles = new TitlesFragment();
 		
@@ -97,6 +100,11 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
         }
     }
 	
+	/**
+	 * Clase Adapter usada para generar los PageFragment del PagerView
+	 * @author rodrigo
+	 *
+	 */
 	private static class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {  
 
 		String id;
@@ -123,10 +131,10 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 	}  	
 
 	/**
-	 * This is a secondary activity, to show what the user has selected
-	 * when the screen is not large enough to show it all in one activity.
+	 * ver descripcion en TradeProfilesActivity
+	 * @author rodrigo
+	 *
 	 */
-
 	public static class DetailsActivity extends FragmentActivity {
 		
 		String id;
@@ -138,8 +146,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 			if (getResources().getConfiguration().orientation
 					== Configuration.ORIENTATION_LANDSCAPE 
 					&& getResources().getConfiguration().isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE)) {
-				// If the screen is now in landscape mode, we can show the
-				// dialog in-line with the list so we don't need this activity.
 				finish();
 				return;
 			}
@@ -195,11 +201,10 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 	}
 	
 	/**
-	 * This is the "top-level" fragment, showing a list of items that the
-	 * user can pick.  Upon picking an item, it takes care of displaying the
-	 * data to the user as appropriate based on the currrent UI layout.
+	 * ver descripcion en TradeProfilesActivity
+	 * @author rodrigo
+	 *
 	 */
-
 	public static class TitlesFragment extends ListFragment {
 		boolean mDualPane;
 		int mCurCheckPosition = 0;
@@ -211,7 +216,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 			super.onActivityCreated(savedInstanceState);
 
 			if (savedInstanceState != null) {
-				// Restore last state for checked position.
 				mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
 				itemList= savedInstanceState.getParcelableArrayList("itemList");
 				viewing =  savedInstanceState.getBoolean("viewing", false);
@@ -238,15 +242,11 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 			if(itemList!= null){
 				setListAdapter(new ArrayAdapter<Item>(getActivity(), android.R.layout.simple_list_item_activated_1, itemList));
 				
-				// Check to see if we have a frame in which to embed the details
-				// fragment directly in the containing UI.
 				View detailsFrame = getActivity().findViewById(R.id.details);
 				mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
 	
 				if (mDualPane) {
-					// In dual-pane mode, the list view highlights the selected item.
 					getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-					// Make sure our UI is in the correct state.
 					if(viewing){ //si ese estaba mirando un detalle lo muestro
 						showDetails(mCurCheckPosition);
 					}
@@ -269,22 +269,13 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 			showDetails(position);
 		}
 
-		/**
-		 * Helper function to show the details of a selected item, either by
-		 * displaying a fragment in-place in the current UI, or starting a
-		 * whole new activity in which it is displayed.
-		 */
 		void showDetails( int index) {
 			mCurCheckPosition = index;
 			if(itemList != null && !itemList.isEmpty()){
 				try {
 					Item item = itemList.get(index);
 					if (mDualPane) {
-						// We can display everything in-place with fragments, so update
-						// the list to highlight the selected item and show the data.
 						getListView().setItemChecked(index, true);
-
-						// Check what fragment is currently shown, replace if needed.
 						ViewPager details = (ViewPager) getActivity().findViewById(R.id.viewPager);
 						
 						if (details != null){
@@ -295,8 +286,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 						}
 
 					} else {
-						// Otherwise we need to launch a new activity to display
-						// the dialog fragment with selected text.
 						Intent intent = new Intent();
 						intent.setClass(getActivity(), DetailsActivity.class);
 						intent.putExtra("index", index);
@@ -307,14 +296,17 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 						startActivity(intent);
 					}
 				} catch (IndexOutOfBoundsException e) {
-
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
 	}
 
+	/**
+	 * ver descripcion en TradeProfilesActivity
+	 * @author rodrigo
+	 *
+	 */
 	public static class PageFragment extends Fragment {
 		
 		public static PageFragment newInstance(String id, String name, String type, int page, int index) {
@@ -361,13 +353,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 			if (container == null) {
-				// We have different layouts, and in one of them this
-				// fragment's containing frame doesn't exist. The fragment
-				// may still be created from its saved state, but there is
-				// no reason to try to create its view hierarchy because it
-				// won't be displayed. Note this is not needed -- we could
-				// just run the code below, where we would create and return
-				// the view hierarchy; it would just never be used.
 				return null;
 			}
 			IProfileProvider profileProvider = new ProfileProvider();
@@ -445,7 +430,6 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 		
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-			// TODO Auto-generated method stub
 			super.onProgressUpdate(values);
 			switch (values[0]) {
 			case -1:

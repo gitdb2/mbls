@@ -7,11 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-/*
+/**
  * Clase que gestiona los profiles obtenidos desde la SD u on the fly.
  */
 public class ProfileProvider implements IProfileProvider {
@@ -67,10 +66,6 @@ public class ProfileProvider implements IProfileProvider {
 	
 	/**
 	 * Busca un profile completo a partir del tipo y del id y retorna la representacion json del profile
-	 * @param localBasePath
-	 * @param type
-	 * @param id
-	 * @return
 	 */
 	public String loadFullProfile(String localBasePath, String type, String id, String name, ProfilesSQLiteHelper dbHelper) throws IOException{
 		String result ="";
