@@ -11,12 +11,17 @@ import java.net.URLEncoder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/*
+ * Clase que gestiona las peticiones de profiles al servidor remoto en The Datamyne
+ */
 public class RestTradeProfileClient2  implements IRestTradeProfileClient{
 
 	//Servidor beta 
 	final private String BASE_SERVER =   "http://200.40.197.173:8082/system";
-	//servidor produccion
-//	final private String BASE_SERVER =   "http://www.datamyne20.com/system";
+
+	//Servidor produccion
+    //final private String BASE_SERVER =   "http://www.datamyne20.com/system";
+
 	public String getFullProfileJson(String type, String id) throws IOException{
 
 		 String urlStr = BASE_SERVER+"/rest/fullTradeprofile/"+type+"/"+id;
@@ -79,18 +84,6 @@ public class RestTradeProfileClient2  implements IRestTradeProfileClient{
 			String q 	= URLEncoder.encode(target, "UTF-8");
 						URL url 	= new URL(BASE_SERVER+"/rest/autocomplete?" +
 								"Base=usa_hid12&idComponent=402&compositeid=402&targetTerm="+q);
-
-			/*
-			{"list": [{
-			    "second": "6795958",
-			    "third": "DOLE FOOD COMPANY INC (CA)",
-			    "first": 402
-			  }, {
-			    "second": "6719778",
-			    "third": "DOLE FOOD COMPANY INC (DE)",
-			    "first": 402
-			  }]}
-			 */
 
 			con =(HttpURLConnection) url.openConnection();
 			con.setReadTimeout(10000);

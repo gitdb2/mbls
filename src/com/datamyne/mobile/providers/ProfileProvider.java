@@ -11,16 +11,16 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-
-
+/*
+ * Clase que gestiona los profiles obtenidos desde la SD u on the fly.
+ */
 public class ProfileProvider implements IProfileProvider {
 
 	boolean onTheflyData;
 	private IRestTradeProfileClient client;
 	
-	
 	/**
-	 * Estado que cambi en caso que no haya sd a true
+	 * Estado que cambia en caso que no haya sd a true
 	 */
 	public boolean isOnTheflyData() {
 		return onTheflyData;
@@ -50,7 +50,6 @@ public class ProfileProvider implements IProfileProvider {
 			return ret;
 	}
 	
-	
 	private boolean mExternalStorageAvailable = false;
 	private boolean mExternalStorageWriteable = false;
 
@@ -65,8 +64,6 @@ public class ProfileProvider implements IProfileProvider {
 			mExternalStorageAvailable = mExternalStorageWriteable = false;
 		}
 	}
-	
-
 	
 	/**
 	 * Busca un profile completo a partir del tipo y del id y retorna la representacion json del profile
@@ -178,50 +175,5 @@ public class ProfileProvider implements IProfileProvider {
 	public boolean isSdPresent() {
 	    return android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
 	}	
-
-	
-//	public String loadFullProfileInternalCache(Context context, String type, String id, String name, ProfilesSQLiteHelper dbHelper){
-//		String result ="";
-//		updateExternalStorageState();
-//		
-//		try {
-//			String payload = "";
-//			if(mExternalStorageAvailable){//si la sd esta disponible
-//				onTheflyData =false;
-//				File root = new File(localBasePath, type + File.separatorChar + id+ ".json");
-//				if ( !root.exists()) {
-//					payload = client.getFullProfileJson(type, id);
-//					
-//					//si se salva en la sd entonces se salva en la db
-//					if(saveToSD(localBasePath, type, id, payload)){
-//						saveToBD(root.getAbsolutePath(), type, id, name, dbHelper);
-//					}
-//			
-//				}else{
-//					InputStreamReader isReader = new FileReader(root);
-//					BufferedReader reader = new BufferedReader(isReader);
-//
-//					payload = reader.readLine();
-//					reader.close();
-//				}
-//			}else{
-//				Log.w("ExternalStorage", "No hay SD usando modo onthe fly ");
-//				payload = client.getFullProfileJson(type, id);
-//				onTheflyData = true;
-//			}
-//			
-//			if(payload!= null && !payload.trim().isEmpty()){
-//				result = payload;
-//			}else{
-//				Log.e("ExternalStorage", "Error reading " + name + " - "+ id + " Payload is empty");
-//			}
-//		} catch (IOException e) {
-//			// Unable to create file, likely because external storage is
-//			// not currently mounted.
-//			Log.e("ExternalStorage", "loadFullProfile Error reading IOException" +   name + " - "+ id, e);
-//		}
-//		
-//		return result;
-//	}
 	
 }

@@ -8,6 +8,9 @@ import android.database.Cursor;
 
 import com.datamyne.mobile.profile.utils.Item;
 
+/*
+ * Clase para gestionar los profiles con la base de datos.
+ */
 public class DataBaseProfileProvider implements IDatabaseProfileProvider {
 
 	public void saveDownloadedProfile(String filePath, String type,

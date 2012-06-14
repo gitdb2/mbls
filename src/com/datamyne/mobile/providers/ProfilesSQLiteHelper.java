@@ -8,7 +8,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
- 
+
+/*
+ * Clase que gestiona la base de datos, su creacion, insercion,
+ * recuperacion y borrado de registros.
+ */
 public class ProfilesSQLiteHelper extends SQLiteOpenHelper {
 	
 	final static int SCHEMA_VERSION = 1;
