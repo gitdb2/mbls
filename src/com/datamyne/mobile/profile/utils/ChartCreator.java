@@ -21,15 +21,13 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.webkit.WebSettings.PluginState;
+import android.webkit.WebView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.datamyne.mobile.xml.R;
-import com.datamyne.mobile.xml.R.string;
-import com.datamyne.mobile.xml.R.style;
 import com.steema.teechart.TChart;
 import com.steema.teechart.drawing.Color;
 import com.steema.teechart.legend.LegendAlignment;
