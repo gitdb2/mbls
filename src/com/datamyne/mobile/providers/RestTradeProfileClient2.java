@@ -68,8 +68,8 @@ public class RestTradeProfileClient2  implements IRestTradeProfileClient{
 		URL url 	= new URL(urlStr);
 
 		HttpURLConnection con =(HttpURLConnection) url.openConnection();
-		con.setReadTimeout(10000);
-		con.setConnectTimeout(15000);
+		con.setReadTimeout(20000);
+		con.setConnectTimeout(25000);
 		con.setRequestMethod("GET");
 		con.setRequestProperty("Accept", "application/json");
 		con.setDoInput(true);

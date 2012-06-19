@@ -72,6 +72,7 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 		searchView = (SearchView) findViewById(R.id.searchViewCompany);
 		searchView.setIconifiedByDefault(false);
 		searchView.setOnQueryTextListener(this);
+
 	}
 	
 	public ProfilesSQLiteHelper getDBHelper() {
