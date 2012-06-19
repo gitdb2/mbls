@@ -6,7 +6,9 @@ import java.util.ArrayList;
 
 import android.app.ActionBar;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -355,7 +357,12 @@ public class TradeProfilesOfflineActivity extends FragmentActivity {
 			if (container == null) {
 				return null;
 			}
-			IProfileProvider profileProvider = new ProfileProvider();
+			
+			
+			SharedPreferences pref 	= getActivity().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+			String baseServer 		= pref.getString("baseServer", "");
+			
+			IProfileProvider profileProvider = new ProfileProvider(baseServer);
 			
 			ViewGroup layout = (ViewGroup)inflater.inflate(R.layout.fragment_trade_profile_detail_pager, null);
 			String localBasePath = null; 

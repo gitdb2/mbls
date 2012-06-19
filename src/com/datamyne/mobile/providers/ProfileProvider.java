@@ -25,8 +25,8 @@ public class ProfileProvider implements IProfileProvider {
 		return onTheflyData;
 	}
 
-	public ProfileProvider(){
-		this(new RestTradeProfileClient2());
+	public ProfileProvider(String baseServer){
+		this(new RestTradeProfileClient2(baseServer));
 	}
 	
 	public ProfileProvider(IRestTradeProfileClient client){

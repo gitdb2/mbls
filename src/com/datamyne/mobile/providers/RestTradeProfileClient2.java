@@ -11,21 +11,35 @@ import java.net.URLEncoder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 /*
  * Clase que gestiona las peticiones de profiles al servidor remoto en The Datamyne
  */
 public class RestTradeProfileClient2  implements IRestTradeProfileClient{
 
+	
+//	public RestTradeProfileClient2(){
+//		BASE_SERVER = "http://200.40.197.173:8082/system";//beta
+//		//BASE_SERVER = "http://www.datamyne20.com/system";//Produccion
+//		//BASE_SERVER = "http://capilon.homeip.net/system"; //8082 PROXY
+//	}
+	public RestTradeProfileClient2(String baseServer) {
+		super();
+		this.baseServer = baseServer;
+	}
+
 	//Servidor beta 
-	final private String BASE_SERVER =   "http://200.40.197.173:8082/system";
+	private String baseServer;// =   "http://200.40.197.173:8082/system";
 
 	//Servidor produccion
     //final private String BASE_SERVER =   "http://www.datamyne20.com/system";
 
 	public String getFullProfileJson(String type, String id) throws IOException{
 
-		 String urlStr = BASE_SERVER+"/rest/fullTradeprofile/"+type+"/"+id;
+		 String urlStr = baseServer+"/rest/fullTradeprofile/"+type+"/"+id;
 
+		Log.i("RestTradeProfileClient2:getFullProfileJson","url ="+urlStr);
 		HttpURLConnection con = null;
 		StringBuilder payload = new StringBuilder();
 		try {
@@ -82,9 +96,11 @@ public class RestTradeProfileClient2  implements IRestTradeProfileClient{
 		try {
 	
 			String q 	= URLEncoder.encode(target, "UTF-8");
-						URL url 	= new URL(BASE_SERVER+"/rest/autocomplete?" +
-								"Base=usa_hid12&idComponent=402&compositeid=402&targetTerm="+q);
+						URL url 	= new URL(baseServer+"/rest/autocomplete?Base=usa_hid12&idComponent=402&compositeid=402&targetTerm="+q);
 
+						
+			Log.i("RestTradeProfileClient2:searchRemote","url ="+url.toString());
+			
 			con =(HttpURLConnection) url.openConnection();
 			con.setReadTimeout(10000);
 			con.setConnectTimeout(15000);

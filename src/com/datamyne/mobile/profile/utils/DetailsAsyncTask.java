@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -27,7 +28,7 @@ import com.datamyne.mobile.xml.R;
  */
 public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
 
-	private IProfileProvider profileProvider 	= new ProfileProvider();
+	private IProfileProvider profileProvider;// 	= new ProfileProvider();
 	private ProgressDialog dialog;
 	private ViewGroup view;
 	boolean showDialog= true;
@@ -41,6 +42,10 @@ public class DetailsAsyncTask extends AsyncTask<String, Integer, String> {
 	
 	public DetailsAsyncTask(Context context, ViewGroup container, boolean showDialog, int page) {
 		super();
+		
+		SharedPreferences pref	= context.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+		String baseServer		= pref.getString("baseServer", "");
+		profileProvider 		= new ProfileProvider(baseServer);
 		this.view = container;
 		this.showDialog = showDialog;  
 		this.page = page;

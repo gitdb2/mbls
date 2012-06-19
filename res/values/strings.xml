@@ -43,6 +43,9 @@
     <string name="btn_query_consignee">Consignee</string>
     <string name="txt_btn_query_consignee">Consignees</string>
     <string name="txt_btn_query_shipper">Shippers</string>
+    <string name="port_8082_proxy">Port 8082 Proxy</string>
+    <string name="beta_server">Beta Server</string>
+    <string name="production">Production</string>
 
 
 </resources>

@@ -4,4 +4,7 @@
         
           android:title="Go Offline"
           android:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/menu_servers"
+          android:title="Servers"
+          android:showAsAction="ifRoom|withText" />
 </menu>

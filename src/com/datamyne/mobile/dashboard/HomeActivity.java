@@ -2,13 +2,18 @@
 package com.datamyne.mobile.dashboard;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.datamyne.mobile.xml.R;
@@ -25,6 +30,8 @@ public class HomeActivity extends Activity {
 	private static final String WORK_MODE = "workMode";
 	private boolean workOffline;
 	
+	private String baseServerTag = "";
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
@@ -37,6 +44,19 @@ public class HomeActivity extends Activity {
    */
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         workOffline = settings.getBoolean(WORK_MODE, false);
+        
+        SharedPreferences pref = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        if(baseServerTag == null || baseServerTag.isEmpty()){
+        	baseServerTag = pref.getString("baseServer", null);
+        	if(baseServerTag == null){
+        		baseServerTag = "http://200.40.197.173:8082/system";
+        		pref.edit().putString("baseServer", baseServerTag).commit();
+        		Toast.makeText(this, "Setting base Server: "+ baseServerTag, Toast.LENGTH_LONG).show();
+        	}
+        }
+        
+		
+        
 	}
 	
 	@Override
@@ -65,12 +85,58 @@ public class HomeActivity extends Activity {
 			saveWorkMode();
 			item.setTitle(workOffline? R.string.work_online: R.string.work_offline);
 			break;
+		case (R.id.menu_servers):
+			openSelectServerDialog();
+			break;
 		case (Menu.FIRST + 1):
 			this.finish();
 			return true;
 		}
 		return false;
 	}
+
+	/**
+	 * Muestra un dialogo con los servidores a seleccionar, y permite agregar, modifica un archivo de config con el string seleccionado. 
+	 */
+	private void openSelectServerDialog() {
+         LayoutInflater inflater	= LayoutInflater.from(this);
+         View dialogView 			= inflater.inflate(R.layout.dialog_select_server, null);
+         RadioGroup radioGroup 		= (RadioGroup) dialogView.findViewById(R.id.radioGroupServers);
+         
+         for (int i = 0; i < radioGroup.getChildCount(); i++) {
+        	 RadioButton radio = (RadioButton) radioGroup.getChildAt(i);
+        	 radio.setOnClickListener(	new RadioButton.OnClickListener() {
+							        		 public void onClick(View v) {
+							        			 HomeActivity.this.onClickServerRadio(v);
+							
+							        		 }
+							        	 });
+        	 String tag = (String) radio.getTag();
+        	 if(tag!= null && tag.equalsIgnoreCase(baseServerTag)){
+        		 radio.setChecked(true);
+        	 }else{
+        		 radio.setChecked(false);
+        	 }
+         }
+         
+         
+         new AlertDialog.Builder(this)
+           .setTitle("Select server to connect")
+           .setView(dialogView)
+           .setCancelable(true)
+           .show();
+	}
+
+	public void onClickServerRadio(View v) {
+		baseServerTag = (String) v.getTag();
+		
+		SharedPreferences pref = HomeActivity.this.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+		pref.edit().putString("baseServer", baseServerTag).commit();
+		Toast.makeText(this, "Setting base Server: "+ baseServerTag, Toast.LENGTH_LONG).show();
+	}
+	
+	
+	
 	
 	private void showCurrentWorkMode() {
 		String message;

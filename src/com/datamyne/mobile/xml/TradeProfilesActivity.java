@@ -11,7 +11,9 @@ import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -356,7 +358,10 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 				return null;
 			}
 
-			IProfileProvider profileProvider = new ProfileProvider();
+			SharedPreferences pref 	= getActivity().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+			String baseServer 		= pref.getString("baseServer", "");
+			
+			IProfileProvider profileProvider = new ProfileProvider(baseServer);
 			ViewGroup layout = (ViewGroup)inflater.inflate(R.layout.fragment_trade_profile_detail_pager, null);
 	
 			String localBasePath = null; 
@@ -384,13 +389,20 @@ public class TradeProfilesActivity extends FragmentActivity implements SearchVie
 	 */
 	public static class HttpClientTask extends AsyncTask<String, Integer, ArrayList<Item>> {
 
-		private IRestTradeProfileClient client 		= new RestTradeProfileClient2();
+		private IRestTradeProfileClient client;// 		= new RestTradeProfileClient2();
 		private ProgressDialog dialog;
 		private TitlesFragment titlesFragment;
 		int errorCode = 0;
 		
 		public HttpClientTask(TitlesFragment titlesFragment) {
 			super();
+			
+			
+			SharedPreferences pref = titlesFragment.getActivity().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+			String baseServer = pref.getString("baseServer", "");
+			
+			this.client	= new RestTradeProfileClient2(baseServer);
+			
 			this.titlesFragment = titlesFragment;
 			dialog = new ProgressDialog(titlesFragment.getActivity());
 			dialog.setTitle("Connecting to server");

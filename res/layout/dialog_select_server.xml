@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <RadioGroup
+        android:id="@+id/radioGroupServers"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <RadioButton
+            android:id="@+id/radioProduction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:tag="http://www.datamyne20.com/system"
+            android:text="@string/production"
+            android:onClick="" 
+            />
+
+        <RadioButton
+            android:id="@+id/radioBeta"
+            android:checked="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="http://200.40.197.173:8082/system"
+            android:text="@string/beta_server" />
+
+        <RadioButton
+            android:id="@+id/radioProxy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="http://capilon.homeip.net/system"
+            android:text="@string/port_8082_proxy" />
+    </RadioGroup>
+
+</ScrollView>
