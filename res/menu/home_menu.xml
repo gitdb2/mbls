@@ -3,8 +3,12 @@
     <item android:id="@+id/menu_offline"
         
           android:title="Go Offline"
+          android:icon="@drawable/disconnect"
+          
           android:showAsAction="ifRoom|withText" />
     <item android:id="@+id/menu_servers"
           android:title="Servers"
-          android:showAsAction="ifRoom|withText" />
+          android:icon="@drawable/options"
+          android:showAsAction="ifRoom" />
+<!--     android:icon="@drawable/ic_menu_settings_holo_light" -->
 </menu>

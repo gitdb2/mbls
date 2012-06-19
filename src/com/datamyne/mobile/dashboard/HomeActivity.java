@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -66,8 +67,12 @@ public class HomeActivity extends Activity {
 	    
 	    if (workOffline) {
 	    	menu.getItem(0).setTitle(R.string.work_online);
+	    	Drawable icon = getResources().getDrawable(R.drawable.disconnect);
+	    	menu.getItem(0).setIcon(icon);
 		} else {
 			menu.getItem(0).setTitle(R.string.work_offline);
+			Drawable icon = getResources().getDrawable(R.drawable.connect);
+			menu.getItem(0).setIcon(icon);
 		}
 	    
 		menu.add(0, Menu.FIRST + 1, Menu.NONE, R.string.exit_application);
@@ -84,6 +89,8 @@ public class HomeActivity extends Activity {
 			showCurrentWorkMode();
 			saveWorkMode();
 			item.setTitle(workOffline? R.string.work_online: R.string.work_offline);
+			Drawable icon = getResources().getDrawable(workOffline?R.drawable.disconnect:R.drawable.connect);
+			item.setIcon(icon);
 			break;
 		case (R.id.menu_servers):
 			openSelectServerDialog();
